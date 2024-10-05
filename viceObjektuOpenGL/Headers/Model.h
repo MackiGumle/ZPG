@@ -2,20 +2,18 @@
 #include <GL/glew.h>
 #include <iostream>
 
-namespace ZPG {
+class Model {
+public:
+	Model(float points[], size_t numVertices, size_t stride, std::string m_name);
+	~Model();
 
-	class Model {
-	public:
-		Model(float points[], size_t numVertices, size_t stride);
-		~Model();
+	void render();
 
-		void render();
+private:
+	GLuint m_vbo;
+	GLuint m_vao;
+	size_t m_numVertices;
+	size_t stride;
+	std::string m_name;
+};
 
-	private:
-		GLuint m_vbo;
-		GLuint m_vao;
-		size_t m_numVertices;
-		size_t stride;
-	};
-
-}

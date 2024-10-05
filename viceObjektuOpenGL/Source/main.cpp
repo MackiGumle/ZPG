@@ -16,6 +16,7 @@
 #include <stdio.h>
 
 #include "Model.h"
+#include "Application.h"
 
 
 static void error_callback(int error, const char* description) { fputs(description, stderr); }
@@ -44,17 +45,17 @@ static void button_callback(GLFWwindow* window, int button, int action, int mode
 
 //GLM test
 
-// Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.01f, 100.0f);
-
-// Camera matrix
-glm::mat4 View = glm::lookAt(
-	glm::vec3(10, 10, 10), // Camera is at (4,3,-3), in World Space
-	glm::vec3(0, 0, 0), // and looks at the origin
-	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-);
-// Model matrix : an identity matrix (model will be at the origin)
-glm::mat4 Model = glm::mat4(1.0f);
+//// Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+//glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.01f, 100.0f);
+//
+//// Camera matrix
+//glm::mat4 View = glm::lookAt(
+//	glm::vec3(10, 10, 10), // Camera is at (4,3,-3), in World Space
+//	glm::vec3(0, 0, 0), // and looks at the origin
+//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+//);
+//// Model matrix : an identity matrix (model will be at the origin)
+//glm::mat4 Model = glm::mat4(1.0f);
 
 
 float points[] = {
@@ -63,14 +64,26 @@ float points[] = {
    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 };
 
+float firstTriangle[] = {
+		-0.9f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
+		-0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+		-0.45f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
+};
+
+float secondTriangle[] = {
+		0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left
+		0.9f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+		0.45f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
+};
+
 const char* vertex_shader =
 "#version 330\n"
 "layout(location=0) in vec3 vp;"
 "layout(location=1) in vec3 vc;"
 "out vec3 color;"
 "void main () {"
-"     gl_Position = vec4 (vp, 1.0);"
-//"     gl_Position = vec4 (vp.x, vp.y, vp.z, 1.0);"
+//"     gl_Position = vec4 (vp, 1.0);"
+"     gl_Position = vec4 (vp.x, vp.y, vp.z, 1.0);"
 "     color = vc;"
 "}";
 
@@ -188,7 +201,10 @@ int main(void)
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
 	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-
+	Application app;
+	app.initialization(800, 600, "ZPG", NULL, NULL);
+	app.createShaders();
+	app.createModels();
 
 	//create and compile shaders
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -235,25 +251,31 @@ int main(void)
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	ZPG::Model model(points, sizeof(points), 6);
+	Model model1(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
+	Model model2(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
 
 
-	while (!glfwWindowShouldClose(window)) {
-		// clear color and depth buffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(shaderProgram);
-		//glBindVertexArray(VAO);
-		model.render();
-		// draw triangles
-		//glDrawArrays(GL_TRIANGLES, 0, 9); //mode,first,count
-		// update other events like input handling
-		glfwPollEvents();
-		// put the stuff we’ve been drawing onto the display
-		glfwSwapBuffers(window);
-	}
+	//while (!glfwWindowShouldClose(window)) {
+	//	// clear color and depth buffer
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//	glUseProgram(shaderProgram);
+	//	//glBindVertexArray(VAO);
+	//	model1.render();
+	//	model2.render();
+	//	// draw triangles
+	//	//glDrawArrays(GL_TRIANGLES, 0, 9); //mode,first,count
+	//	// update other events like input handling
+	//	glfwPollEvents();
+	//	// put the stuff we’ve been drawing onto the display
+	//	glfwSwapBuffers(window);
+	//}
 
-	glfwDestroyWindow(window);
+	//glfwDestroyWindow(window);
 
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
+	//glfwTerminate();
+	//exit(EXIT_SUCCESS);
+
+	
+	app.run();
+
 }

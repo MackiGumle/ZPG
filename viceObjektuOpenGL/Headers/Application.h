@@ -5,26 +5,29 @@
 #include "ShaderManager.h"
 #include "ModelManager.h"
 
+
+
 class Application {
 public:
-    Application();
-    ~Application();
+	Application();
+	~Application();
 
-    void initialization();
-    void createShaders();
-    void createModels();
-    void run();
+	static void error_callback(int error, const char* description);
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void window_focus_callback(GLFWwindow* window, int focused);
+	static void window_iconify_callback(GLFWwindow* window, int iconified);
+	static void window_size_callback(GLFWwindow* window, int width, int height);
+	static void cursor_callback(GLFWwindow* window, double x, double y);
+	static void button_callback(GLFWwindow* window, int button, int action, int mode);
+
+
+	void initialization(int w_width = 800, int w_height = 600, const char* w_name = "Window", GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+	void createShaders();
+	void createModels();
+	void run();
 
 private:
-    GLFWwindow* m_window;
-    ShaderManager* m_shaderManager;
-    ModelManager* m_modelManager;
+	GLFWwindow* m_window;
+	ShaderManager* m_shaderManager;
+	ModelManager* m_modelManager;
 };
-
-Application::Application()
-{
-}
-
-Application::~Application()
-{
-}

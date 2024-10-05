@@ -1,7 +1,7 @@
 #include "Application.h"
 
 
-Application::Application(): m_window(nullptr), m_shaderManager(nullptr), m_modelManager(nullptr) {
+Application::Application() : m_window(nullptr), m_shaderManager(nullptr), m_modelManager(nullptr) {
 	m_shaderManager = new ShaderManager();
 	m_modelManager = new ModelManager();
 }
@@ -41,6 +41,7 @@ void Application::button_callback(GLFWwindow* window, int button, int action, in
 
 void Application::initialization(int w_width, int w_height, const char* w_name, GLFWmonitor* monitor, GLFWwindow* share)
 {
+	std::cout << "---\tInitializing GLFW\t---" << std::endl;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
@@ -86,17 +87,40 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glfwSetWindowFocusCallback(m_window, window_focus_callback);
 	glfwSetWindowIconifyCallback(m_window, window_iconify_callback);
 	glfwSetWindowSizeCallback(m_window, window_size_callback);
-
+	std::cout << "\n\n";
 }
 
 void Application::createShaders()
 {
+	if (!m_shaderManager->loadShader("Shaders/vertexShader.glsl", "Shaders/fragmetShader.glsl", "default"))
+	{
+		std::cout << "[x] Failed to load shader" << std::endl;
+		return;
+	}
 
+	m_shaderManager->useShaderProgram("default");
 }
 
 void Application::createModels()
 {
+	float firstTriangle[] = {
+		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+		-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top 
 
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
+		-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+		0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
+	};
+
+	float secondTriangle[] = {
+		0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
+
+	m_modelManager->loadModel(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
+	m_modelManager->loadModel(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
 }
 
 void Application::run()
@@ -106,7 +130,10 @@ void Application::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//glUseProgram(shaderProgram);
-		
+		m_shaderManager->useShaderProgram("default");
+
+		m_modelManager->renderModel();
+
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
 		glfwSwapBuffers(m_window);

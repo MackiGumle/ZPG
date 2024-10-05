@@ -127,61 +127,61 @@ const char* fragment_shader =
 
 int main(void)
 {
-	GLFWwindow* window;
-	glfwSetErrorCallback(error_callback);
-	if (!glfwInit()) {
-		fprintf(stderr, "ERROR: could not start GLFW3\n");
-		exit(EXIT_FAILURE);
-	}
+	//GLFWwindow* window;
+	//glfwSetErrorCallback(error_callback);
+	//if (!glfwInit()) {
+	//	fprintf(stderr, "ERROR: could not start GLFW3\n");
+	//	exit(EXIT_FAILURE);
+	//}
 
-	/* //inicializace konkretni verze
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE,
-	GLFW_OPENGL_CORE_PROFILE);  //*/
+	///* //inicializace konkretni verze
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE,
+	//GLFW_OPENGL_CORE_PROFILE);  //*/
 
-	window = glfwCreateWindow(800, 600, "ZPG", NULL, NULL);
-	if (!window) {
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
+	//window = glfwCreateWindow(800, 600, "ZPG", NULL, NULL);
+	//if (!window) {
+	//	glfwTerminate();
+	//	exit(EXIT_FAILURE);
+	//}
 
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	//glfwMakeContextCurrent(window);
+	//glfwSwapInterval(1);
 
-	// start GLEW extension handler
-	glewExperimental = GL_TRUE;
-	glewInit();
-
-
-	// get version info
-	printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
-	printf("Using GLEW %s\n", glewGetString(GLEW_VERSION));
-	printf("Vendor %s\n", glGetString(GL_VENDOR));
-	printf("Renderer %s\n", glGetString(GL_RENDERER));
-	printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	int major, minor, revision;
-	glfwGetVersion(&major, &minor, &revision);
-	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
-
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	float ratio = width / (float)height;
-	glViewport(0, 0, width, height);
+	//// start GLEW extension handler
+	//glewExperimental = GL_TRUE;
+	//glewInit();
 
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+	//// get version info
+	//printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+	//printf("Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	//printf("Vendor %s\n", glGetString(GL_VENDOR));
+	//printf("Renderer %s\n", glGetString(GL_RENDERER));
+	//printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	//int major, minor, revision;
+	//glfwGetVersion(&major, &minor, &revision);
+	//printf("Using GLFW %i.%i.%i\n", major, minor, revision);
+
+	//int width, height;
+	//glfwGetFramebufferSize(window, &width, &height);
+	//float ratio = width / (float)height;
+	//glViewport(0, 0, width, height);
+
+
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
 	// Sets the key callback
-	glfwSetKeyCallback(window, key_callback);
+	/*glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, cursor_callback);
 	glfwSetMouseButtonCallback(window, button_callback);
 	glfwSetWindowFocusCallback(window, window_focus_callback);
 	glfwSetWindowIconifyCallback(window, window_iconify_callback);
-	glfwSetWindowSizeCallback(window, window_size_callback);
+	glfwSetWindowSizeCallback(window, window_size_callback);*/
 
 	////vertex buffer object (VBO)
 	//GLuint VBO = 0;
@@ -201,58 +201,60 @@ int main(void)
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
 	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+	////create and compile shaders
+	//GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	//glShaderSource(vertexShader, 1, &vertex_shader, NULL);
+	//glCompileShader(vertexShader);
+	////check for errors in vertex shader
+	//int  success;
+	//char infoLog[512];
+	//glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	//if (!success)
+	//{
+	//	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+	//	printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", infoLog);
+	//}
+
+	//GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	//glShaderSource(fragmentShader, 1, &fragment_shader, NULL);
+	//glCompileShader(fragmentShader);
+	////check for errors in fragment shader
+	//glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	//if (!success)
+	//{
+	//	glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+	//	printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n %s\n", infoLog);
+	//}
+
+	//GLuint shaderProgram = glCreateProgram();
+	//glAttachShader(shaderProgram, fragmentShader);
+	//glAttachShader(shaderProgram, vertexShader);
+	//glLinkProgram(shaderProgram);
+
+	//GLint status;
+	//glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
+	//if (status == GL_FALSE)
+	//{
+	//	GLint infoLogLength;
+	//	glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
+	//	GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+	//	glGetProgramInfoLog(shaderProgram, infoLogLength, NULL, strInfoLog);
+	//	fprintf(stderr, "Linker failure: %s\n", strInfoLog);
+	//	delete[] strInfoLog;
+	//}
+
+	//glDeleteShader(vertexShader);
+	//glDeleteShader(fragmentShader);
+
 	Application app;
 	app.initialization(800, 600, "ZPG", NULL, NULL);
+
+	//Model model1(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
+	//Model model2(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
+	//
 	app.createShaders();
 	app.createModels();
-
-	//create and compile shaders
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertex_shader, NULL);
-	glCompileShader(vertexShader);
-	//check for errors in vertex shader
-	int  success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", infoLog);
-	}
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragment_shader, NULL);
-	glCompileShader(fragmentShader);
-	//check for errors in fragment shader
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n %s\n", infoLog);
-	}
-
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, fragmentShader);
-	glAttachShader(shaderProgram, vertexShader);
-	glLinkProgram(shaderProgram);
-
-	GLint status;
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
-		glGetProgramInfoLog(shaderProgram, infoLogLength, NULL, strInfoLog);
-		fprintf(stderr, "Linker failure: %s\n", strInfoLog);
-		delete[] strInfoLog;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	Model model1(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
-	Model model2(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
+	app.run();
 
 
 	//while (!glfwWindowShouldClose(window)) {
@@ -276,6 +278,5 @@ int main(void)
 	//exit(EXIT_SUCCESS);
 
 	
-	app.run();
 
 }

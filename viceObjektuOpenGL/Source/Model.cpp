@@ -23,7 +23,7 @@
 	{
 		glDeleteBuffers(1, &m_vbo);
 		glDeleteVertexArrays(1, &m_vao);
-		std::cout << "[] Deleted model ->\t" << "m_name: " << m_name << "\tnumVertices: " << m_numVertices << "\n";
+		std::cout << "[] Deleted model ->\t" << "m_name: " << m_name << "\tm_numVertices: " << m_numVertices << "\n";
 	}
 
 	void Model::render()

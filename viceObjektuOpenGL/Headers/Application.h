@@ -6,7 +6,6 @@
 #include "ModelManager.h"
 
 
-
 class Application {
 public:
 	Application();

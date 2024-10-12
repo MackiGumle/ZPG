@@ -7,7 +7,8 @@
 class DrawableObject
 {
 public:
-	DrawableObject(const Model& model, const ShaderProgram& shaderProgram);
+	DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram);
+	//DrawableObject(std::shared_ptr<Model>& model, std::shared_ptr<ShaderProgram>& shaderProgram);
 	~DrawableObject();
 
 	void render();
@@ -17,8 +18,8 @@ public:
 	void translate(glm::vec3 vector);
 
 private:
-	const Model& model;
-	const ShaderProgram& shaderProgram;
+	std::weak_ptr<Model> model;
+	std::weak_ptr<ShaderProgram> shaderProgram;
 	Transformation transformation;
 };
 

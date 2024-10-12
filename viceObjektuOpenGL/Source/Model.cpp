@@ -17,14 +17,24 @@
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
-		std::cout << "[i] Created model ->\t" << "m_name: " << m_name << "\tm_numVertices: " << numVertices << "\n";
+		std::cout << "[i] Created model ->\t" << "name: " << m_name << "\tnumVertices: " << numVertices << "\n";
 	}
 
 	Model::~Model()
 	{
 		glDeleteBuffers(1, &vbo);
 		glDeleteVertexArrays(1, &vao);
-		std::cout << "[i] Deleted model ->\t" << "m_name: " << name << "\tm_numVertices: " << numVertices << "\n";
+		std::cout << "[i] Deleted model ->\t" << "m_name: " << name << "\tnumVertices: " << numVertices << "\n";
+	}
+
+	std::string Model::getName() const
+	{
+		return name;
+	}
+
+	size_t Model::getNumVertices() const
+	{
+		return numVertices;
 	}
 
 	void Model::render() const

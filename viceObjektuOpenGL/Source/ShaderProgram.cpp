@@ -1,6 +1,6 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(const Shader& vertexShader, const Shader& fragmentShader)
+ShaderProgram::ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_ptr<Shader> fragmentShader)
 	: vertexShader(vertexShader), fragmentShader(fragmentShader)
 {
 	programId = glCreateProgram();
@@ -20,8 +20,8 @@ void ShaderProgram::applyVertexUniform(const std::string& name, const glm::mat4&
 	GLint location = glGetUniformLocation(programId, name.c_str());
 	if(location == -1)
 	{
-		std::cout << "[x] ERROR::SHADER::UNIFORM::NOT_FOUND\t" << name + '\t' << vertexShader.getPath() + '\n';
-		throw std::runtime_error("Uniform not found: " + vertexShader.getPath());
+		std::cout << "[x] ERROR::SHADER::UNIFORM::NOT_FOUND\t" << name + '\t' << vertexShader.lock()->getPath() + '\n';
+		throw std::runtime_error("Uniform not found: " + vertexShader.lock()->getPath());
 	}
 
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
@@ -34,8 +34,8 @@ void ShaderProgram::use() const
 
 void ShaderProgram::linkShaders()
 {
-	vertexShader.attachToProgram(programId);
-	fragmentShader.attachToProgram(programId);
+	vertexShader.lock()->attachToProgram(programId);
+	fragmentShader.lock()->attachToProgram(programId);
 	glLinkProgram(programId);
 
 	GLint status;
@@ -48,5 +48,5 @@ void ShaderProgram::linkShaders()
 		throw std::runtime_error("Shader linking failed\n\n");
 	}
 
-	std::cout << "[i] Shader program linked: " << programId << ' ' << vertexShader.getPath() + " + " + fragmentShader.getPath() << '\n';
+	std::cout << "[i] Shader program linked: " << programId << ' ' << vertexShader.lock()->getPath() + " + " + fragmentShader.lock()->getPath() << '\n';
 }

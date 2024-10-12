@@ -5,15 +5,15 @@
 class ShaderProgram
 {
 public:
-	ShaderProgram(const Shader& vertexShader, const Shader& fragmentShader);
+	ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_ptr<Shader> fragmentShader);
 	~ShaderProgram();
 	void applyVertexUniform(const std::string& name, const glm::mat4& matrix) const;
 	void use() const;
 
 private:
 	GLuint programId;
-	const Shader& vertexShader;
-	const Shader& fragmentShader;
+	std::weak_ptr<Shader> vertexShader;
+	std::weak_ptr<Shader> fragmentShader;
 
 	void linkShaders();
 };

@@ -1,11 +1,6 @@
-﻿  DrawableObject.cpp
-  Model.cpp
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Model.cpp(14,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Model.cpp(17,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Model.cpp(33,33): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+﻿  Application.cpp
+  main.cpp
   Scene.cpp
-  Shader.cpp
-  ShaderProgram.cpp
-  Transformation.cpp
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Scene.cpp(7,3): error C3861: 'addModel': identifier not found
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Scene.cpp(12,3): error C3861: 'addShader': identifier not found
   Generating Code...
-  viceObjektuOpenGL.vcxproj -> D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe

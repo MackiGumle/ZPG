@@ -83,6 +83,7 @@ int main(void)
 
 	app.createShaders();
 	app.createModels();
+	app.createScenes();
 	app.run();
 
 }

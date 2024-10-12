@@ -1,8 +1,8 @@
 #include "Shader.h"
 
-Shader::Shader(const std::string path, int type) {
+Shader::Shader(const std::string path, int type, std::string name): path(path), name(name) {
 	shaderId = glCreateShader(type);
-	this->path = path;
+	
 	loadShader(path, type);
 	std::cout << "[i] Shader created: " << path << std::endl;
 }
@@ -14,6 +14,10 @@ Shader::~Shader() {
 
 std::string Shader::getPath() const {
 	return path;
+}
+
+std::string Shader::getName() const {
+	return name;
 }
 
 std::string Shader::readShaderFile(const std::string& path) const {

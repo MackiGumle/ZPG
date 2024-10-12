@@ -1,25 +1,27 @@
 #pragma once
+#include <unordered_map>
 #include <vector>
+
 #include "DrawableObject.h"
 #include "ShaderProgram.h"
 
 class Scene
 {
 public:
-	Scene();
-	~Scene();
-
-	void addModel(const Model& model);
-	void addShader(const Shader& shader);
-	void addDrawableObject(const DrawableObject& drawableObject);
-	void addShaderProgram(const ShaderProgram& shaderProgram);
+	Scene(std::vector<std::shared_ptr<DrawableObject>>& drawableObjects, std::vector<std::shared_ptr<ShaderProgram>>& shaderPrograms);
+	/*void addModel(std::shared_ptr<Model> model);
+	void addShader(std::shared_ptr<Shader> shader);*/
+	void addShaderProgram(std::string vertexShaderName, std::string fragmentShaderName, std::string name);
+	void addDrawableObject(std::string modelName, std::string shaderProgramName);
 
 	void render();
 
 private:
-	std::vector<Model&> models;
-	std::vector<Shader&> shaders;
-	std::vector<DrawableObject> drawableObjects;
-	std::vector<ShaderProgram> shaderPrograms;
+	// To be removed, Scene should not own models and shaders, instead it should own drawable objects and shader programs
+	//std::unordered_map<std::string, std::shared_ptr<Model>> models;
+	//std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+	//
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
+	std::vector<std::unique_ptr<DrawableObject>> drawableObjects;
 };
 

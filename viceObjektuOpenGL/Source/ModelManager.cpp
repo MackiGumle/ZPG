@@ -8,18 +8,34 @@ ModelManager::~ModelManager() {
 
 }
 
-void ModelManager::loadModel(const float points[], size_t numVertices, size_t stride, std::string name) {
-	m_models.push_back(std::make_unique<Model>(points, numVertices, stride, name));
-}
-
-void ModelManager::renderModel() {
-		m_models[m_index]->render();
-		++m_index;
-		m_index %= m_models.size();
-}
-
-void ModelManager::renderModels() {
-	for(auto& model : m_models) {
-		model->render();
+void ModelManager::loadModel(const float points[], size_t numBytes, size_t stride, std::string name) {
+	//models.push_back(std::make_unique<Model>(points, numVertices, stride, name));
+	if(models.find(name) != models.end()) {
+		std::cout << "[x] Model with name " + name + " already exists\n";
+		//throw std::runtime_error("Model with name " + name + " already exists");
+		return;
 	}
+
+	models[name] = std::make_shared<Model>(points, numBytes, stride, name);
+	std::cout << "[i] Loaded model ->\t" << "name: " << name << "\tnumVertices: " << models.at(name)->getNumVertices() << "\n";
 }
+
+std::shared_ptr<Model> ModelManager::getModel(const std::string& name) const {
+	if(models.find(name) == models.end()) {
+		throw std::runtime_error("Model with name " + name + " not found");
+	}
+
+	return models.at(name);
+}
+
+//void ModelManager::renderModel() {
+//		m_models[m_index]->render();
+//		++m_index;
+//		m_index %= m_models.size();
+//}
+//
+//void ModelManager::renderModels() {
+//	for(auto& model : m_models) {
+//		model->render();
+//	}
+//}

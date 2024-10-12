@@ -1,17 +1,13 @@
 #include "Application.h"
 #include "tree.h"
+#include "sphere.h"
 
-
-Application::Application() : m_window(nullptr), m_shaderManager(nullptr), m_modelManager(nullptr) {
-	m_shaderManager = new ShaderManager();
-	m_modelManager = new ModelManager();
+Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
+	
 }
 
 Application::~Application() {
-	delete m_shaderManager;
-	delete m_modelManager;
-
-	glfwDestroyWindow(m_window);
+	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }
@@ -49,13 +45,13 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 		exit(EXIT_FAILURE);
 	}
 
-	m_window = glfwCreateWindow(w_width, w_height, w_name, monitor, share);
-	if (!m_window) {
+	window = glfwCreateWindow(w_width, w_height, w_name, monitor, share);
+	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 
-	glfwMakeContextCurrent(m_window);
+	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
 	// start GLEW extension handler
@@ -72,7 +68,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
 
 	int width, height;
-	glfwGetFramebufferSize(m_window, &width, &height);
+	glfwGetFramebufferSize(window, &width, &height);
 	float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 
@@ -93,52 +89,41 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
-	if (!m_shaderManager->loadShader("Shaders/vertexShader.glsl", "Shaders/fragmetShader.glsl", "default"))
-	{
-		std::cout << "[x] Failed to load shader" << std::endl;
-		return;
-	}
-
-	m_shaderManager->useShaderProgram("default");
+	shaderManager.loadShader("Shaders/vertexShader.glsl", GL_VERTEX_SHADER, "vertexShader");
+	shaderManager.loadShader("Shaders/fragmentShader.glsl", GL_FRAGMENT_SHADER, "fragmentShader");
 }
 
 void Application::createModels()
 {
-	//float firstTriangle[] = {
-	//	0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
-	//	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
-	//	-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top 
+	modelManager.loadModel(tree, sizeof(tree), 6, "Tree");
+}
 
-	//	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
-	//	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
-	//	0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
-	//};
+void Application::createScenes()
+{
+	std::vector<std::shared_ptr<Model>> models = {
+		modelManager.getModel("Tree"),
+	};
 
-	//float secondTriangle[] = {
-	//	0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-	//	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-	//	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
-	//};
+	std::vector<std::shared_ptr<Shader>> shaders = {
+		shaderManager.getShader("vertexShader"),
+		shaderManager.getShader("fragmentShader"),
+	};
 
-	//m_modelManager->loadModel(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
-	//m_modelManager->loadModel(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
-
-	m_modelManager->loadModel(tree, sizeof(tree), 6, "Tree");
+	Scenes.push_back(std::make_shared<Scene>(models, shaders));
 }
 
 void Application::run()
 {
-	while (!glfwWindowShouldClose(m_window)) {
+	while (!glfwWindowShouldClose(window)) {
 		// clear color and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//glUseProgram(shaderProgram);
-		m_shaderManager->useShaderProgram("default");
-
-		m_modelManager->renderModels();
+		// render scene
+		Scenes[0]->render();
 
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
-		glfwSwapBuffers(m_window);
+		glfwSwapBuffers(window);
+		
 	}
 }

@@ -1,6 +1,6 @@
 #include "DrawableObject.h"
 
-DrawableObject::DrawableObject(const Model& model, const ShaderProgram& shaderProgram)
+DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram)
 	: model(model), shaderProgram(shaderProgram)
 {
 }
@@ -11,8 +11,8 @@ DrawableObject::~DrawableObject()
 
 void DrawableObject::render()
 {
-	shaderProgram.use();
-	model.render();
+	shaderProgram.lock()->use();
+	model.lock()->render();
 }
 
 void DrawableObject::scale(glm::vec3 vector)

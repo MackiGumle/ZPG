@@ -19,30 +19,6 @@
 #include "Application.h"
 
 
-static void error_callback(int error, const char* description) { fputs(description, stderr); }
-
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
-}
-
-static void window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback \n"); }
-
-static void window_iconify_callback(GLFWwindow* window, int iconified) { printf("window_iconify_callback \n"); }
-
-static void window_size_callback(GLFWwindow* window, int width, int height) {
-	printf("resize %d, %d \n", width, height);
-	glViewport(0, 0, width, height);
-}
-
-static void cursor_callback(GLFWwindow* window, double x, double y) { printf("cursor_callback \n"); }
-
-static void button_callback(GLFWwindow* window, int button, int action, int mode) {
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
-}
-
 //GLM test
 
 //// Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -95,188 +71,18 @@ const char* fragment_shader =
 "     frag_colour = vec4 (color.x, color.y, color.z, 1.0);"
 "}";
 
-//
-//"#version 330\n"
-//
-//"in vec2 TexCoords;"
-//"out vec4 FragColor;"
-//
-//"uniform vec2 uResolution;"
-//
-//"void main(){"
-//// Map x coordinate to red channel
-//"float r = fract(TexCoords.x * uResolution.x);"
-//
-//// Map y coordinate to green channel
-//"float g = fract(TexCoords.y * uResolution.y);"
-//
-//// Map x coordinate to blue channel
-//"float b = fract(TexCoords.x * uResolution.x + 0.5);"
-//
-//// Map y coordinate to alpha channel
-//"float a = fract(TexCoords.y * uResolution.y + 0.5);"
-//
-//// Combine RGB values
-//"vec3 color = vec3(r, g, b);"
-//
-//"FragColor = vec4(color, a);}"
-//;
-//
-//
 
 
 int main(void)
 {
-	//GLFWwindow* window;
-	//glfwSetErrorCallback(error_callback);
-	//if (!glfwInit()) {
-	//	fprintf(stderr, "ERROR: could not start GLFW3\n");
-	//	exit(EXIT_FAILURE);
-	//}
-
-	///* //inicializace konkretni verze
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE,
-	//GLFW_OPENGL_CORE_PROFILE);  //*/
-
-	//window = glfwCreateWindow(800, 600, "ZPG", NULL, NULL);
-	//if (!window) {
-	//	glfwTerminate();
-	//	exit(EXIT_FAILURE);
-	//}
-
-	//glfwMakeContextCurrent(window);
-	//glfwSwapInterval(1);
-
-	//// start GLEW extension handler
-	//glewExperimental = GL_TRUE;
-	//glewInit();
-
-
-	//// get version info
-	//printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
-	//printf("Using GLEW %s\n", glewGetString(GLEW_VERSION));
-	//printf("Vendor %s\n", glGetString(GL_VENDOR));
-	//printf("Renderer %s\n", glGetString(GL_RENDERER));
-	//printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	//int major, minor, revision;
-	//glfwGetVersion(&major, &minor, &revision);
-	//printf("Using GLFW %i.%i.%i\n", major, minor, revision);
-
-	//int width, height;
-	//glfwGetFramebufferSize(window, &width, &height);
-	//float ratio = width / (float)height;
-	//glViewport(0, 0, width, height);
-
-
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-
-	// Sets the key callback
-	/*glfwSetKeyCallback(window, key_callback);
-	glfwSetCursorPosCallback(window, cursor_callback);
-	glfwSetMouseButtonCallback(window, button_callback);
-	glfwSetWindowFocusCallback(window, window_focus_callback);
-	glfwSetWindowIconifyCallback(window, window_iconify_callback);
-	glfwSetWindowSizeCallback(window, window_size_callback);*/
-
-	////vertex buffer object (VBO)
-	//GLuint VBO = 0;
-	//glGenBuffers(1, &VBO); // generate the VBO
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-
-	////Vertex Array Object (VAO)
-	//GLuint VAO = 0;
-	//glGenVertexArrays(1, &VAO); //generate the VAO
-	//glBindVertexArray(VAO); //bind the VAO
-	//
-	//glEnableVertexAttribArray(0); //enable vertex attributes
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), NULL);
-
-	//glEnableVertexAttribArray(1); //enable vertex attributes
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	////create and compile shaders
-	//GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	//glShaderSource(vertexShader, 1, &vertex_shader, NULL);
-	//glCompileShader(vertexShader);
-	////check for errors in vertex shader
-	//int  success;
-	//char infoLog[512];
-	//glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	//if (!success)
-	//{
-	//	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-	//	printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", infoLog);
-	//}
-
-	//GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	//glShaderSource(fragmentShader, 1, &fragment_shader, NULL);
-	//glCompileShader(fragmentShader);
-	////check for errors in fragment shader
-	//glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	//if (!success)
-	//{
-	//	glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-	//	printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n %s\n", infoLog);
-	//}
-
-	//GLuint shaderProgram = glCreateProgram();
-	//glAttachShader(shaderProgram, fragmentShader);
-	//glAttachShader(shaderProgram, vertexShader);
-	//glLinkProgram(shaderProgram);
-
-	//GLint status;
-	//glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
-	//if (status == GL_FALSE)
-	//{
-	//	GLint infoLogLength;
-	//	glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-	//	GLchar* strInfoLog = new GLchar[infoLogLength + 1];
-	//	glGetProgramInfoLog(shaderProgram, infoLogLength, NULL, strInfoLog);
-	//	fprintf(stderr, "Linker failure: %s\n", strInfoLog);
-	//	delete[] strInfoLog;
-	//}
-
 	//glDeleteShader(vertexShader);
 	//glDeleteShader(fragmentShader);
 
 	Application app;
-	app.initialization(800, 600, "ZPG", NULL, NULL);
+	app.initialization(1920, 1080, "ZPG", NULL, NULL);
 
-	//Model model1(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
-	//Model model2(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
-	//
 	app.createShaders();
 	app.createModels();
 	app.run();
-
-
-	//while (!glfwWindowShouldClose(window)) {
-	//	// clear color and depth buffer
-	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//	glUseProgram(shaderProgram);
-	//	//glBindVertexArray(VAO);
-	//	model1.render();
-	//	model2.render();
-	//	// draw triangles
-	//	//glDrawArrays(GL_TRIANGLES, 0, 9); //mode,first,count
-	//	// update other events like input handling
-	//	glfwPollEvents();
-	//	// put the stuff we’ve been drawing onto the display
-	//	glfwSwapBuffers(window);
-	//}
-
-	//glfwDestroyWindow(window);
-
-	//glfwTerminate();
-	//exit(EXIT_SUCCESS);
-
-	
 
 }

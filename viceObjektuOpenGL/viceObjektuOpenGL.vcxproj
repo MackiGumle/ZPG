@@ -20,16 +20,26 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Application.h" />
+    <ClInclude Include="Headers\DrawableObject.h" />
     <ClInclude Include="Headers\Model.h" />
     <ClInclude Include="Headers\ModelManager.h" />
+    <ClInclude Include="Headers\Scene.h" />
+    <ClInclude Include="Headers\Shader.h" />
     <ClInclude Include="Headers\ShaderManager.h" />
+    <ClInclude Include="Headers\ShaderProgram.h" />
+    <ClInclude Include="Headers\Transformation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
+    <ClCompile Include="Source\DrawableObject.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Model.cpp" />
     <ClCompile Include="Source\ModelManager.cpp" />
+    <ClCompile Include="Source\Scene.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
+    <ClCompile Include="Source\ShaderProgram.cpp" />
+    <ClCompile Include="Source\Transformation.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -117,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Source\;$(ProjectDir)\Headers\;$(ProjectDir)\Libraries\;$(ProjectDir)\Libraries\glew-2.1.0\include;$(ProjectDir)Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Models\;$(ProjectDir)\Source\;$(ProjectDir)\Headers\;$(ProjectDir)\Libraries\;$(ProjectDir)\Libraries\glew-2.1.0\include;$(ProjectDir)Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

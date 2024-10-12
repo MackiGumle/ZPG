@@ -4,16 +4,16 @@
 
 class Model {
 public:
-	Model(float points[], size_t numVertices, size_t stride, std::string m_name);
+	Model(const float points[], size_t numVertices, size_t stride, std::string m_name);
 	~Model();
 
-	void render();
+	void render() const; 
 
 private:
-	GLuint m_vbo;
-	GLuint m_vao;
-	size_t m_numVertices;
+	GLuint vbo;
+	GLuint vao;
+	size_t numVertices;
 	size_t stride;
-	std::string m_name;
+	std::string name;
 };
 

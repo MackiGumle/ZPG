@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "tree.h"
 
 
 Application::Application() : m_window(nullptr), m_shaderManager(nullptr), m_modelManager(nullptr) {
@@ -81,12 +82,12 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
 	// Sets the key callback
-	glfwSetKeyCallback(m_window, key_callback);
+	/*glfwSetKeyCallback(m_window, key_callback);
 	glfwSetCursorPosCallback(m_window, cursor_callback);
 	glfwSetMouseButtonCallback(m_window, button_callback);
 	glfwSetWindowFocusCallback(m_window, window_focus_callback);
 	glfwSetWindowIconifyCallback(m_window, window_iconify_callback);
-	glfwSetWindowSizeCallback(m_window, window_size_callback);
+	glfwSetWindowSizeCallback(m_window, window_size_callback);*/
 	std::cout << "\n\n";
 }
 
@@ -103,24 +104,26 @@ void Application::createShaders()
 
 void Application::createModels()
 {
-	float firstTriangle[] = {
-		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
-		-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top 
+	//float firstTriangle[] = {
+	//	0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
+	//	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+	//	-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top 
 
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
-		-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
-		0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
-	};
+	//	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
+	//	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+	//	0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
+	//};
 
-	float secondTriangle[] = {
-		0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
-	};
+	//float secondTriangle[] = {
+	//	0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+	//	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+	//	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+	//};
 
-	m_modelManager->loadModel(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
-	m_modelManager->loadModel(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
+	//m_modelManager->loadModel(firstTriangle, sizeof(firstTriangle), 6, "Trojuhelnik_1");
+	//m_modelManager->loadModel(secondTriangle, sizeof(secondTriangle), 6, "Trojuhelnik_2");
+
+	m_modelManager->loadModel(tree, sizeof(tree), 6, "Tree");
 }
 
 void Application::run()
@@ -132,7 +135,7 @@ void Application::run()
 		//glUseProgram(shaderProgram);
 		m_shaderManager->useShaderProgram("default");
 
-		m_modelManager->renderModel();
+		m_modelManager->renderModels();
 
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display

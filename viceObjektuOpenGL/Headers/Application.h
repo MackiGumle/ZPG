@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "ShaderManager.h"
 #include "ModelManager.h"
-
+#include "Scene.h"
 
 class Application {
 public:
@@ -29,4 +29,6 @@ private:
 	GLFWwindow* m_window;
 	ShaderManager* m_shaderManager;
 	ModelManager* m_modelManager;
+
+	std::vector<Scene> Scenes;
 };

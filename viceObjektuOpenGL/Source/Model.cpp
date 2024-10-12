@@ -1,33 +1,34 @@
 #include "Model.h"
 
 	// 
-	Model::Model(float points[], size_t numVertices, size_t stride, std::string m_name)
-		: m_numVertices(numVertices), stride(stride), m_name(m_name)
+	Model::Model(const float points[], size_t numBytes, size_t stride, std::string m_name)
+		: numVertices(numBytes / sizeof(float) / stride), stride(stride), name(m_name)
 	{
-		glGenVertexArrays(1, &m_vao);
-		glBindVertexArray(m_vao);
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
 
-		glGenBuffers(1, &m_vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(float), points, GL_STATIC_DRAW);
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, numBytes, points, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), nullptr);
 		glEnableVertexAttribArray(0);
 
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		std::cout << "[] Created model ->\t" << "m_name: " << m_name << "\tm_numVertices: " << m_numVertices << "\n";
+
+		std::cout << "[i] Created model ->\t" << "m_name: " << m_name << "\tm_numVertices: " << numVertices << "\n";
 	}
 
 	Model::~Model()
 	{
-		glDeleteBuffers(1, &m_vbo);
-		glDeleteVertexArrays(1, &m_vao);
-		std::cout << "[] Deleted model ->\t" << "m_name: " << m_name << "\tm_numVertices: " << m_numVertices << "\n";
+		glDeleteBuffers(1, &vbo);
+		glDeleteVertexArrays(1, &vao);
+		std::cout << "[i] Deleted model ->\t" << "m_name: " << name << "\tm_numVertices: " << numVertices << "\n";
 	}
 
-	void Model::render()
+	void Model::render() const
 	{
-		glBindVertexArray(m_vao);
-		glDrawArrays(GL_TRIANGLES, 0, m_numVertices / stride);
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, numVertices);
 	}

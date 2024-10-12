@@ -1,2 +1,11 @@
-﻿  Application.cpp
+﻿  DrawableObject.cpp
+  Model.cpp
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Model.cpp(14,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Model.cpp(17,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Model.cpp(33,33): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Scene.cpp
+  Shader.cpp
+  ShaderProgram.cpp
+  Transformation.cpp
+  Generating Code...
   viceObjektuOpenGL.vcxproj -> D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe

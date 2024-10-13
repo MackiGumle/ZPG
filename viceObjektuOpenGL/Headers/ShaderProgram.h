@@ -7,7 +7,7 @@ class ShaderProgram
 public:
 	ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_ptr<Shader> fragmentShader);
 	~ShaderProgram();
-	void applyVertexUniform(const std::string& name, const glm::mat4& matrix) const;
+	void applyVertexUniform(const std::string& name, const glm::mat4 matrix) const;
 	void use() const;
 
 private:

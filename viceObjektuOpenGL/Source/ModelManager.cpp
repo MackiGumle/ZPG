@@ -22,20 +22,9 @@ void ModelManager::loadModel(const float points[], size_t numBytes, size_t strid
 
 std::shared_ptr<Model> ModelManager::getModel(const std::string& name) const {
 	if(models.find(name) == models.end()) {
+		std::cerr << "[x] Model with name " + name + " not found\n";
 		throw std::runtime_error("Model with name " + name + " not found");
 	}
 
 	return models.at(name);
 }
-
-//void ModelManager::renderModel() {
-//		m_models[m_index]->render();
-//		++m_index;
-//		m_index %= m_models.size();
-//}
-//
-//void ModelManager::renderModels() {
-//	for(auto& model : m_models) {
-//		model->render();
-//	}
-//}

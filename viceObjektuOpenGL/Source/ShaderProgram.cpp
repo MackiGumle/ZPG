@@ -15,7 +15,7 @@ ShaderProgram::~ShaderProgram()
 	std::cout << "[i] Shader program deleted: " << programId << '\n';
 }
 
-void ShaderProgram::applyVertexUniform(const std::string& name, const glm::mat4& matrix) const
+void ShaderProgram::applyVertexUniform(const std::string& name, const glm::mat4 matrix) const
 {
 	GLint location = glGetUniformLocation(programId, name.c_str());
 	if(location == -1)

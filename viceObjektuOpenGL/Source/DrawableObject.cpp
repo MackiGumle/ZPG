@@ -12,12 +12,18 @@ DrawableObject::~DrawableObject()
 void DrawableObject::render()
 {
 	shaderProgram.lock()->use();
+	shaderProgram.lock()->applyVertexUniform("transform", transformation.getMatrix());
 	model.lock()->render();
 }
 
 void DrawableObject::scale(glm::vec3 vector)
 {
 	transformation.scale(vector);
+}
+
+void DrawableObject::scale(float scalar)
+{
+	transformation.scale(scalar);
 }
 
 void DrawableObject::rotate(float angle, glm::vec3 axis)

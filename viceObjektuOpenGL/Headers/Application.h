@@ -6,6 +6,8 @@
 #include "ModelManager.h"
 #include "Scene.h"
 
+#include <random>
+
 class Application {
 public:
 	Application();

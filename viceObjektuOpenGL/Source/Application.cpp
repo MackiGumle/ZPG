@@ -1,6 +1,10 @@
 #include "Application.h"
 #include "tree.h"
+#include "bushes.h"
 #include "sphere.h"
+#include "gift.h"
+#include "suzi_flat.h"
+
 
 
 Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
@@ -112,29 +116,70 @@ void Application::createShaders()
 {
 	shaderManager.loadShader("Shaders/vertexShader.glsl", GL_VERTEX_SHADER, "vertexShader");
 	shaderManager.loadShader("Shaders/fragmentShader.glsl", GL_FRAGMENT_SHADER, "fragmentShader");
+	shaderManager.loadShader("Shaders/fragmentShaderGreen.glsl", GL_FRAGMENT_SHADER, "fragmentShaderGreen");
 }
 
 void Application::createModels()
 {
+	float points[] = {
+	 0.0f, 0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	-0.5f, -0.5f, 0.0f
+	};
 	modelManager.loadModel(tree, sizeof(tree), 6, "Tree");
+	modelManager.loadModel(bushes, sizeof(bushes), 6, "Bushes");
 	modelManager.loadModel(sphere, sizeof(sphere), 6, "Sphere");
+	modelManager.loadModel(gift, sizeof(gift), 6, "Gift");
+	modelManager.loadModel(suziFlat, sizeof(suziFlat), 6, "SuziFlat");
+	modelManager.loadModel(points, sizeof(points), 3, "Triangle");
 }
 
 void Application::createScenes()
 {
-
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms = {
 		std::make_shared<ShaderProgram>(shaderManager.getShader("vertexShader"),
 		shaderManager.getShader("fragmentShader")),
+		std::make_shared<ShaderProgram>(shaderManager.getShader("vertexShader"),
+		shaderManager.getShader("fragmentShaderGreen")),
 	};
 
 	std::vector<std::shared_ptr<DrawableObject>> objects1 = {
 		std::make_shared<DrawableObject>(modelManager.getModel("Tree"), shaderPrograms.front()),
+		std::make_shared<DrawableObject>(modelManager.getModel("Bushes"), shaderPrograms.back()),
 	};
 
+	for (size_t i = 0; i < 20; i++)
+	{
+		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel(
+			i % 2 == 1 ? "Tree" : "Bushes"),
+			i % 2 == 1 ? shaderPrograms.front() : shaderPrograms.back()));
+	}
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> pos(-3.5f, 3.5f);
+	std::uniform_int_distribution<int> rot(0, 1);
+
+	float x = -2, y = -2, z = -2;
+	for(auto& object : objects1) {
+		object->scale(0.08f);
+		object->rotate(pos(gen) * 20, glm::vec3(rot(gen), rot(gen), rot(gen)));
+		object->translate(glm::uvec3(x++, y++, z++));
+	}
+
+	///// Scene 2
 	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
-	std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderPrograms.front()),
+	std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderPrograms.back()),
+	std::make_shared<DrawableObject>(modelManager.getModel("SuziFlat"), shaderPrograms.front()),
+	std::make_shared<DrawableObject>(modelManager.getModel("Gift"), shaderPrograms.front()),
+	std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderPrograms.front()),
 	};
+
+	for (auto& object : objects2) {
+		object->scale(0.5f);
+		object->rotate(pos(gen) * 30, glm::vec3(rot(gen), rot(gen), rot(gen)));
+		object->translate(glm::uvec3(pos(gen), pos(gen), pos(gen)));
+	}
 
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects1));
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects2));

@@ -10,9 +10,6 @@ public:
     ~ModelManager();
 
     void loadModel(const float points[], size_t numVertices, size_t stride, std::string name);
-    //bool loadModel(const std::string& path, const std::string& name);
-    //void renderModel();
-    //void renderModels();
     std::shared_ptr<Model> getModel(const std::string& name) const;
 
 private:

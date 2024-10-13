@@ -19,6 +19,9 @@ public:
 	static void cursor_callback(GLFWwindow* window, double x, double y);
 	static void button_callback(GLFWwindow* window, int button, int action, int mode);
 
+	void key_input(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+
 
 	void initialization(int w_width = 800, int w_height = 600, const char* w_name = "Window", GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 	void createShaders();
@@ -31,5 +34,6 @@ private:
 	ShaderManager shaderManager;
 	ModelManager modelManager;
 
+	size_t currentScene = 0;
 	std::vector<std::shared_ptr<Scene>> Scenes;
 };

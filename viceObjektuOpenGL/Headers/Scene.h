@@ -8,7 +8,8 @@
 class Scene
 {
 public:
-	Scene(std::vector<std::shared_ptr<DrawableObject>>& drawableObjects, std::vector<std::shared_ptr<ShaderProgram>>& shaderPrograms);
+	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects);
+	Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms, std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects);
 	/*void addModel(std::shared_ptr<Model> model);
 	void addShader(std::shared_ptr<Shader> shader);*/
 	void addShaderProgram(std::string vertexShaderName, std::string fragmentShaderName, std::string name);
@@ -22,6 +23,6 @@ private:
 	//std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
 	//
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
-	std::vector<std::unique_ptr<DrawableObject>> drawableObjects;
+	std::vector<std::shared_ptr<DrawableObject>> drawableObjects;
 };
 

@@ -2,8 +2,9 @@
 #include "tree.h"
 #include "sphere.h"
 
+
 Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
-	
+
 }
 
 Application::~Application() {
@@ -18,7 +19,11 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
-	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+	//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	if (app) {
+		app->key_input(window, key, scancode, action, mods);
+	}
 }
 
 void Application::window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback \n"); }
@@ -35,6 +40,21 @@ void Application::cursor_callback(GLFWwindow* window, double x, double y) { prin
 void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
 	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
 }
+
+void Application::key_input(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+	{
+		currentScene = (currentScene + 1) % Scenes.size();
+		std::cout << "Current Scene: " << currentScene << std::endl;
+	}
+	else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+	{
+		currentScene = (currentScene - 1) % Scenes.size();
+		std::cout << "Current Scene: " << currentScene << std::endl;
+	}
+}
+
 
 void Application::initialization(int w_width, int w_height, const char* w_name, GLFWmonitor* monitor, GLFWwindow* share)
 {
@@ -78,11 +98,12 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
 	// Sets the key callback
-	/*glfwSetKeyCallback(m_window, key_callback);
-	glfwSetCursorPosCallback(m_window, cursor_callback);
-	glfwSetMouseButtonCallback(m_window, button_callback);
-	glfwSetWindowFocusCallback(m_window, window_focus_callback);
-	glfwSetWindowIconifyCallback(m_window, window_iconify_callback);
+	glfwSetWindowUserPointer(window, this);
+	glfwSetKeyCallback(window, key_callback);
+	/*glfwsetcursorposcallback(m_window, cursor_callback);
+	glfwsetmousebuttoncallback(m_window, button_callback);
+	glfwsetwindowfocuscallback(m_window, window_focus_callback);
+	glfwsetwindowiconifycallback(m_window, window_iconify_callback);
 	glfwSetWindowSizeCallback(m_window, window_size_callback);*/
 	std::cout << "\n\n";
 }
@@ -96,20 +117,27 @@ void Application::createShaders()
 void Application::createModels()
 {
 	modelManager.loadModel(tree, sizeof(tree), 6, "Tree");
+	modelManager.loadModel(sphere, sizeof(sphere), 6, "Sphere");
 }
 
 void Application::createScenes()
 {
-	std::vector<std::shared_ptr<Model>> models = {
-		modelManager.getModel("Tree"),
+
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms = {
+		std::make_shared<ShaderProgram>(shaderManager.getShader("vertexShader"),
+		shaderManager.getShader("fragmentShader")),
 	};
 
-	std::vector<std::shared_ptr<Shader>> shaders = {
-		shaderManager.getShader("vertexShader"),
-		shaderManager.getShader("fragmentShader"),
+	std::vector<std::shared_ptr<DrawableObject>> objects1 = {
+		std::make_shared<DrawableObject>(modelManager.getModel("Tree"), shaderPrograms.front()),
 	};
 
-	Scenes.push_back(std::make_shared<Scene>(models, shaders));
+	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
+	std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderPrograms.front()),
+	};
+
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects1));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects2));
 }
 
 void Application::run()
@@ -119,11 +147,10 @@ void Application::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// render scene
-		Scenes[0]->render();
+		Scenes[currentScene]->render();
 
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
 		glfwSwapBuffers(window);
-		
 	}
 }

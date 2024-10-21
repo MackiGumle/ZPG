@@ -72,7 +72,6 @@ const char* fragment_shader =
 "}";
 
 
-
 int main(void)
 {
 	//glDeleteShader(vertexShader);

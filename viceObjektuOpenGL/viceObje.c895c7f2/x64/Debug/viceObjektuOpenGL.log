@@ -1,2 +1,6 @@
 ﻿  Application.cpp
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(53,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(54,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(56,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(57,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   viceObjektuOpenGL.vcxproj -> D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Application.h" />
+    <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\DrawableObject.h" />
     <ClInclude Include="Headers\Model.h" />
     <ClInclude Include="Headers\ModelManager.h" />
@@ -30,7 +31,9 @@
     <ClInclude Include="Headers\Transformation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Headers\ObserverPattern.h" />
     <ClCompile Include="Source\Application.cpp" />
+    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\DrawableObject.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Model.cpp" />

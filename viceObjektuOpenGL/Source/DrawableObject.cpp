@@ -12,7 +12,7 @@ DrawableObject::~DrawableObject()
 void DrawableObject::render()
 {
 	shaderProgram.lock()->use();
-	shaderProgram.lock()->applyVertexUniform("transform", transformation.getMatrix());
+	shaderProgram.lock()->applyVertexUniform("modelMatrix", transformation.getMatrix());
 	model.lock()->render();
 }
 

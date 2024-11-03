@@ -1,0 +1,27 @@
+Aktuální stav
+
+    Přepínání scén za běhu (Ano) (šipka nahoru/dolů)
+
+    a) Základní scéna (Ano)
+
+    b) Scéna s lesem (Ano)
+
+    c) Scéna se čtyřmi kuličkami (Ano)
+
+    d) Scéna pro demonstraci použití všech shaderů (Konstantní, Lambert, Phong a Blinn) (Ano/Ne)
+
+    Světlo (Ano/Ne) (kde a jak máte naimplementováno, jak se updatuje změna světla)
+
+    Základní třídy (ShaderProgram, DrowableObject, Camera, Controller) (Ano) (kdo zodpovídá za vykreslování, kde jsou uloženy modely, shadery atd.)
+
+    Transformace (Composite pattern) (Ano) (Máte pro transformace základní třídy? Co a jak jste použili?)
+
+    Základy OOP
+
+    a) Encapsulation (zapouzdření) (Ano) (Třída Application má private deltaTime, který se dá pouze číst mimo trídu pomocí getteru)
+
+    b) Inheritance (dědičnost) (Ano) (Třídy transformace Composite pattern a Observer pattern mezi kamerou a shader programem)
+
+    c) Polymorphism (polymorfismus neboli mnohotvárnost) (Ano) (Třídy transformace)
+
+    Vertex a fragment shadery prosím uložte do textových souboru a použijte přiložený ShaderLoader pro jejich načítání (Ano) (ShaderProgram dědí z ShaderLoader)

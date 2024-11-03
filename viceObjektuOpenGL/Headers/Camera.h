@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "ObserverPattern.h"
 
-class Camera : public ICameraSubject, IApplicationObserver
+class Camera : public ICameraSubject
 {
 public:
 	Camera(glm::vec3 position = glm::vec3(0,0,0), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
@@ -15,10 +15,10 @@ public:
 	void removeObserver(ICameraObserver* observer) override;
 	void notifyObservers() override;
 
-	void update(std::unordered_map<int, bool>& keys) override;
+	void move(std::unordered_map<int, bool>& keys);
 
-	void move(int direction);
-	void rotate(float xoffset, float yoffset, bool constrainPitch);
+	//void move(int direction);
+	void rotate(float xoffset, float yoffset, bool constrainPitch = true);
 
 
 private:

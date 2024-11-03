@@ -7,15 +7,39 @@
 class Transformation
 {
 public:
-	Transformation();
-	
-	glm::mat4 getMatrix() const;
-	void translate(glm::vec3 vector);
-	void rotate(float angle, glm::vec3 axis);
-	void scale(glm::vec3 vector);
-	void scale(float scalar);
-
-private:
-	glm::mat4 matrix;
+	//Transformation();
+	bool continous = false;
+	virtual void set(glm::mat4& matrix) = 0;
 };
 
+class Scale : public Transformation
+{
+public:
+	Scale(glm::vec3 vector);
+	Scale(float scale);
+	void set(glm::mat4& matrix) override;
+
+private:
+	glm::vec3 vector;
+};
+
+class Rotation : public Transformation
+{
+public:
+	Rotation(float degrees, glm::vec3 axis);
+	void set(glm::mat4& matrix) override;
+
+private:
+	float angle;
+	glm::vec3 axis;
+};
+
+class Translation : public Transformation
+{
+public:
+	Translation(glm::vec3 vector);
+	void set(glm::mat4& matrix) override;
+
+private:
+	glm::vec3 vector;
+};

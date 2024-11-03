@@ -2,11 +2,13 @@
 #include "Shader.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "ObserverPattern.h"
+#include "ShaderLoader.h"
 
-class ShaderProgram : public ICameraObserver
+class ShaderProgram : public ICameraObserver, public ShaderLoader
 {
 public:
 	ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_ptr<Shader> fragmentShader);
+	ShaderProgram(const char* vertexFile, const char* fragmentFile);
 	~ShaderProgram();
 
 	void update(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) override;
@@ -16,7 +18,7 @@ public:
 	void use() const;
 
 private:
-	GLuint programId;
+	//GLuint programId;
 	std::weak_ptr<Shader> vertexShader;
 	std::weak_ptr<Shader> fragmentShader;
 

@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "viceObje.c895c7f2\\x64\\Debug\\ObserverPattern.h.obj",
+            "outputs": [
+                "D:\\Projects\\Skola\\3rdYear\\ZPG\\viceObjektuOpenGL\\viceObje.c895c7f2\\x64\\Debug\\vc143.pdb",
+                "viceObje.c895c7f2\\x64\\Debug\\",
+                "D:\\Projects\\Skola\\3rdYear\\ZPG\\viceObjektuOpenGL\\viceObje.c895c7f2\\x64\\Debug\\ObserverPattern.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "Headers\\ObserverPattern.h",
+                    "source-path": "d:\\projects\\skola\\3rdyear\\zpg\\viceobjektuopengl\\headers\\observerpattern.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}

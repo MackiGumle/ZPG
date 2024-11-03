@@ -12,6 +12,8 @@ ShaderProgram::ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_p
 ShaderProgram::ShaderProgram(const char* vertexFile, const char* fragmentFile)
 {
 	loadShader(vertexFile, fragmentFile);
+	vertexPath = vertexFile;
+	fragmentPath = fragmentFile;
 }
 
 ShaderProgram::~ShaderProgram()
@@ -21,28 +23,90 @@ ShaderProgram::~ShaderProgram()
 	std::cout << "[i] Shader program deleted: " << shaderProgramID << '\n';
 }
 
-void ShaderProgram::update(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+void ShaderProgram::update()
 {
 	//use();
-	applyVertexUniform("viewMatrix", viewMatrix);
-	applyVertexUniform("projectionMatrix", projectionMatrix);
+
+	applyVertexUniform("viewMatrix", camera->getViewMatrix());
+	applyVertexUniform("projectionMatrix", camera->getProjectionMatrix());
+
+	if (hasVertexUniform("viewPos"))
+	{
+		applyVertexUniform("viewPos", camera->getPosition());
+	}
 }
 
-void ShaderProgram::update(glm::mat4 modelMatrix)
+void ShaderProgram::setCamera(Camera* camera)
 {
-	applyVertexUniform("modelMatrix", modelMatrix);
+	this->camera = camera;
 }
 
-void ShaderProgram::applyVertexUniform(const std::string& name, const glm::mat4 matrix) const
+bool ShaderProgram::hasVertexUniform(const std::string& name) const
 {
 	GLint location = glGetUniformLocation(shaderProgramID, name.c_str());
-	if(location == -1)
+	return location != -1;
+}
+
+//void ShaderProgram::applyVertexUniform(const std::string& name, const glm::mat4 matrix) const
+//{
+//	GLint location = glGetUniformLocation(shaderProgramID, name.c_str());
+//	if(location == -1)
+//	{
+//		std::cout << "[x] ERROR::SHADER::UNIFORM::NOT_FOUND\t" << name + '\t' << vertexShader.lock()->getPath() + '\n';
+//		throw std::runtime_error("Uniform not found: " + vertexShader.lock()->getPath());
+//	}
+//
+//	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+//}
+
+template<typename T>
+void ShaderProgram::applyVertexUniform(const std::string& name, const T& value) const
+{
+	GLint location = glGetUniformLocation(shaderProgramID, name.c_str());
+	if (location == -1)
 	{
-		std::cout << "[x] ERROR::SHADER::UNIFORM::NOT_FOUND\t" << name + '\t' << vertexShader.lock()->getPath() + '\n';
-		throw std::runtime_error("Uniform not found: " + vertexShader.lock()->getPath());
+		std::cout << "[x] ERROR::SHADER::UNIFORM::NOT_FOUND\t'" << name << "'\t" << getVertexPath();
+		throw std::runtime_error("Uniform not found: " + getVertexPath());
 	}
 
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	if constexpr (std::is_same_v<T, glm::mat4>)
+	{
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+	else if constexpr (std::is_same_v<T, glm::mat3>)
+	{
+		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+	else if constexpr (std::is_same_v<T, glm::vec3>)
+	{
+		glUniform3fv(location, 1, glm::value_ptr(value));
+	}
+	else if constexpr (std::is_same_v<T, glm::vec4>)
+	{
+		glUniform4fv(location, 1, glm::value_ptr(value));
+	}
+	else if constexpr (std::is_same_v<T, float>)
+	{
+		glUniform1f(location, value);
+	}
+	else if constexpr (std::is_same_v<T, int>)
+	{
+		glUniform1i(location, value);
+	}
+	else
+	{
+		static_assert(always_false<T>::value, "Unsupported uniform type");
+	}
+}
+
+std::string ShaderProgram::getVertexPath() const
+{
+	return vertexPath;
+}
+
+std::string ShaderProgram::getFragmentPath() const
+{
+	return fragmentPath;
 }
 
 void ShaderProgram::use() const

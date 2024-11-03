@@ -3,24 +3,41 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "ObserverPattern.h"
 #include "ShaderLoader.h"
+#include "Camera.h"
 
-class ShaderProgram : public ICameraObserver, public ShaderLoader
+class ShaderProgram : public Observer, public ShaderLoader
 {
 public:
 	ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_ptr<Shader> fragmentShader);
 	ShaderProgram(const char* vertexFile, const char* fragmentFile);
 	~ShaderProgram();
 
-	void update(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) override;
-	void update(glm::mat4 modelMatrix) override;
+	void update() override;
+	void setCamera(Camera* camera);
 
-	void applyVertexUniform(const std::string& name, const glm::mat4 matrix) const;
+	bool hasVertexUniform(const std::string& name) const;
+	//void applyVertexUniform(const std::string& name, const glm::mat4 matrix) const;
+	
+	template<typename T>
+	void applyVertexUniform(const std::string& name, const T& value) const;
+	
+	std::string getVertexPath() const;
+	std::string getFragmentPath() const;
+
 	void use() const;
 
 private:
 	//GLuint programId;
 	std::weak_ptr<Shader> vertexShader;
 	std::weak_ptr<Shader> fragmentShader;
+
+	std::string vertexPath;
+	std::string fragmentPath;
+
+	Camera* camera = nullptr;
+
+	template<class U> struct always_false : std::false_type {};
+
 
 	void linkShaders();
 };

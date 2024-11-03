@@ -7,6 +7,7 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::ve
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
 	}
 }
 
@@ -16,6 +17,7 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms, std::
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
 	}
 }
 
@@ -40,6 +42,11 @@ void Scene::rotateCamera(float xoffset, float yoffset) {
 
 void Scene::render()
 {
+	for (auto& shaderProgram : shaderPrograms)
+	{
+		
+	}
+
 	for (auto& drawableObject : drawableObjects)
 	{
 		camera.notifyObservers();

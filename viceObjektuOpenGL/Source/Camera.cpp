@@ -19,25 +19,6 @@ Camera::Camera(glm::vec3 position, glm::vec3 up)
 	updateCameraVectors();
 }
 
-void Camera::addObserver(ICameraObserver* observer)
-{
-	//observer->update(viewMatrix, projectionMatrix);
-	observers.push_back(observer);
-}
-
-void Camera::removeObserver(ICameraObserver* observer)
-{
-	observers.remove(observer);
-}
-
-void Camera::notifyObservers()
-{
-	for (auto observer : observers)
-	{
-		observer->update(viewMatrix, projectionMatrix);
-	}
-}
-
 void Camera::move(std::unordered_map<int, bool>& keys)
 {
 	float cameraSpeed = movementSpeed * Application::getDeltaTime();
@@ -58,6 +39,14 @@ void Camera::move(std::unordered_map<int, bool>& keys)
 	if (keys.at(GLFW_KEY_D))
 	{
 		position += right * cameraSpeed;
+	}
+	if (keys.at(GLFW_KEY_E))
+	{
+		position += up * cameraSpeed;
+	}
+	if (keys.at(GLFW_KEY_Q))
+	{
+		position -= up * cameraSpeed;
 	}
 
 	updateCameraVectors();
@@ -82,6 +71,21 @@ void Camera::rotate(float xoffset, float yoffset, bool constrainPitch)
 	updateCameraVectors();
 }
 
+glm::mat4 Camera::getViewMatrix() const
+{
+	return viewMatrix;
+}
+
+glm::mat4 Camera::getProjectionMatrix() const
+{
+	return projectionMatrix;
+}
+
+glm::vec3 Camera::getPosition() const
+{
+	return position;
+}
+
 void Camera::updateCameraVectors()
 {
 	glm::vec3 tmpFront;
@@ -90,15 +94,11 @@ void Camera::updateCameraVectors()
 	tmpFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	front = glm::normalize(tmpFront);
 
-	//tmpFront.x = cos(glm::radians(yaw)) * sin(glm::radians(pitch));
-	//tmpFront.y = cos(glm::radians(pitch));
-	//tmpFront.z = sin(glm::radians(yaw)) * sin(glm::radians(pitch));
-
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 	viewMatrix = glm::lookAt(position, position + front, up);
 
 	//std::cout << "[i] Camera xyz: " << position.x << "\t" << position.y << "\t" << position.z << std::endl;
 	//std::cout << "[i] Camera yaw: " << yaw << "\t" << "pitch: " << pitch << std::endl;
-	notifyObservers();
+	//notifyObservers();
 }

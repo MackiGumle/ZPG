@@ -39,6 +39,7 @@ private:
 	ShaderManager shaderManager;
 	ModelManager modelManager;
 
+	bool cursorLocked = false;
 	size_t currentScene = 0;
 	Camera* currentCamera;
 

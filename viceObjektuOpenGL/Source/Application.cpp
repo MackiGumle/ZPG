@@ -77,7 +77,6 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		{
 			keys[key] = true;
 			//std::cout << "[i] Key Pressed:\t" << key << "\t" << keys[key] << std::endl;
-			//notifyObservers();
 		}
 
 		switch (key)
@@ -85,12 +84,12 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		case GLFW_KEY_UP:
 			currentScene = (currentScene + 1) % Scenes.size();
 			currentCamera = Scenes[currentScene]->getCamera();
-			std::cout << "[i] Current Scene: " << currentScene << std::endl;
+			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
 		case GLFW_KEY_DOWN:
-			currentScene = (currentScene - 1) % Scenes.size();
+			currentScene = (currentScene + Scenes.size() - 1) % Scenes.size();
 			currentCamera = Scenes[currentScene]->getCamera();
-			std::cout << "[i] Current Scene: " << currentScene << std::endl;
+			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
 		}
 		break;
@@ -100,7 +99,6 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		{
 			keys[key] = false;
 			//std::cout << "[i] Key Released:\t" << key << "\t" << keys[key] << std::endl;
-			//notifyObservers();
 		}
 		break;
 	}
@@ -174,6 +172,8 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	keys[GLFW_KEY_S] = false;
 	keys[GLFW_KEY_A] = false;
 	keys[GLFW_KEY_D] = false;
+	keys[GLFW_KEY_E] = false;
+	keys[GLFW_KEY_Q] = false;
 	keys[GLFW_KEY_UP] = false;
 	keys[GLFW_KEY_DOWN] = false;
 	keys[GLFW_KEY_LEFT] = false;
@@ -184,8 +184,15 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
-	shaderManager.loadShaderProgram("Shaders/vertexShader.glsl", "Shaders/fragmentShader.glsl", "PosBarva");
-	shaderManager.loadShaderProgram("Shaders/vertexShader.glsl", "Shaders/fragmentShaderGreen.glsl", "Green");
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC0_Green");
+
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/fragmentShader.fs", "SC1_PosBarva");
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC1_Green");
+
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC2_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/lambertShader.fs", "SC2_LambertLight");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/phongShader.fs", "SC2_PhongLight");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/blinnShader.fs", "SC2_BlinnLight");
 }
 
 void Application::createModels()
@@ -205,39 +212,46 @@ void Application::createModels()
 
 void Application::createScenes()
 {
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms = {
-		shaderManager.getShaderProgram("PosBarva"),
-		shaderManager.getShaderProgram("Green")
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms0 = {
+		shaderManager.getShaderProgram("SC0_Green"),
+	};
+
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
+		shaderManager.getShaderProgram("SC1_PosBarva"),
+		shaderManager.getShaderProgram("SC1_Green"),
+	};
+
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms2 = {
+		shaderManager.getShaderProgram("SC2_Green"),
+		shaderManager.getShaderProgram("SC2_LambertLight"),
+		shaderManager.getShaderProgram("SC2_PhongLight"),
+		shaderManager.getShaderProgram("SC2_BlinnLight"),
 	};
 
 	// Scene 0 Triangle
 	std::vector<std::shared_ptr<DrawableObject>> objects0 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderManager.getShaderProgram("Green")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderManager.getShaderProgram("SC0_Green")),
 	};
 
 	objects0[0]->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -3)));
 
-	// Scene 1 Forest
-	std::vector<std::shared_ptr<DrawableObject>> objects1 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Tree"), shaderManager.getShaderProgram("PosBarva")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Bushes"), shaderManager.getShaderProgram("Green")),
-	};
-
-	for (size_t i = 0; i < 50; i++)
-	{
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("PosBarva")));
-
-
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-			shaderManager.getShaderProgram("Green")));
-	}
-
+	// Random number generator
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> pos(-50.0f, 50.0f);
 	std::uniform_real_distribution<float> scale(0.7f, 1.7f);
 
+	// Scene 1 Forest
+	std::vector<std::shared_ptr<DrawableObject>> objects1;
+	for (size_t i = 0; i < 50; i++)
+	{
+		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
+			shaderManager.getShaderProgram("SC1_PosBarva")));
+
+
+		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
+			shaderManager.getShaderProgram("SC1_Green")));
+	}
 
 	size_t i = 0;
 	for (auto& object : objects1) {
@@ -254,10 +268,10 @@ void Application::createScenes()
 
 	///// Scene 2 Spheres 4x
 	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("PosBarva")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("PosBarva")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("PosBarva")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("PosBarva")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_Green")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_LambertLight")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_PhongLight")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_BlinnLight")),
 	};
 
 	i = 0;
@@ -266,9 +280,9 @@ void Application::createScenes()
 		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
 	}
 
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects0));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects1));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects2));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2));
 
 	currentCamera = Scenes[currentScene]->getCamera();
 }

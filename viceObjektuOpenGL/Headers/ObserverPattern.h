@@ -9,16 +9,12 @@ class Subject;
 class Observer {
 public:
 	virtual void update() = 0;
-	void setSubject(Subject* subject) {
-		this->subject = subject;
-	}
-
-private:
-	Subject* subject;
 };
 
 class Subject {
 public:
+	virtual ~Subject() = default;
+
 	void addObserver(Observer* observer) {
 		observers.push_back(observer);
 	}
@@ -32,21 +28,21 @@ public:
 			observer->update();
 		}
 	}
-private:
+protected:
 	std::list<Observer*> observers;
 };
 
 
-
-class ICameraObserver {
-public:
-	virtual void update(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) = 0;
-	virtual void update(glm::mat4 modelMatrix) = 0;
-};
-
-class ICameraSubject {
-public:
-	virtual void addObserver(ICameraObserver* observer) = 0;
-	virtual void removeObserver(ICameraObserver* observer) = 0;
-	virtual void notifyObservers() = 0;
-};
+//
+//class ICameraObserver {
+//public:
+//	virtual void update(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) = 0;
+//	virtual void update(glm::mat4 modelMatrix) = 0;
+//};
+//
+//class ICameraSubject {
+//public:
+//	virtual void addObserver(ICameraObserver* observer) = 0;
+//	virtual void removeObserver(ICameraObserver* observer) = 0;
+//	virtual void notifyObservers() = 0;
+//};

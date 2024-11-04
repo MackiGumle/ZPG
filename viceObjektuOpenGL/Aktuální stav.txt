@@ -8,13 +8,13 @@ Aktuální stav
 
     c) Scéna se čtyřmi kuličkami (Ano)
 
-    d) Scéna pro demonstraci použití všech shaderů (Konstantní, Lambert, Phong a Blinn) (Ano/Ne)
+    d) Scéna pro demonstraci použití všech shaderů (Konstantní, Lambert, Phong a Blinn) (Ano)
 
-    Světlo (Ano/Ne) (kde a jak máte naimplementováno, jak se updatuje změna světla)
+    Světlo (Ano) (kde a jak máte naimplementováno, jak se updatuje změna světla)
 
     Základní třídy (ShaderProgram, DrowableObject, Camera, Controller) (Ano) (kdo zodpovídá za vykreslování, kde jsou uloženy modely, shadery atd.)
 
-    Transformace (Composite pattern) (Ano) (Máte pro transformace základní třídy? Co a jak jste použili?)
+    Transformace (Composite pattern) (Ano) (Transformation, Scale, Rotation, Translation)
 
     Základy OOP
 

@@ -7,6 +7,7 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::ve
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
 	}
 }
 
@@ -16,27 +17,38 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms, std::
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
 	}
 }
 
-void Scene::moveCamera(int direction) {
-	camera.move(direction);
+void Scene::addDrawableObject(std::shared_ptr<DrawableObject> drawableObject)
+{
+	drawableObjects.push_back(drawableObject);
+}
+
+Camera* Scene::getCamera()
+{
+	return &camera;
 }
 
 void Scene::rotateCamera(float xoffset, float yoffset) {
 	camera.rotate(xoffset, yoffset, true);
 }
 
-void Scene::update(std::unordered_map<int, bool>& keys)
-{
-	camera.update(keys);
-}
+//void Scene::update(std::unordered_map<int, bool>& keys)
+//{
+//	camera.update(keys);
+//}
 
 void Scene::render()
 {
+	for (auto& shaderProgram : shaderPrograms)
+	{
+		
+	}
+
 	for (auto& drawableObject : drawableObjects)
 	{
-		drawableObject->rotate(0.5f, glm::vec3(0, 1, 0));
 		camera.notifyObservers();
 		drawableObject->render();
 	}

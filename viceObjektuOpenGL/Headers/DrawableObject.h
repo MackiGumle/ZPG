@@ -10,16 +10,15 @@ public:
 	DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram);
 	~DrawableObject();
 
+	void addTransformation(std::unique_ptr<Transformation> transformation, bool continuous = false);
 	void render();
 
-	void scale(glm::vec3 vector);
-	void scale(float scalar);
-	void rotate(float angle, glm::vec3 axis);
-	void translate(glm::vec3 vector);
-
 private:
+	bool firstRender = true;
 	std::weak_ptr<Model> model;
 	std::weak_ptr<ShaderProgram> shaderProgram;
-	Transformation transformation;
+	//Transformation transformation;
+	glm::mat4 modelMatrix; // final transformation matrix
+	std::vector<std::unique_ptr<Transformation>> transformations;
+	std::vector<std::unique_ptr<Transformation>> continuousTransformations;
 };
-

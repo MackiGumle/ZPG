@@ -26,6 +26,7 @@
     <ClInclude Include="Headers\ModelManager.h" />
     <ClInclude Include="Headers\Scene.h" />
     <ClInclude Include="Headers\Shader.h" />
+    <ClInclude Include="Headers\ShaderLoader.h" />
     <ClInclude Include="Headers\ShaderManager.h" />
     <ClInclude Include="Headers\ShaderProgram.h" />
     <ClInclude Include="Headers\Transformation.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Source\ModelManager.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
+    <ClCompile Include="Source\ShaderLoader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\ShaderProgram.cpp" />
     <ClCompile Include="Source\Transformation.cpp" />

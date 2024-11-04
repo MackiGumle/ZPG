@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 
-class Application : IApplicationSubject {
+class Application {
 public:
 	Application();
 	~Application();
@@ -27,24 +27,23 @@ public:
 	void mouse_input(float xoffset, float yoffset);
 
 
-	void addObserver(IApplicationObserver* observer);
-	void removeObserver(IApplicationObserver* observer);
-	void notifyObservers();
-
 	void initialization(int w_width = 800, int w_height = 600, const char* w_name = "Window", GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 	void createShaders();
 	void createModels();
 	void createScenes();
 	void run();
+	static float getDeltaTime();
 
 private:
 	GLFWwindow* window;
 	ShaderManager shaderManager;
 	ModelManager modelManager;
 
+	bool cursorLocked = false;
 	size_t currentScene = 0;
+	Camera* currentCamera;
+
 	std::vector<std::shared_ptr<Scene>> Scenes;
-	std::list<IApplicationObserver*> observers;
 
 	// keys being pressed
 	std::unordered_map<int, bool> keys;
@@ -52,4 +51,8 @@ private:
 	// mouse movement
 	float lastX;
 	float lastY;
+
+	// delta time
+	static float deltaTime;
+	float lastFrame = 0.0f;
 };

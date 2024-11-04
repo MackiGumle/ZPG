@@ -6,6 +6,7 @@
 #include "suzi_flat.h"
 
 
+float Application::deltaTime = 0.0f;
 
 Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
 
@@ -27,7 +28,6 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	if (app) {
 		app->key_input(window, key, scancode, action, mods);
-		app->notifyObservers();
 	}
 }
 
@@ -40,7 +40,7 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 	glViewport(0, 0, width, height);
 }
 
-void Application::cursor_callback(GLFWwindow* window, double x, double y) { 
+void Application::cursor_callback(GLFWwindow* window, double x, double y) {
 	static bool firstMouse = true;
 	static float lastX = 960.0f, lastY = 540.0f;
 
@@ -76,19 +76,20 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		if (keys.find(key) != keys.end())
 		{
 			keys[key] = true;
-			std::cout << "[i] Key Pressed:\t" << key << "\t" << keys[key] << std::endl;
-			notifyObservers();
+			//std::cout << "[i] Key Pressed:\t" << key << "\t" << keys[key] << std::endl;
 		}
 
 		switch (key)
 		{
 		case GLFW_KEY_UP:
 			currentScene = (currentScene + 1) % Scenes.size();
-			std::cout << "[i] Current Scene: " << currentScene << std::endl;
+			currentCamera = Scenes[currentScene]->getCamera();
+			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
 		case GLFW_KEY_DOWN:
-			currentScene = (currentScene - 1) % Scenes.size();
-			std::cout << "[i] Current Scene: " << currentScene << std::endl;
+			currentScene = (currentScene + Scenes.size() - 1) % Scenes.size();
+			currentCamera = Scenes[currentScene]->getCamera();
+			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
 		}
 		break;
@@ -97,8 +98,7 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		if (keys.find(key) != keys.end())
 		{
 			keys[key] = false;
-			std::cout << "[i] Key Released:\t" << key << "\t" << keys[key] << std::endl;
-			notifyObservers();
+			//std::cout << "[i] Key Released:\t" << key << "\t" << keys[key] << std::endl;
 		}
 		break;
 	}
@@ -107,39 +107,12 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	/*else if (key == GLFW_KEY_W && action == GLFW_PRESS)
-	{
-		Scenes[currentScene]->moveCamera(glm::vec3(0, 0, 1));
-	}
-	else if (key == GLFW_KEY_S && action == GLFW_PRESS)
-	{
-		Scenes[currentScene]->moveCamera(glm::vec3(0, 0, -1));
-	}
-	else if (key == GLFW_KEY_A && action == GLFW_PRESS)
-	{
-		Scenes[currentScene]->moveCamera(glm::vec3(-1, 0, 0));
-	}
-	else if (key == GLFW_KEY_D && action == GLFW_PRESS)
-	{
-		Scenes[currentScene]->moveCamera(glm::vec3(1, 0, 0));
-	}*/
 }
 
 void Application::mouse_input(float xoffset, float yoffset)
 {
-	Scenes[currentScene]->rotateCamera(xoffset, yoffset);
-}
-
-void Application::addObserver(IApplicationObserver* observer) { observers.push_back(observer); }
-
-void Application::removeObserver(IApplicationObserver* observer) { observers.remove(observer); }
-
-void Application::notifyObservers()
-{
-	for (auto observer : observers)
-	{
-		observer->update(keys);
-	}
+	currentCamera->rotate(xoffset, yoffset);
+	//Scenes[currentScene]->rotateCamera(xoffset, yoffset);
 }
 
 void Application::initialization(int w_width, int w_height, const char* w_name, GLFWmonitor* monitor, GLFWwindow* share)
@@ -199,6 +172,8 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	keys[GLFW_KEY_S] = false;
 	keys[GLFW_KEY_A] = false;
 	keys[GLFW_KEY_D] = false;
+	keys[GLFW_KEY_E] = false;
+	keys[GLFW_KEY_Q] = false;
 	keys[GLFW_KEY_UP] = false;
 	keys[GLFW_KEY_DOWN] = false;
 	keys[GLFW_KEY_LEFT] = false;
@@ -209,9 +184,15 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
-	shaderManager.loadShader("Shaders/vertexShader.glsl", GL_VERTEX_SHADER, "vertexShader");
-	shaderManager.loadShader("Shaders/fragmentShader.glsl", GL_FRAGMENT_SHADER, "fragmentShader");
-	shaderManager.loadShader("Shaders/fragmentShaderGreen.glsl", GL_FRAGMENT_SHADER, "fragmentShaderGreen");
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC0_Green");
+
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/fragmentShader.fs", "SC1_PosBarva");
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC1_Green");
+
+	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC2_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/lambertShader.fs", "SC2_LambertLight");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/phongShader.fs", "SC2_PhongLight");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/blinnShader.fs", "SC2_BlinnLight");
 }
 
 void Application::createModels()
@@ -231,84 +212,104 @@ void Application::createModels()
 
 void Application::createScenes()
 {
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms = {
-		std::make_shared<ShaderProgram>(shaderManager.getShader("vertexShader"),
-		shaderManager.getShader("fragmentShader")),
-		std::make_shared<ShaderProgram>(shaderManager.getShader("vertexShader"),
-		shaderManager.getShader("fragmentShaderGreen")),
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms0 = {
+		shaderManager.getShaderProgram("SC0_Green"),
 	};
 
-	std::vector<std::shared_ptr<DrawableObject>> objects1 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Tree"), shaderPrograms.front()),
-		std::make_shared<DrawableObject>(modelManager.getModel("Bushes"), shaderPrograms.back()),
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
+		shaderManager.getShaderProgram("SC1_PosBarva"),
+		shaderManager.getShaderProgram("SC1_Green"),
 	};
 
-	for (size_t i = 0; i < 50; i++)
-	{
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderPrograms.front()));
-		//i % 2 == 1 ? shaderPrograms.front() : shaderPrograms.back()));
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms2 = {
+		shaderManager.getShaderProgram("SC2_Green"),
+		shaderManager.getShaderProgram("SC2_LambertLight"),
+		shaderManager.getShaderProgram("SC2_PhongLight"),
+		shaderManager.getShaderProgram("SC2_BlinnLight"),
+	};
 
-		/*objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bush"),
-			i % 2 == 1 ? shaderPrograms.front() : shaderPrograms.back()));*/
+	// Scene 0 Triangle
+	std::vector<std::shared_ptr<DrawableObject>> objects0 = {
+		std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderManager.getShaderProgram("SC0_Green")),
+	};
 
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-			shaderPrograms.front()));
-	}
+	objects0[0]->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -3)));
 
+	// Random number generator
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> pos(-50.0f, 50.0f);
 	std::uniform_real_distribution<float> scale(0.7f, 1.7f);
 
+	// Scene 1 Forest
+	std::vector<std::shared_ptr<DrawableObject>> objects1;
+	for (size_t i = 0; i < 50; i++)
+	{
+		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
+			shaderManager.getShaderProgram("SC1_PosBarva")));
+
+
+		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
+			shaderManager.getShaderProgram("SC1_Green")));
+	}
+
+	size_t i = 0;
 	for (auto& object : objects1) {
-		object->scale(scale(gen));
-		//object->rotate(pos(gen) * 20, glm::vec3(rot(gen), rot(gen), rot(gen)));
+		object->addTransformation(std::make_unique<Scale>(glm::vec3(scale(gen))));
+
 		float x = pos(gen);
 		float z = pos(gen);
-		object->translate(glm::vec3(x, 0, z));
+		object->addTransformation(std::make_unique<Translation>(glm::vec3(x, 0, z)));
+
+		if (i % 4 == 0)
+			object->addTransformation(std::make_unique<Rotation>(scale(gen) / 2, glm::vec3(0, 1, 0)), true);
+		++i;
 	}
 
-	///// Scene 2
+	///// Scene 2 Spheres 4x
 	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
-		//std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderPrograms.back()),
-		//std::make_shared<DrawableObject>(modelManager.getModel("SuziFlat"), shaderPrograms.front()),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderPrograms.front()),
-		//std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderPrograms.front()),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_Green")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_LambertLight")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_PhongLight")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_BlinnLight")),
 	};
 
-	for(size_t i = 0; i < 50; i++)
-	{
-		objects2.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Sphere"),
-			shaderPrograms.front()));
-	}
-
+	i = 0;
 	for (auto& object : objects2) {
-		object->scale(0.5f);
-		//object->rotate(pos(gen) * 30, glm::vec3(rot(gen), rot(gen), rot(gen)));
-		object->translate(glm::vec3(pos(gen), pos(gen), pos(gen)));
+		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
+		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
 	}
 
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects1));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects2));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2));
 
-	for (auto& scene : Scenes)
-	{
-		addObserver(scene.get());
-	}
+	currentCamera = Scenes[currentScene]->getCamera();
 }
 
 void Application::run()
 {
 	while (!glfwWindowShouldClose(window)) {
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// clear color and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glfwPollEvents();
+
+		// update camera movement
+		currentCamera->move(keys);
 
 		// render scene
 		Scenes[currentScene]->render();
 
-		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
 		glfwSwapBuffers(window);
+
+		//std::cout << "FPS: " << 1 / deltaTime << std::endl;
 	}
 }
+
+float Application::getDeltaTime() { return deltaTime; }

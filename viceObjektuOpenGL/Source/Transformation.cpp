@@ -1,31 +1,33 @@
 #include "Transformation.h"
 
-Transformation::Transformation()
+
+Scale::Scale(glm::vec3 vector) : vector(vector)
 {
-	matrix = glm::mat4(1.0f);
 }
 
-glm::mat4 Transformation::getMatrix() const
+Scale::Scale(float scale) : vector(glm::vec3(scale))
 {
-	return matrix;
 }
 
-void Transformation::translate(glm::vec3 vector)
-{
-	matrix = glm::translate(matrix, vector);
-}
-
-void Transformation::rotate(float angle, glm::vec3 axis)
-{
-	matrix = glm::rotate(matrix, glm::radians(angle), axis);
-}
-
-void Transformation::scale(glm::vec3 vector)
+void Scale::set(glm::mat4& matrix)
 {
 	matrix = glm::scale(matrix, vector);
 }
 
-void Transformation::scale(float scalar)
+Rotation::Rotation(float degrees, glm::vec3 axis) : angle(degrees), axis(axis)
 {
-	matrix = glm::scale(matrix, glm::vec3(scalar));
+}
+
+void Rotation::set(glm::mat4& matrix)
+{
+	matrix = glm::rotate(matrix, glm::radians(angle), axis);
+}
+
+Translation::Translation(glm::vec3 vector) : vector(vector)
+{
+}
+
+void Translation::set(glm::mat4& matrix)
+{
+	matrix = glm::translate(matrix, vector);
 }

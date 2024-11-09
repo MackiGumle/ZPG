@@ -3,7 +3,7 @@
 #include "ShaderProgram.h"
 #include "Transformation.h"
 
-
+// Inherits from Transformable, .rotate(), .translate(), .scale() methods available
 class DrawableObject
 {
 public:

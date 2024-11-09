@@ -1,4 +1,5 @@
 #version 400
+
 in vec4 worldPos;
 in vec3 worldNor;
 

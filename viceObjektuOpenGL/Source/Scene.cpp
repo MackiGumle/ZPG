@@ -26,19 +26,13 @@ void Scene::addDrawableObject(std::shared_ptr<DrawableObject> drawableObject)
 	drawableObjects.push_back(drawableObject);
 }
 
-Camera* Scene::getCamera()
-{
+Camera* Scene::getCamera() {
 	return &camera;
 }
 
 void Scene::rotateCamera(float xoffset, float yoffset) {
 	camera.rotate(xoffset, yoffset, true);
 }
-
-//void Scene::update(std::unordered_map<int, bool>& keys)
-//{
-//	camera.update(keys);
-//}
 
 void Scene::render()
 {

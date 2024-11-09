@@ -6,6 +6,8 @@
 #include "suzi_flat.h"
 
 
+size_t Application::windowWidth = 800;
+size_t Application::windowHeight = 600;
 float Application::deltaTime = 0.0f;
 
 Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
@@ -36,8 +38,18 @@ void Application::window_focus_callback(GLFWwindow* window, int focused) { print
 void Application::window_iconify_callback(GLFWwindow* window, int iconified) { printf("window_iconify_callback \n"); }
 
 void Application::window_size_callback(GLFWwindow* window, int width, int height) {
-	printf("resize %d, %d \n", width, height);
+	//printf("resize %d, %d \n", width, height);
+
+	Application::windowWidth = width;
+	Application::windowHeight = height;
+	glfwGetFramebufferSize(window, &width, &height);
+
+	float ratio = width / (float)height;
+
 	glViewport(0, 0, width, height);
+	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+
+
 }
 
 void Application::cursor_callback(GLFWwindow* window, double x, double y) {
@@ -124,7 +136,10 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(w_width, w_height, w_name, monitor, share);
+	windowWidth = w_width;
+	windowHeight = w_height;
+
+	window = glfwCreateWindow(windowWidth, windowHeight, w_name, monitor, share);
 	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
@@ -146,7 +161,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glfwGetVersion(&major, &minor, &revision);
 	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
 
-	int width, height;
+	int width = windowWidth, height = windowHeight;
 	glfwGetFramebufferSize(window, &width, &height);
 	float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
@@ -156,7 +171,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glLoadIdentity();
 	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// Sets the key callback
 	glfwSetWindowUserPointer(window, this);
 	glfwSetKeyCallback(window, key_callback);
@@ -165,6 +180,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glfwsetwindowfocuscallback(m_window, window_focus_callback);
 	glfwsetwindowiconifycallback(m_window, window_iconify_callback);
 	glfwSetWindowSizeCallback(m_window, window_size_callback);*/
+	glfwSetWindowSizeCallback(window, window_size_callback);
 	glEnable(GL_DEPTH_TEST);
 
 	// Set Keybinds
@@ -184,12 +200,14 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
-	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC0_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/ShaderGreen.fs", "SC0_Green");
 
+
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/blinnShader.fs", "SC1_BlinnLight");
 	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/fragmentShader.fs", "SC1_PosBarva");
 	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC1_Green");
 
-	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC2_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/ShaderGreen.fs", "SC2_Green");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/lambertShader.fs", "SC2_LambertLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/phongShader.fs", "SC2_PhongLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/blinnShader.fs", "SC2_BlinnLight");
@@ -217,6 +235,7 @@ void Application::createScenes()
 	};
 
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
+		shaderManager.getShaderProgram("SC1_BlinnLight"),
 		shaderManager.getShaderProgram("SC1_PosBarva"),
 		shaderManager.getShaderProgram("SC1_Green"),
 	};
@@ -246,7 +265,7 @@ void Application::createScenes()
 	for (size_t i = 0; i < 50; i++)
 	{
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("SC1_PosBarva")));
+			shaderManager.getShaderProgram("SC1_BlinnLight")));
 
 
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
@@ -311,5 +330,9 @@ void Application::run()
 		//std::cout << "FPS: " << 1 / deltaTime << std::endl;
 	}
 }
+
+size_t Application::getWidth() { return windowWidth; }
+
+size_t Application::getHeight() { return windowHeight; }
 
 float Application::getDeltaTime() { return deltaTime; }

@@ -1,19 +1,31 @@
-﻿  Application.cpp
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(65,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(66,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(68,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(69,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(142,41): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(142,28): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(164,12): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(164,34): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\Application.cpp(312,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:             _Ty=size_t
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         ]
+﻿  Scanning sources for module dependencies...
+  Application.cpp
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(46,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(47,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(72,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(73,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(75,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(76,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(154,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(155,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(157,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(157,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(179,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(179,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(327,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:             _Ty=size_t
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         ]
+  (compiling source file 'Source/Application.cpp')
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56):
+  the template instantiation context (the oldest one first) is
+  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(313,34):
+  	see reference to function template instantiation 'std::unique_ptr<Rotation,std::default_delete<Rotation>> std::make_unique<Rotation,size_t,glm::vec3,0>(size_t &&,glm::vec3 &&)' being compiled
+  
   Camera.cpp
   main.cpp
   Generating Code...
-  viceObjektuOpenGL.vcxproj -> D:\Skola\ThirdYear\winter\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  viceObjektuOpenGL.vcxproj -> D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe

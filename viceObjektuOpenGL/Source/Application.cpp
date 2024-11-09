@@ -6,9 +6,12 @@
 #include "suzi_flat.h"
 
 
-size_t Application::windowWidth = 800;
-size_t Application::windowHeight = 600;
+float Application::windowWidth = 800;
+float Application::windowHeight = 600;
 float Application::deltaTime = 0.0f;
+bool Application::cursorLocked = false;
+bool Application::firstMouse = true;
+
 
 Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
 
@@ -49,12 +52,16 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 	glViewport(0, 0, width, height);
 	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
-
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	if (app) {
+		app->currentCamera->setProjectionMatrix(60.0f, ratio, 0.01f, 200.0f);
+	}
 }
 
 void Application::cursor_callback(GLFWwindow* window, double x, double y) {
-	static bool firstMouse = true;
-	static float lastX = 960.0f, lastY = 540.0f;
+	if (!cursorLocked) return;
+
+	static float lastX = windowWidth / 2, lastY = windowHeight / 2;
 
 	if (firstMouse) {
 		lastX = static_cast<float>(x);
@@ -103,6 +110,18 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 			currentCamera = Scenes[currentScene]->getCamera();
 			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_C:
+			if (cursorLocked)
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			else
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+			firstMouse = true;
+			cursorLocked = !cursorLocked;
+			break;
 		}
 		break;
 
@@ -115,10 +134,6 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		break;
 	}
 
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
 }
 
 void Application::mouse_input(float xoffset, float yoffset)
@@ -331,8 +346,8 @@ void Application::run()
 	}
 }
 
-size_t Application::getWidth() { return windowWidth; }
+float Application::getWidth() { return windowWidth; }
 
-size_t Application::getHeight() { return windowHeight; }
+float Application::getHeight() { return windowHeight; }
 
 float Application::getDeltaTime() { return deltaTime; }

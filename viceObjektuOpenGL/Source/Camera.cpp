@@ -15,7 +15,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up)
 	worldUp = up;
 
 	viewMatrix = glm::lookAt(position, position + front, up);
-	projectionMatrix = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.01f, 200.0f);
+	projectionMatrix = glm::perspective(glm::radians(60.0f), Application::getWidth() / (float)Application::getHeight(), 0.01f, 200.0f);
 	updateCameraVectors();
 }
 
@@ -84,6 +84,12 @@ glm::mat4 Camera::getProjectionMatrix() const
 glm::vec3 Camera::getPosition() const
 {
 	return position;
+}
+
+void Camera::setProjectionMatrix(float fov, float aspect = Application::getWidth() / (float)Application::getHeight(), float near, float far)
+{
+	projectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
+	
 }
 
 void Camera::updateCameraVectors()

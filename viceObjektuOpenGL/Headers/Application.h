@@ -33,20 +33,22 @@ public:
 	void createScenes();
 	void run();
 	
-	static size_t getWidth();
-	static size_t getHeight();
+	static float getWidth();
+	static float getHeight();
 	static float getDeltaTime();
 	
 private:
 	GLFWwindow* window;
-	static size_t windowWidth;
-	static size_t windowHeight;
+	static float windowWidth;
+	static float windowHeight;
 
 	ShaderManager shaderManager;
 	ModelManager modelManager;
 	
 
-	bool cursorLocked = false;
+	static bool cursorLocked;
+	static bool firstMouse;
+
 	size_t currentScene = 0;
 	Camera* currentCamera;
 

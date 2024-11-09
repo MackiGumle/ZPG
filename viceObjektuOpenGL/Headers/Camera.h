@@ -6,10 +6,11 @@
 #include <GLFW/glfw3.h>
 #include "ObserverPattern.h"
 
+
 class Camera : public Subject
 {
 public:
-	Camera(glm::vec3 position = glm::vec3(0,0,0), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+	Camera(glm::vec3 position = glm::vec3(0, 0, 0), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 
 	void move(std::unordered_map<int, bool>& keys);
 
@@ -19,6 +20,9 @@ public:
 	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjectionMatrix() const;
 	glm::vec3 getPosition() const;
+
+	void setProjectionMatrix(float fov, float aspect,
+		float near = 0.01f, float far = 200.0f);
 
 private:
 	void updateCameraVectors();
@@ -31,7 +35,7 @@ private:
 	glm::vec3 worldUp;
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
-	
+
 	float yaw;
 	float pitch;
 	float movementSpeed;

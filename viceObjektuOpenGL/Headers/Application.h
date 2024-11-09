@@ -32,14 +32,23 @@ public:
 	void createModels();
 	void createScenes();
 	void run();
+	
+	static float getWidth();
+	static float getHeight();
 	static float getDeltaTime();
-
+	
 private:
 	GLFWwindow* window;
+	static float windowWidth;
+	static float windowHeight;
+
 	ShaderManager shaderManager;
 	ModelManager modelManager;
+	
 
-	bool cursorLocked = false;
+	static bool cursorLocked;
+	static bool firstMouse;
+
 	size_t currentScene = 0;
 	Camera* currentCamera;
 

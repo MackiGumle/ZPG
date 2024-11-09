@@ -6,7 +6,12 @@
 #include "suzi_flat.h"
 
 
+float Application::windowWidth = 800;
+float Application::windowHeight = 600;
 float Application::deltaTime = 0.0f;
+bool Application::cursorLocked = false;
+bool Application::firstMouse = true;
+
 
 Application::Application() : window(nullptr), shaderManager(ShaderManager()), modelManager(ModelManager()) {
 
@@ -36,13 +41,27 @@ void Application::window_focus_callback(GLFWwindow* window, int focused) { print
 void Application::window_iconify_callback(GLFWwindow* window, int iconified) { printf("window_iconify_callback \n"); }
 
 void Application::window_size_callback(GLFWwindow* window, int width, int height) {
-	printf("resize %d, %d \n", width, height);
+	//printf("resize %d, %d \n", width, height);
+
+	Application::windowWidth = width;
+	Application::windowHeight = height;
+	glfwGetFramebufferSize(window, &width, &height);
+
+	float ratio = width / (float)height;
+
 	glViewport(0, 0, width, height);
+	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	if (app) {
+		app->currentCamera->setProjectionMatrix(60.0f, ratio, 0.01f, 200.0f);
+	}
 }
 
 void Application::cursor_callback(GLFWwindow* window, double x, double y) {
-	static bool firstMouse = true;
-	static float lastX = 960.0f, lastY = 540.0f;
+	if (!cursorLocked) return;
+
+	static float lastX = windowWidth / 2, lastY = windowHeight / 2;
 
 	if (firstMouse) {
 		lastX = static_cast<float>(x);
@@ -91,6 +110,18 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 			currentCamera = Scenes[currentScene]->getCamera();
 			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_C:
+			if (cursorLocked)
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			else
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+			firstMouse = true;
+			cursorLocked = !cursorLocked;
+			break;
 		}
 		break;
 
@@ -103,10 +134,6 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 		break;
 	}
 
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
 }
 
 void Application::mouse_input(float xoffset, float yoffset)
@@ -124,7 +151,10 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(w_width, w_height, w_name, monitor, share);
+	windowWidth = w_width;
+	windowHeight = w_height;
+
+	window = glfwCreateWindow(windowWidth, windowHeight, w_name, monitor, share);
 	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
@@ -146,7 +176,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glfwGetVersion(&major, &minor, &revision);
 	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
 
-	int width, height;
+	int width = windowWidth, height = windowHeight;
 	glfwGetFramebufferSize(window, &width, &height);
 	float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
@@ -156,7 +186,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glLoadIdentity();
 	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// Sets the key callback
 	glfwSetWindowUserPointer(window, this);
 	glfwSetKeyCallback(window, key_callback);
@@ -165,6 +195,7 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glfwsetwindowfocuscallback(m_window, window_focus_callback);
 	glfwsetwindowiconifycallback(m_window, window_iconify_callback);
 	glfwSetWindowSizeCallback(m_window, window_size_callback);*/
+	glfwSetWindowSizeCallback(window, window_size_callback);
 	glEnable(GL_DEPTH_TEST);
 
 	// Set Keybinds
@@ -184,12 +215,14 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
-	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC0_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/ShaderGreen.fs", "SC0_Green");
 
+
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/blinnShader.fs", "SC1_BlinnLight");
 	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/fragmentShader.fs", "SC1_PosBarva");
 	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC1_Green");
 
-	shaderManager.loadShaderProgram("Shaders/vertexShader.vs", "Shaders/ShaderGreen.fs", "SC2_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/ShaderGreen.fs", "SC2_Green");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/lambertShader.fs", "SC2_LambertLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/phongShader.fs", "SC2_PhongLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vs", "Shaders/blinnShader.fs", "SC2_BlinnLight");
@@ -217,6 +250,7 @@ void Application::createScenes()
 	};
 
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
+		shaderManager.getShaderProgram("SC1_BlinnLight"),
 		shaderManager.getShaderProgram("SC1_PosBarva"),
 		shaderManager.getShaderProgram("SC1_Green"),
 	};
@@ -246,7 +280,7 @@ void Application::createScenes()
 	for (size_t i = 0; i < 50; i++)
 	{
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("SC1_PosBarva")));
+			shaderManager.getShaderProgram("SC1_BlinnLight")));
 
 
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
@@ -311,5 +345,9 @@ void Application::run()
 		//std::cout << "FPS: " << 1 / deltaTime << std::endl;
 	}
 }
+
+float Application::getWidth() { return windowWidth; }
+
+float Application::getHeight() { return windowHeight; }
 
 float Application::getDeltaTime() { return deltaTime; }

@@ -4,6 +4,7 @@
 #include "sphere.h"
 #include "gift.h"
 #include "suzi_flat.h"
+#include "TransFunctions.h"
 
 
 float Application::windowWidth = 800;
@@ -58,7 +59,9 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	if (app) {
 		for (auto& scene : app->Scenes)
-			scene->getCamera()->setProjectionMatrix(60.0f, ratio, 0.01f, 200.0f);
+			scene->getCamera()->setProjectionMatrix(
+				scene->getCamera()->getFov()
+				, ratio, 0.01f, 200.0f);
 	}
 }
 
@@ -108,6 +111,7 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 	switch (action)
 	{
 	case GLFW_PRESS:
+		std::cout << "[i] Key Pressed:\t" << key << "\t" << keys[key] << std::endl;
 
 		if (keys.find(key) != keys.end())
 		{
@@ -122,14 +126,13 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 			currentCamera = Scenes[currentScene]->getCamera();
 			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
+
 		case GLFW_KEY_DOWN:
 			currentScene = (currentScene + Scenes.size() - 1) % Scenes.size();
 			currentCamera = Scenes[currentScene]->getCamera();
 			std::cout << "[i] Current Scene: " << currentScene << "\tCamera: " << currentCamera << std::endl;
 			break;
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(window, GL_TRUE);
-			break;
+
 		case GLFW_KEY_C:
 			if (cursorLocked)
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -138,6 +141,10 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 
 			firstMouse = true;
 			cursorLocked = !cursorLocked;
+			break;
+
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		}
 		break;
@@ -239,6 +246,8 @@ void Application::createShaders()
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/blinnShader.frag", "SC1_BlinnLight");
 	shaderManager.loadShaderProgram("Shaders/vertexShader.vert", "Shaders/fragmentShader.frag", "SC1_PosBarva");
 	shaderManager.loadShaderProgram("Shaders/vertexShader.vert", "Shaders/ShaderGreen.frag", "SC1_Green");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC1_multiple");
+
 
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/ShaderGreen.frag", "SC2_Green");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/lambertShader.frag", "SC2_LambertLight");
@@ -272,6 +281,8 @@ void Application::createScenes()
 		shaderManager.getShaderProgram("SC1_BlinnLight"),
 		shaderManager.getShaderProgram("SC1_PosBarva"),
 		shaderManager.getShaderProgram("SC1_Green"),
+		shaderManager.getShaderProgram("SC1_multiple"),
+
 	};
 
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms2 = {
@@ -300,11 +311,11 @@ void Application::createScenes()
 	for (size_t i = 0; i < 50; i++)
 	{
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("SC1_BlinnLight")));
+			shaderManager.getShaderProgram("SC1_multiple")));
 
 
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-			shaderManager.getShaderProgram("SC1_BlinnLight")));
+			shaderManager.getShaderProgram("SC1_multiple")));
 	}
 
 	size_t i = 0;
@@ -313,10 +324,13 @@ void Application::createScenes()
 
 		float x = pos(gen);
 		float z = pos(gen);
+		if (i % 4 == 0)
+			object->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation,
+				[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }
+			));
+
 		object->addTransformation(std::make_unique<Translation>(glm::vec3(x, 0, z)));
 
-		if (i % 4 == 0)
-			object->addTransformation(std::make_unique<Rotation>(scale(gen) / 2, glm::vec3(0, 1, 0)), true);
 		++i;
 	}
 
@@ -329,19 +343,22 @@ void Application::createScenes()
 	};
 
 	std::vector<std::shared_ptr<PointLight>> pointLights = {
-		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 0)),
-		std::make_shared<PointLight>(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0, 1.0f, 0)),
+		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 0), 10),
+		std::make_shared<PointLight>(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0, 1.0f, 0), 10),
 	};
 
 
 	i = 0;
 	for (auto& object : objects2) {
-		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
 		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
+		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
 	}
-	
+
+	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
+	objects2[1]->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
+
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1));
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, pointLights));
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, pointLights));
 
 	currentCamera = Scenes[currentScene]->getCamera();

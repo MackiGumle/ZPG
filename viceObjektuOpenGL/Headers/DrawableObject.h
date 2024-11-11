@@ -17,8 +17,10 @@ private:
 	bool firstRender = true;
 	std::weak_ptr<Model> model;
 	std::weak_ptr<ShaderProgram> shaderProgram;
-	//Transformation transformation;
-	glm::mat4 modelMatrix; // final transformation matrix
-	std::vector<std::unique_ptr<Transformation>> transformations;
-	std::vector<std::unique_ptr<Transformation>> continuousTransformations;
+	
+	TransformationComposite transformationComposite;
+	
+	//glm::mat4 modelMatrix; // final transformation matrix
+	//std::vector<std::unique_ptr<Transformation>> transformations;
+	//std::vector<std::unique_ptr<Transformation>> continuousTransformations;
 };

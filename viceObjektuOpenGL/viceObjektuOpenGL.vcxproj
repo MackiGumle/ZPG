@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Application.h" />
+    <ClInclude Include="Headers\TransFunctions.h" />
     <ClInclude Include="Headers\Lights.h" />
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\DrawableObject.h" />

@@ -51,6 +51,9 @@
     <ClInclude Include="Headers\Lights.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\TransFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">

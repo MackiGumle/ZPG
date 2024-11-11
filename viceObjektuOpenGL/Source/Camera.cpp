@@ -4,9 +4,8 @@
 #include <iostream>
 
 
-
 Camera::Camera(glm::vec3 position, glm::vec3 up)
-	: position(position), front(glm::vec3(0.0f, 0.0f, 0.0f)), yaw(-90.0f), pitch(0.0f), movementSpeed(10.0f), mouseSensitivity(0.1f)
+	: position(position), front(glm::vec3(0.0f, 0.0f, 0.0f)), fov(60.0f), yaw(-90.0f), pitch(0.0f), movementSpeed(10.0f), mouseSensitivity(0.1f)
 {
 	/*direction = glm::normalize(position - target);
 	right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), direction));
@@ -15,7 +14,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up)
 	worldUp = up;
 
 	viewMatrix = glm::lookAt(position, position + front, up);
-	projectionMatrix = glm::perspective(glm::radians(60.0f), Application::getWidth() / (float)Application::getHeight(), 0.01f, 200.0f);
+	projectionMatrix = glm::perspective(glm::radians(fov), Application::getWidth() / (float)Application::getHeight(), 0.01f, 500.0f);
 	updateCameraVectors();
 }
 
@@ -86,10 +85,25 @@ glm::vec3 Camera::getPosition() const
 	return position;
 }
 
-void Camera::setProjectionMatrix(float fov, float aspect = Application::getWidth() / (float)Application::getHeight(), float near, float far)
+void Camera::setFov(float fov)
+{
+	if (fov < 1.0f)
+		fov = 1.0f;
+	if (fov > 179.0f)
+		fov = 179.0f;
+
+	this->fov = fov;
+	setProjectionMatrix(fov, Application::getWidth() / (float)Application::getHeight());
+}
+
+float Camera::getFov() const
+{
+	return fov;
+}
+
+void Camera::setProjectionMatrix(float fov, float aspect, float near, float far)
 {
 	projectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
-	
 }
 
 void Camera::updateCameraVectors()
@@ -106,5 +120,5 @@ void Camera::updateCameraVectors()
 
 	//std::cout << "[i] Camera xyz: " << position.x << "\t" << position.y << "\t" << position.z << std::endl;
 	//std::cout << "[i] Camera yaw: " << yaw << "\t" << "pitch: " << pitch << std::endl;
-	//notifyObservers();
+	notifyObservers();
 }

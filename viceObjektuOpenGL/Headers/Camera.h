@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "ObserverPattern.h"
 
-
+class Application;
 class Camera : public Subject
 {
 public:
@@ -21,8 +21,10 @@ public:
 	glm::mat4 getProjectionMatrix() const;
 	glm::vec3 getPosition() const;
 
-	void setProjectionMatrix(float fov, float aspect,
-		float near = 0.01f, float far = 200.0f);
+	void setFov(float fov);
+	float getFov() const;
+	void setProjectionMatrix(float fov,	float aspect,
+		float near = 0.01f, float far = 500.0f);
 
 private:
 	void updateCameraVectors();
@@ -36,6 +38,7 @@ private:
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
 
+	float fov;
 	float yaw;
 	float pitch;
 	float movementSpeed;

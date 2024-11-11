@@ -6,12 +6,22 @@
 #include "ShaderProgram.h"
 #include "Camera.h"
 #include "ObserverPattern.h"
+#include "Lights.h"
+
 
 class Scene
 {
 public:
-	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects);
-	Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms, std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects);
+	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms,
+		std::vector<std::shared_ptr<DrawableObject>> drawableObjects);
+
+	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms,
+		std::vector<std::shared_ptr<DrawableObject>> drawableObjects,
+		std::vector<std::shared_ptr<PointLight>> PointLights);
+
+	Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms,
+		std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects);
+
 
 	void addDrawableObject(std::shared_ptr<DrawableObject> drawableObject);
 	
@@ -23,6 +33,7 @@ public:
 private:
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
 	std::vector<std::shared_ptr<DrawableObject>> drawableObjects;
+	std::vector<std::shared_ptr<PointLight>> pointLights;
 	Camera camera;
 };
 

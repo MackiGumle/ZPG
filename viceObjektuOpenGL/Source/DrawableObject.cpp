@@ -27,7 +27,7 @@ void DrawableObject::render()
 	{
 		for (auto& transformation : transformations)
 		{
-			transformation->set(modelMatrix);
+			transformation->apply(modelMatrix);
 		}
 		firstRender = false;
 	}
@@ -36,10 +36,10 @@ void DrawableObject::render()
 
 	for (auto& transformation : continuousTransformations)
 	{
-		transformation->set(modelMatrix);
+		transformation->apply(modelMatrix);
 	}
 
 	shaderProgram.lock()->use();
-	shaderProgram.lock()->applyVertexUniform("modelMatrix", modelMatrix);
+	shaderProgram.lock()->applyUniform("modelMatrix", modelMatrix);
 	model.lock()->render();
 }

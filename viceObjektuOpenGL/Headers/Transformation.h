@@ -6,10 +6,11 @@
 
 class Transformation
 {
+private:
 public:
 	//Transformation();
 	bool continous = false;
-	virtual void set(glm::mat4& matrix) = 0;
+	virtual void apply(glm::mat4& matrix) = 0;
 };
 
 class Scale : public Transformation
@@ -17,7 +18,7 @@ class Scale : public Transformation
 public:
 	Scale(glm::vec3 vector);
 	Scale(float scale);
-	void set(glm::mat4& matrix) override;
+	void apply(glm::mat4& matrix) override;
 
 private:
 	glm::vec3 vector;
@@ -27,7 +28,7 @@ class Rotation : public Transformation
 {
 public:
 	Rotation(float degrees, glm::vec3 axis);
-	void set(glm::mat4& matrix) override;
+	void apply(glm::mat4& matrix) override;
 
 private:
 	float angle;
@@ -38,7 +39,7 @@ class Translation : public Transformation
 {
 public:
 	Translation(glm::vec3 vector);
-	void set(glm::mat4& matrix) override;
+	void apply(glm::mat4& matrix) override;
 
 private:
 	glm::vec3 vector;

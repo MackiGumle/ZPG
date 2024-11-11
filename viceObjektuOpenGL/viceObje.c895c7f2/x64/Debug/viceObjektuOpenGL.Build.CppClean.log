@@ -6,9 +6,11 @@ d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\shad
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\shaderloader.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\shader.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\scene.obj
+d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\lights.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\modelmanager.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\model.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\main.obj
+d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\baselight.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\drawableobject.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\camera.obj
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\application.obj
@@ -19,8 +21,6 @@ d:\projects\skola\3rdyear\zpg\viceobjektuopengl\x64\debug\viceobjektuopengl.exe
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\x64\debug\viceobjektuopengl.pdb
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\observerpattern.h.module.json
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\viceobjektuopengl.ilk
-d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\observerpattern.obj
-d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\scene.obj.enc
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\viceobje.c895c7f2.tlog\cl.command.1.tlog
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\viceobje.c895c7f2.tlog\cl.items.tlog
 d:\projects\skola\3rdyear\zpg\viceobjektuopengl\viceobje.c895c7f2\x64\debug\viceobje.c895c7f2.tlog\cl.read.1.tlog

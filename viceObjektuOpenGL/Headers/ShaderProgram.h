@@ -4,7 +4,9 @@
 #include "ObserverPattern.h"
 #include "ShaderLoader.h"
 #include "Camera.h"
+//#include "Lights.h"
 
+class PointLight;
 class ShaderProgram : public Observer, public ShaderLoader
 {
 public:
@@ -19,7 +21,10 @@ public:
 	//void applyVertexUniform(const std::string& name, const glm::mat4 matrix) const;
 	
 	template<typename T>
-	void applyVertexUniform(const std::string& name, const T& value) const;
+	void applyUniform(const std::string& name, const T& value) const;
+	//void applyUniform(const std::string& name, const int& value) const;
+
+	//void addPointLight(std::shared_ptr<PointLight> pointLight);
 	
 	std::string getVertexPath() const;
 	std::string getFragmentPath() const;
@@ -35,6 +40,7 @@ private:
 	std::string fragmentPath;
 
 	Camera* camera = nullptr;
+	//std::vector<std::weak_ptr<PointLight>> pointLights;
 
 	template<class U> struct always_false : std::false_type {};
 

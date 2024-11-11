@@ -22,6 +22,7 @@ public:
 	static void window_iconify_callback(GLFWwindow* window, int iconified);
 	static void window_size_callback(GLFWwindow* window, int width, int height);
 	static void cursor_callback(GLFWwindow* window, double x, double y);
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void button_callback(GLFWwindow* window, int button, int action, int mode);
 	void key_input(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void mouse_input(float xoffset, float yoffset);

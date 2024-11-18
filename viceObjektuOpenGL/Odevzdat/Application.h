@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 
-class Application : IApplicationSubject {
+class Application {
 public:
 	Application();
 	~Application();
@@ -22,29 +22,38 @@ public:
 	static void window_iconify_callback(GLFWwindow* window, int iconified);
 	static void window_size_callback(GLFWwindow* window, int width, int height);
 	static void cursor_callback(GLFWwindow* window, double x, double y);
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void button_callback(GLFWwindow* window, int button, int action, int mode);
 	void key_input(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void mouse_input(float xoffset, float yoffset);
 
-
-	void addObserver(IApplicationObserver* observer);
-	void removeObserver(IApplicationObserver* observer);
-	void notifyObservers();
 
 	void initialization(int w_width = 800, int w_height = 600, const char* w_name = "Window", GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 	void createShaders();
 	void createModels();
 	void createScenes();
 	void run();
-
+	
+	static float getWidth();
+	static float getHeight();
+	static float getDeltaTime();
+	
 private:
 	GLFWwindow* window;
+	static float windowWidth;
+	static float windowHeight;
+
 	ShaderManager shaderManager;
 	ModelManager modelManager;
+	
+
+	static bool cursorLocked;
+	static bool firstMouse;
 
 	size_t currentScene = 0;
+	Camera* currentCamera;
+
 	std::vector<std::shared_ptr<Scene>> Scenes;
-	std::list<IApplicationObserver*> observers;
 
 	// keys being pressed
 	std::unordered_map<int, bool> keys;
@@ -52,4 +61,8 @@ private:
 	// mouse movement
 	float lastX;
 	float lastY;
+
+	// delta time
+	static float deltaTime;
+	float lastFrame = 0.0f;
 };

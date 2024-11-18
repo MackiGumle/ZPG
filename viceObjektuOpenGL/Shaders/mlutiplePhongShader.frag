@@ -8,119 +8,273 @@ in vec3 worldNor;
 out vec4 fragColor;
 
 // Uniforms for lighting and material properties
-uniform vec3 viewPos;                             // Camera position in world space
+uniform vec3 viewPos; // Camera position in world space
 
-// Material properties
-uniform float ambientStrength = 0.1;  // Ambient light strength
-uniform float diffuseStrength = 1.0;  // Diffuse strength
-uniform float specularStrength = 0.5; // Specular strength
-uniform float shininess = 32.0;       // Shininess factor for specular highlight
-uniform vec3 objectColor = vec3(0.385, 0.647, 0.812); // Object color
-
-
-// Define a struct to represent a light source with attenuation
-struct Light {
-    vec3 position;
+struct Material {
+    float ambient;
+    float diffuse;
+    float specular;
+    float shininess;
     vec3 color;
-    float intensity;
+};
+
+struct Light {
+    int type;          // 0 = point light, 1 = directional light, 2 = spot light
+    float angle;       // For spotlights: angle in radians defining the cone
+    vec3 direction;    // For directional and spotlights: light direction (normalized)
+    vec3 position;     // For point lights and spotlights: light position
+    vec3 color;        // Light color
+    float intensity;   // Light intensity
     float constant;    // Constant attenuation factor
     float linear;      // Linear attenuation factor
     float quadratic;   // Quadratic attenuation factor
 };
 
 // Uniform array for lights and number of lights
-uniform Light lights[10]; // Max 10 lights
+uniform Light lights[20]; // Max 20 lights
+uniform Light cameraLight;
 uniform int numLights;    // Actual number of lights in the scene
+uniform Material material;
 
-void main(void)
-{
-    vec3 norm = normalize(worldNor);
-    vec3 viewDir = normalize(viewPos - worldPos.xyz);
-
-    // Initialize color components
+// Function to calculate light contribution
+vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
     vec3 ambient = vec3(0.0);
     vec3 diffuse = vec3(0.0);
     vec3 specular = vec3(0.0);
+    float attenuation = 1.0;
 
-    // Loop over all lights
-    for (int i = 0; i < numLights; ++i) {
-        Light light = lights[i];
+    vec3 lightDir;
+    if (light.type == 0) { // Point light
+        vec3 toLight = light.position - fragPos;
+        float distance = length(toLight);
+        lightDir = normalize(toLight);
+        attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    } else if (light.type == 1) { // Directional light
+        lightDir = normalize(-light.direction);
+    } else if (light.type == 2) { // Spotlight
+        vec3 toLight = light.position - fragPos;
+        float distance = length(toLight);
+        lightDir = normalize(toLight);
+        float theta = dot(lightDir, normalize(-light.direction));
 
-        // Calculate distance and attenuation
-        float distance = length(light.position - worldPos.xyz);
-        float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-
-        // Ambient component
-        ambient += ambientStrength * light.color * light.intensity * attenuation;
-
-        // Diffuse component
-        vec3 lightDir = normalize(light.position - worldPos.xyz);
-        float diff = max(dot(norm, lightDir), 0.0);
-        diffuse += diff * diffuseStrength * light.color * light.intensity * attenuation;
-
-        // Specular component
-        vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-        specular += specularStrength * spec * light.color * light.intensity * attenuation;
+        if (theta > cos(light.angle)) {
+            float spotEffect = pow(theta, material.shininess);
+            attenuation = spotEffect / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+        } else {
+            return vec3(0.0); // Outside spotlight cone
+        }
     }
 
-    // Combine all light contributions
-    vec3 result = (ambient + diffuse + specular) * objectColor;
-    fragColor = vec4(result, 1.0); // Set alpha to 1 for full opacity
-//    fragColor = vec4(objectColor, 1.0); // Set alpha to 1 for full opacity
+    // Ambient component
+    ambient = material.ambient * light.color * light.intensity * attenuation;
+
+    // Diffuse component
+    float diff = max(dot(norm, lightDir), 0.0);
+    diffuse = diff * material.diffuse * light.color * light.intensity * attenuation;
+
+    // Specular component
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    specular = spec * material.specular * light.color * light.intensity * attenuation;
+
+    return ambient + diffuse + specular;
+}
+
+void main(void) {
+    vec3 norm = normalize(worldNor);
+    vec3 viewDir = normalize(viewPos - worldPos.xyz);
+
+    // Initialize final color
+    vec3 finalColor = vec3(0.0);
+
+    // Loop over all lights and accumulate contributions
+    for (int i = 0; i < numLights; ++i) {
+        finalColor += calculateLight(lights[i], norm, viewDir, worldPos.xyz);
+    }
+
+//    finalColor += calculateLight(cameraLight, norm, viewDir, worldPos.xyz);
+
+    // Multiply by material color and set output
+    finalColor *= material.color;
+    fragColor = vec4(finalColor, 1.0); // Set alpha to 1 for full opacity
 }
 
 
 //#version 400
 //
-//const int MAX_LIGHTS = 16;
+//// Inputs from vertex shader
 //in vec4 worldPos;
 //in vec3 worldNor;
 //
+//// Output color
 //out vec4 fragColor;
 //
-//struct PointLight {
+//// Uniforms for lighting and material properties
+//uniform vec3 viewPos; // Camera position in world space
+//
+//struct Material {
+//    float ambient;
+//    float diffuse;
+//    float specular;
+//    float shininess;
 //    vec3 color;
-//    float ambientIntensity;
-//    vec3 position;
 //};
 //
-//uniform vec3 viewPos;
-//uniform int numLights;
-//uniform PointLight lights[MAX_LIGHTS];
+//struct Light {
+//    int type;          // 0 = point light, 1 = directional light, 2 = spot light
+//    float angle;       // For spotlights: angle in radians defining the cone
+//    vec3 direction;    // For directional and spotlights: light direction (normalized)
+//    vec3 position;     // For point lights and spotlights: light position
+//    vec3 color;        // Light color
+//    float intensity;   // Light intensity
+//    float constant;    // Constant attenuation factor
+//    float linear;      // Linear attenuation factor
+//    float quadratic;   // Quadratic attenuation factor
+//};
+//
+//// Uniform array for lights and number of lights
+//uniform Light lights[20]; // Max 20 lights
+//uniform int numLights;    // Actual number of lights in the scene
+//uniform Material material;
+//
+//// function that calculates the lighting for a single light source\
+//// and adds it to the total color
+//
+//void main(void) {
+//    vec3 norm = normalize(worldNor);
+//    vec3 viewDir = normalize(viewPos - worldPos.xyz);
+//
+//    // Initialize color components
+//    vec3 ambient = vec3(0.0);
+//    vec3 diffuse = vec3(0.0);
+//    vec3 specular = vec3(0.0);
+//
+//    // Loop over all lights
+//    for (int i = 0; i < numLights; ++i) {
+//        Light light = lights[i];
+//
+//        vec3 lightDir;
+//        float attenuation = 1.0;
+//        float diff = 0.0;
+//        float spec = 0.0;
+//
+//        if (light.type == 0) { // Point light
+//            vec3 toLight = light.position - worldPos.xyz;
+//            float distance = length(toLight);
+//            lightDir = normalize(toLight);
+//            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+//        } else if (light.type == 1) { // Directional light
+//            lightDir = normalize(-light.direction);
+//        } else if (light.type == 2) { // Spotlight
+//            vec3 toLight = light.position - worldPos.xyz;
+//            float distance = length(toLight);
+//            lightDir = normalize(toLight);
+//            float theta = dot(lightDir, normalize(-light.direction));
+//
+//            if (theta > cos(light.angle)) {
+//                float spotEffect = pow(theta, material.shininess);
+//                attenuation = spotEffect / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+//            } else {
+//                attenuation = 0.0; // Outside spotlight cone
+//            }
+//        }
+//
+//        // Ambient component
+//        ambient += material.ambient * light.color * light.intensity * attenuation;
+//
+//        // Diffuse component
+//        diff = max(dot(norm, lightDir), 0.0);
+//        diffuse += diff * material.diffuse * light.color * light.intensity * attenuation;
+//
+//        // Specular component
+//        vec3 reflectDir = reflect(-lightDir, norm);
+//        spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+//        specular += material.specular * spec * light.color * light.intensity * attenuation;
+//    }
+//
+//    // Combine all light contributions
+//    vec3 result = (ambient + diffuse + specular) * material.color;
+//    fragColor = vec4(result, 1.0); // Set alpha to 1 for full opacity
+//}
+//
+
+/////////////////////////////////////////////////////////////////////////////
+
+//#version 400
+//
+//// Inputs from vertex shader
+//in vec4 worldPos;
+//in vec3 worldNor;
+//
+//// Output color
+//out vec4 fragColor;
+//
+//// Uniforms for lighting and material properties
+//uniform vec3 viewPos;                             // Camera position in world space
+//
+//
+//struct Material{
+//	float ambient;
+//	float diffuse;
+//	float specular;
+//	float shininess;
+//    vec3 color;
+//};
+//
+//// Define a struct to represent a light source with attenuation
+//struct Light {
+//    int type;          // 0 = point light, 1 = directional light, 2 = spot light
+//    float angle;
+//    vec3 direction;
+//    vec3 position;
+//    vec3 color;
+//    float intensity;
+//    float constant;    // Constant attenuation factor
+//    float linear;      // Linear attenuation factor
+//    float quadratic;   // Quadratic attenuation factor
+//};
+//
+//
+//
+//// Uniform array for lights and number of lights
+//uniform Light lights[20]; // Max 20 lights
+//uniform int numLights;    // Actual number of lights in the scene
+//uniform Material material;
 //
 //void main(void)
 //{
-//    vec3 result = vec3(0.0);
+//    vec3 norm = normalize(worldNor);
+//    vec3 viewDir = normalize(viewPos - worldPos.xyz);
 //
-//    for (int i = 0; i < numLights; i++) {
-//        PointLight light = lights[i];
+//    // Initialize color components
+//    vec3 ambient = vec3(0.0);
+//    vec3 diffuse = vec3(0.0);
+//    vec3 specular = vec3(0.0);
 //
-//        // attenuation
-//        float distance = length(worldPos.xyz - light.position);
-//        float attenuation = 1.0 / (distance * distance);
+//    // Loop over all lights
+//    for (int i = 0; i < numLights; ++i) {
+//        Light light = lights[i];
 //
-//        // ambient
-//        vec3 ambient = light.ambientIntensity * light.color;
+//        // Calculate distance and attenuation
+//        float distance = length(light.position - worldPos.xyz);
+//        float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 //
-//        // diffuse
-//        vec3 norm = normalize(worldNor);
+//        // Ambient component
+//        ambient += material.ambient * light.color * light.intensity * attenuation;
+//
+//        // Diffuse component
 //        vec3 lightDir = normalize(light.position - worldPos.xyz);
 //        float diff = max(dot(norm, lightDir), 0.0);
-//        vec3 diffuse = diff * light.color;
+//        diffuse += diff * material.diffuse * light.color * light.intensity * attenuation;
 //
-//        // specular
-//        float specularStrength = 0.5;
-//        vec3 viewDir = normalize(viewPos - worldPos.xyz);
+//        // Specular component
 //        vec3 reflectDir = reflect(-lightDir, norm);
-//        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-//        vec3 specular = specularStrength * spec * light.color;
-//
-//        vec3 combined = (ambient + diffuse + specular) * attenuation;
-//        result += combined;
+//        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+//        specular += material.specular * spec * light.color * light.intensity * attenuation;
 //    }
 //
-//    fragColor = vec4(result, 1.0);
+//    // Combine all light contributions
+//    vec3 result = (ambient + diffuse + specular) * material.color;
+//    fragColor = vec4(result, 1.0); // Set alpha to 1 for full opacity
 //}
-//
 //

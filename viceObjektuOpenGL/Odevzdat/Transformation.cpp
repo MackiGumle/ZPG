@@ -1,31 +1,80 @@
 #include "Transformation.h"
 
-Transformation::Transformation()
+
+Scale::Scale(glm::vec3 vector) : vector(vector)
 {
-	matrix = glm::mat4(1.0f);
 }
 
-glm::mat4 Transformation::getMatrix() const
+Scale::Scale(float scale) : vector(glm::vec3(scale))
 {
-	return matrix;
 }
 
-void Transformation::translate(glm::vec3 vector)
+glm::mat4 Scale::apply()
 {
-	matrix = glm::translate(matrix, vector);
+	return glm::scale(glm::mat4(1.0f), vector);
 }
 
-void Transformation::rotate(float angle, glm::vec3 axis)
+DynamicScale::DynamicScale(std::function<glm::vec3()> scaleFunc) : scaleFunc(scaleFunc)
 {
-	matrix = glm::rotate(matrix, glm::radians(angle), axis);
 }
 
-void Transformation::scale(glm::vec3 vector)
+glm::mat4 DynamicScale::apply()
 {
-	matrix = glm::scale(matrix, vector);
+	return glm::scale(glm::mat4(1.0f), scaleFunc());
 }
 
-void Transformation::scale(float scalar)
+Rotation::Rotation(float degrees, glm::vec3 axis) : angle(degrees), axis(axis)
 {
-	matrix = glm::scale(matrix, glm::vec3(scalar));
+}
+
+glm::mat4 Rotation::apply()
+{
+	return glm::rotate(glm::mat4(1.0f), glm::radians(angle), axis);
+}
+
+DynamicRotation::DynamicRotation(std::function<float()> angleFunc, std::function<glm::vec3()> axisFunc) : angleFunc(angleFunc), axisFunc(axisFunc)
+{
+
+}
+
+glm::mat4 DynamicRotation::apply()
+{
+	return glm::rotate(glm::mat4(1.0f), glm::radians(angleFunc()), axisFunc());
+}
+
+Translation::Translation(glm::vec3 vector) : vector(vector)
+{
+}
+
+glm::mat4 Translation::apply()
+{
+	return glm::translate(glm::mat4(1.0f), vector);
+}
+
+DynamicTranslation::DynamicTranslation(std::function<glm::vec3()> translationFunc) : translationFunc(translationFunc)
+{
+}
+
+glm::mat4 DynamicTranslation::apply()
+{
+	return glm::translate(glm::mat4(1.0f), translationFunc());
+}
+
+TransformationComposite::TransformationComposite()
+{
+}
+
+void TransformationComposite::addTransformation(std::unique_ptr<Transformation> transformation)
+{
+	transformations.push_back(std::move(transformation));
+}
+
+glm::mat4 TransformationComposite::apply()
+{
+	glm::mat4 result = glm::mat4(1.0f);
+	for (auto& transformation : transformations)
+	{
+		result = transformation->apply() * result;
+	}
+	return result;
 }

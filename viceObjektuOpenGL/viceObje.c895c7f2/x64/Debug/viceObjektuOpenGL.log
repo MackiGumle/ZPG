@@ -1,19 +1,30 @@
 ﻿  Scanning sources for module dependencies...
   Application.cpp
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(50,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(51,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(79,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(51,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(52,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(80,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(82,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(81,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(83,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(101,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(178,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(179,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(181,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(181,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(203,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(203,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(370,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(84,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(102,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(179,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(180,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(182,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(182,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(204,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(204,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(393,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         ]
+  (compiling source file 'Source/Application.cpp')
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56):
+  the template instantiation context (the oldest one first) is
+  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(347,42):
+  	see reference to function template instantiation 'std::unique_ptr<Scale,std::default_delete<Scale>> std::make_unique<Scale,int,0>(int &&)' being compiled
+  
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         with
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         [
@@ -22,7 +33,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.3351
   (compiling source file 'Source/Application.cpp')
   C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56):
   the template instantiation context (the oldest one first) is
-  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(354,34):
+  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(377,34):
   	see reference to function template instantiation 'std::unique_ptr<Rotation,std::default_delete<Rotation>> std::make_unique<Rotation,size_t,glm::vec3,0>(size_t &&,glm::vec3 &&)' being compiled
   
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
@@ -33,7 +44,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.3351
   (compiling source file 'Source/Application.cpp')
   C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76):
   the template instantiation context (the oldest one first) is
-  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(346,8):
+  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(368,8):
   	see reference to function template instantiation 'std::shared_ptr<PointLight> std::make_shared<PointLight,glm::vec3,glm::vec3,int>(glm::vec3 &&,glm::vec3 &&,int &&)' being compiled
   	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2738,46):
   	see reference to function template instantiation 'std::_Ref_count_obj2<PointLight>::_Ref_count_obj2<_Ty,_Ty,int>(_Ty &&,_Ty &&,int &&)' being compiled
@@ -82,4 +93,13 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.3351
               _Ty=PointLight
           ]
   
+  Camera.cpp
+  DrawableObject.cpp
+  Lights.cpp
+  Scene.cpp
+  ShaderManager.cpp
+  ShaderProgram.cpp
+  main.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   viceObjektuOpenGL.vcxproj -> D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe

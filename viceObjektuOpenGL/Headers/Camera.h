@@ -5,6 +5,7 @@
 #include <list>
 #include <GLFW/glfw3.h>
 #include "ObserverPattern.h"
+#include "Lights.h"
 
 class Application;
 class Camera : public Subject
@@ -21,8 +22,10 @@ public:
 	glm::mat4 getProjectionMatrix() const;
 	glm::vec3 getPosition() const;
 
-	void setFov(float fov);
 	float getFov() const;
+	const SpotLight& getSpotLight() const;
+
+	void setFov(float fov);
 	void setProjectionMatrix(float fov,	float aspect,
 		float near = 0.01f, float far = 500.0f);
 
@@ -43,5 +46,7 @@ private:
 	float pitch;
 	float movementSpeed;
 	float mouseSensitivity;
+
+	SpotLight spotLight;
 };
 

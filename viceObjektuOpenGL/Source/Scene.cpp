@@ -11,21 +11,18 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::ve
 	}
 }
 
-Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects, std::vector<std::shared_ptr<PointLight>> PointLights)
-	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects), pointLights(PointLights)
+Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects, std::vector<std::shared_ptr<BaseLight>> lights)
+	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects), lights(lights)
 {
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
 		shaderProgram->setCamera(&camera);
 
-		if (shaderProgram->hasVertexUniform("numLights"))
-			shaderProgram->applyUniform("numLights", static_cast<int>(pointLights.size()));
-
-		//for (auto& pointLight : pointLights)
-		//{
-		//	shaderProgram->addPointLight(pointLight);
-		//}
+		if (shaderProgram->hasUniform("numLights"))
+			// +1 for the camera light
+			shaderProgram->applyUniform("numLights", static_cast<int>(lights.size() + 1));
+		
 	}
 }
 
@@ -54,25 +51,22 @@ void Scene::rotateCamera(float xoffset, float yoffset) {
 
 void Scene::render()
 {
-	for (auto& shaderProgram : shaderPrograms)
-	{
-
-	}
-
 	// Apply lights
 	for (auto& shaderProgram : shaderPrograms)
 	{
 		shaderProgram->use();
-		if (shaderProgram->hasVertexUniform("numLights"))
+		if (shaderProgram->hasUniform("numLights"))
 		{
 
 			auto i = 0;
-			for (auto& pointLight : pointLights)
+			for (auto& light : lights)
 			{
 				auto name = "lights[" + std::to_string(i) + "]";
-				shaderProgram->applyUniform(name, *pointLight.get());
+				shaderProgram->applyUniform(name, *light.get());
 				++i;
 			}
+
+			shaderProgram->applyUniform("lights[" + std::to_string(i) + "]", camera.getSpotLight());
 		}
 	}
 

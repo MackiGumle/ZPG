@@ -4,7 +4,9 @@
 #include "sphere.h"
 #include "gift.h"
 #include "suzi_flat.h"
-#include "TransFunctions.h"
+#include "plain.h"
+#include "TransformFunctions.h"
+#include "SceneCreator.h"
 
 
 float Application::windowWidth = 800;
@@ -111,7 +113,7 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 	switch (action)
 	{
 	case GLFW_PRESS:
-		std::cout << "[i] Key Pressed:\t" << key << "\t" << keys[key] << std::endl;
+		//std::cout << "[i] Key Pressed:\t" << key << "\t" << keys[key] << std::endl;
 
 		if (keys.find(key) != keys.end())
 		{
@@ -268,7 +270,9 @@ void Application::createModels()
 	modelManager.loadModel(sphere, sizeof(sphere), 6, "Sphere");
 	modelManager.loadModel(gift, sizeof(gift), 6, "Gift");
 	modelManager.loadModel(suziFlat, sizeof(suziFlat), 6, "SuziFlat");
+	modelManager.loadModel(plain, sizeof(plain), 6, "Plain");
 	modelManager.loadModel(points, sizeof(points), 3, "Triangle");
+
 }
 
 void Application::createScenes()
@@ -292,7 +296,7 @@ void Application::createScenes()
 		shaderManager.getShaderProgram("SC2_BlinnLight"),*/
 		shaderManager.getShaderProgram("SC2_multiple"),
 	};
-	
+
 	// Scene 0 Triangle
 	std::vector<std::shared_ptr<DrawableObject>> objects0 = {
 		std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderManager.getShaderProgram("SC0_Green")),
@@ -307,17 +311,43 @@ void Application::createScenes()
 	std::uniform_real_distribution<float> scale(0.7f, 1.7f);
 
 	// Scene 1 Forest
+	std::vector<std::shared_ptr<BaseLight>> lights1 = {
+		//std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 1.0f), 1),
+		//std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
+		//std::make_shared<SpotLight>(15.5f, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0, 10, 10), glm::vec3(1,0,1), 1),
+	};
+
 	std::vector<std::shared_ptr<DrawableObject>> objects1;
-	for (size_t i = 0; i < 50; i++)
+	for (size_t i = 0; i < 80; i++)
 	{
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
 			shaderManager.getShaderProgram("SC1_multiple")));
 
-
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-			shaderManager.getShaderProgram("SC1_multiple")));
+		if (i % 2 == 0)
+			objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
+				shaderManager.getShaderProgram("SC1_multiple")));
 	}
 
+	// Create attached lights
+	for (size_t i = 0; i < 10; i++)
+	{
+		lights1.push_back(
+			std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.50f, 0.80f, 0.10f), 0.50f, 1.0f, 0.8f));
+		objects1.push_back(
+			std::make_shared<DrawableObject>(modelManager.getModel("Sphere"),
+				shaderManager.getShaderProgram("SC1_Green")
+				//Material(0.05f, 0.1f, 0.45f, 25, glm::vec3(0.5f, 0.0f, 1.0f))
+			)
+		);
+
+		objects1.back()->addTransformation(std::make_unique<Scale>(glm::vec3(0.05f)));
+		objects1.back()->addTransformation(std::make_unique<Translation>(glm::vec3(0, scale(gen)+1, 0)));
+		objects1.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslationRandom));
+		objects1.back()->addObserver(lights1[i].get());
+		lights1.back()->setObject(objects1.back().get());
+	}
+
+	// Displace objects
 	size_t i = 0;
 	for (auto& object : objects1) {
 		object->addTransformation(std::make_unique<Scale>(glm::vec3(scale(gen))));
@@ -327,14 +357,38 @@ void Application::createScenes()
 		if (i % 4 == 0)
 			object->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation,
 				[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }
-			));
+		));
 
 		object->addTransformation(std::make_unique<Translation>(glm::vec3(x, 0, z)));
 
 		++i;
 	}
 
+	objects1.push_back(std::make_shared<DrawableObject>(
+		modelManager.getModel("Sphere"),
+		shaderManager.getShaderProgram("SC1_multiple"),
+		Material(0.05f, 0.1f, 0.45f, 25, glm::vec3(0.5f, 0.0f, 1.0f))
+	));
+
+	objects1.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
+
+
+	// Forrest floor
+	objects1.push_back(std::make_shared<DrawableObject>(
+		modelManager.getModel("Plain"),
+		shaderManager.getShaderProgram("SC1_multiple"),
+		Material(0.5f, 0.1f, 0.45f, 25, glm::vec3(1.0f, 1.0f, 1.0f))
+	));
+
+	objects1.back()->addTransformation(std::make_unique<Scale>(1000));
+
 	///// Scene 2 Spheres 4x
+	std::vector<std::shared_ptr<BaseLight>> lights2 = {
+		std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 1.0f), 1),
+		//std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
+		//std::make_shared<SpotLight>(15.5f, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0, 10, 10), glm::vec3(1,0,1), 1),
+	};
+
 	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
@@ -342,24 +396,22 @@ void Application::createScenes()
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
 	};
 
-	std::vector<std::shared_ptr<PointLight>> pointLights = {
-		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 0), 10),
-		std::make_shared<PointLight>(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0, 1.0f, 0), 10),
-	};
-
-
 	i = 0;
+	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
 	for (auto& object : objects2) {
 		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
 		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
 	}
 
-	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
 	objects2[1]->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
 
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, pointLights));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, pointLights));
+
+
+	//Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
+	SceneCreator::createTestTriangle(Scenes, shaderManager, modelManager);
+	SceneCreator::create4Balls(Scenes, shaderManager, modelManager);
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, lights1));
+	//Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, lights2));
 
 	currentCamera = Scenes[currentScene]->getCamera();
 }

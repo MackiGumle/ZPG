@@ -3,11 +3,13 @@
 #include <GLFW/glfw3.h>
 #include "ShaderManager.h"
 #include "ModelManager.h"
+
 #include "Scene.h"
 #include "ObserverPattern.h"
 #include <list>
 #include <random>
 #include <unordered_map>
+
 
 
 class Application {

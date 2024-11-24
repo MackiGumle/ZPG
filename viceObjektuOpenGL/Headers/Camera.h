@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "ObserverPattern.h"
 
-class Application;
+// Subject of ShaderProgram and BaseLight
 class Camera : public Subject
 {
 public:
@@ -21,17 +21,19 @@ public:
 	glm::mat4 getProjectionMatrix() const;
 	glm::vec3 getPosition() const;
 
-	void setFov(float fov);
 	float getFov() const;
+	glm::vec3 getFront() const;
+
+	void setFov(float fov);
 	void setProjectionMatrix(float fov,	float aspect,
 		float near = 0.01f, float far = 500.0f);
 
-private:
 	void updateCameraVectors();
 
+private:
 	glm::vec3 position;
-	glm::vec3 front;
 	// actually pointing in the reverse direction of target. 
+	glm::vec3 front;
 	glm::vec3 up;
 	glm::vec3 right;
 	glm::vec3 worldUp;

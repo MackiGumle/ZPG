@@ -1,7 +1,12 @@
 #include "DrawableObject.h"
 
 DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram)
-	: model(model), shaderProgram(shaderProgram)
+	: model(model), shaderProgram(shaderProgram), position(glm::vec3(0.0f))
+{
+}
+
+DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram, Material material)
+	: model(model), shaderProgram(shaderProgram), position(glm::vec3(0.0f)), material(material)
 {
 }
 
@@ -11,39 +16,24 @@ DrawableObject::~DrawableObject()
 
 void DrawableObject::addTransformation(std::unique_ptr<Transformation> transformation, bool continuous)
 {
-	//transformations.push_back(std::make_unique<Transformation>(transformation));
-	/*
-	if (continuous) {
-		continuousTransformations.push_back(std::move(transformation));
-	}
-	else {
-		transformations.push_back(std::move(transformation));
-	}*/
-
 	transformationComposite.addTransformation(std::move(transformation));
 }
 
 void DrawableObject::render()
 {
-	//if (firstRender)
-	//{
-	//	for (auto& transformation : transformations)
-	//	{
-	//		transformation->apply(modelMatrix);
-	//	}
-	//	firstRender = false;
-	//}
-
-	//glm::mat4 tempModelMatrix = modelMatrix;
-
-	//for (auto& transformation : continuousTransformations)
-	//{
-	//	transformation->apply(modelMatrix);
-	//}
-
 	auto modelMatrix = transformationComposite.apply();
 
-	shaderProgram.lock()->use();
-	shaderProgram.lock()->applyUniform("modelMatrix", modelMatrix);
-	model.lock()->render();
+	position = glm::vec3(modelMatrix[3]);
+	notifyObservers();
+
+	shaderProgram->applyUniform("modelMatrix", modelMatrix);
+
+	if (shaderProgram->hasUniform("material.color"))
+	{
+		shaderProgram->applyUniform("material", material);
+	}
+
+	shaderProgram->use();
+	model->render();
+	glUseProgram(0);
 }

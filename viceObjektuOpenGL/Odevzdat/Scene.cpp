@@ -7,6 +7,22 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::ve
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
+	}
+}
+
+Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects, std::vector<std::shared_ptr<BaseLight>> lights)
+	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects), lights(lights)
+{
+	for (auto& shaderProgram : this->shaderPrograms)
+	{
+		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
+
+		if (shaderProgram->hasUniform("numLights"))
+			// +1 for the camera light
+			shaderProgram->applyUniform("numLights", static_cast<int>(lights.size() + 1));
+		
 	}
 }
 
@@ -16,28 +32,49 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms, std::
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
+		shaderProgram->setCamera(&camera);
 	}
 }
 
-void Scene::moveCamera(int direction) {
-	camera.move(direction);
+void Scene::addDrawableObject(std::shared_ptr<DrawableObject> drawableObject)
+{
+	drawableObjects.push_back(drawableObject);
+}
+
+Camera* Scene::getCamera() {
+	return &camera;
 }
 
 void Scene::rotateCamera(float xoffset, float yoffset) {
 	camera.rotate(xoffset, yoffset, true);
 }
 
-void Scene::update(std::unordered_map<int, bool>& keys)
-{
-	camera.update(keys);
-}
-
 void Scene::render()
 {
+	// Apply lights
+	for (auto& shaderProgram : shaderPrograms)
+	{
+		shaderProgram->use();
+		if (shaderProgram->hasUniform("numLights"))
+		{
+
+			auto i = 0;
+			for (auto& light : lights)
+			{
+				auto name = "lights[" + std::to_string(i) + "]";
+				shaderProgram->applyUniform(name, *light.get());
+				++i;
+			}
+
+			shaderProgram->applyUniform("lights[" + std::to_string(i) + "]", camera.getSpotLight());
+		}
+	}
+
 	for (auto& drawableObject : drawableObjects)
 	{
-		drawableObject->rotate(0.5f, glm::vec3(0, 1, 0));
-		camera.notifyObservers();
+
+		//camera.notifyObservers();
+
 		drawableObject->render();
 	}
 }

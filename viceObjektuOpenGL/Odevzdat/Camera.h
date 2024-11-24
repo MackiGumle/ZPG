@@ -5,26 +5,32 @@
 #include <list>
 #include <GLFW/glfw3.h>
 #include "ObserverPattern.h"
+#include "Lights.h"
 
-class Camera : public ICameraSubject, IApplicationObserver
+class Application;
+class Camera : public Subject
 {
 public:
-	Camera(glm::vec3 position = glm::vec3(0,0,0), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+	Camera(glm::vec3 position = glm::vec3(0, 0, 0), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 
-	void addObserver(ICameraObserver* observer) override;
-	void removeObserver(ICameraObserver* observer) override;
-	void notifyObservers() override;
+	void move(std::unordered_map<int, bool>& keys);
 
-	void update(std::unordered_map<int, bool>& keys) override;
+	//void move(int direction);
+	void rotate(float xoffset, float yoffset, bool constrainPitch = true);
 
-	void move(int direction);
-	void rotate(float xoffset, float yoffset, bool constrainPitch);
+	glm::mat4 getViewMatrix() const;
+	glm::mat4 getProjectionMatrix() const;
+	glm::vec3 getPosition() const;
 
+	float getFov() const;
+	const SpotLight& getSpotLight() const;
+
+	void setFov(float fov);
+	void setProjectionMatrix(float fov,	float aspect,
+		float near = 0.01f, float far = 500.0f);
 
 private:
 	void updateCameraVectors();
-
-	std::list<ICameraObserver*> observers;
 
 	glm::vec3 position;
 	glm::vec3 front;
@@ -34,10 +40,13 @@ private:
 	glm::vec3 worldUp;
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
-	
+
+	float fov;
 	float yaw;
 	float pitch;
 	float movementSpeed;
 	float mouseSensitivity;
+
+	SpotLight spotLight;
 };
 

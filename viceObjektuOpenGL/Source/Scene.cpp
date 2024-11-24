@@ -4,39 +4,52 @@
 Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects)
 	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects)
 {
+	// Camera flashlight
+	auto flashlight = std::make_shared<SpotLight>(15.0f, camera.getFront(), camera.getPosition(), glm::vec3(1), 0.5f);
+	this->lights.push_back(flashlight);
+	camera.addObserver(flashlight.get());
+	flashlight->setCamera(&camera);
+	
+
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
 		shaderProgram->setCamera(&camera);
+
+		if (shaderProgram->hasUniform("numLights"))
+			shaderProgram->applyUniform("numLights", static_cast<int>(this->lights.size()));
 	}
+
+	camera.updateCameraVectors();
 }
 
-Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects, std::vector<std::shared_ptr<PointLight>> PointLights)
-	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects), pointLights(PointLights)
+Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects, std::vector<std::shared_ptr<BaseLight>> lights)
+	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects)
 {
+	// Camera flashlight
+	auto flashlight = std::make_shared<SpotLight>(15.0f, camera.getFront(), camera.getPosition(), glm::vec3(1), 0.5f);
+	this->lights.push_back(flashlight);
+	camera.addObserver(flashlight.get());
+	flashlight->setCamera(&camera);
+
+	// Create new instances of lights based on the input
+	for (const auto& light : lights)
+	{
+		//this->lights.push_back(light->clone());
+		this->lights.push_back(light);
+	}
+
+	// Add observers to camera
 	for (auto& shaderProgram : this->shaderPrograms)
 	{
 		camera.addObserver(shaderProgram.get());
 		shaderProgram->setCamera(&camera);
 
-		if (shaderProgram->hasVertexUniform("numLights"))
-			shaderProgram->applyUniform("numLights", static_cast<int>(pointLights.size()));
-
-		//for (auto& pointLight : pointLights)
-		//{
-		//	shaderProgram->addPointLight(pointLight);
-		//}
+		if (shaderProgram->hasUniform("numLights"))
+			shaderProgram->applyUniform("numLights", static_cast<int>(this->lights.size()));
 	}
-}
 
-Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms, std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects)
-	: shaderPrograms(std::move(shaderPrograms)), drawableObjects(std::move(drawableObjects))
-{
-	for (auto& shaderProgram : this->shaderPrograms)
-	{
-		camera.addObserver(shaderProgram.get());
-		shaderProgram->setCamera(&camera);
-	}
+	camera.updateCameraVectors();
 }
 
 void Scene::addDrawableObject(std::shared_ptr<DrawableObject> drawableObject)
@@ -54,25 +67,40 @@ void Scene::rotateCamera(float xoffset, float yoffset) {
 
 void Scene::render()
 {
-	for (auto& shaderProgram : shaderPrograms)
-	{
-
-	}
-
 	// Apply lights
 	for (auto& shaderProgram : shaderPrograms)
 	{
 		shaderProgram->use();
-		if (shaderProgram->hasVertexUniform("numLights"))
+		if (shaderProgram->hasUniform("numLights"))
 		{
-
 			auto i = 0;
-			for (auto& pointLight : pointLights)
+			for (auto& light : lights)
 			{
 				auto name = "lights[" + std::to_string(i) + "]";
-				shaderProgram->applyUniform(name, *pointLight.get());
+				
+				auto type = light->getType();
+				switch (type)
+				{
+				case POINT_LIGHT:
+					shaderProgram->applyUniform(name, *std::dynamic_pointer_cast<PointLight>(light));
+					break;
+				case DIRECTIONAL_LIGHT:
+					shaderProgram->applyUniform(name, *std::dynamic_pointer_cast<DirectionalLight>(light));
+					break;
+				case SPOT_LIGHT:
+					shaderProgram->applyUniform(name, *std::dynamic_pointer_cast<SpotLight>(light));
+					break;
+
+				default:
+					throw std::runtime_error("Unknown light type");
+					break;
+				}
+
+				//shaderProgram->applyUniform(name, *light.get());
 				++i;
 			}
+
+			//shaderProgram->applyUniform("lights[" + std::to_string(i) + "]", camera.getSpotLight());
 		}
 	}
 

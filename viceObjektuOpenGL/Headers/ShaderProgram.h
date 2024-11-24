@@ -6,7 +6,9 @@
 #include "Camera.h"
 //#include "Lights.h"
 
+
 class PointLight;
+// Observer of Camera
 class ShaderProgram : public Observer, public ShaderLoader
 {
 public:
@@ -17,7 +19,7 @@ public:
 	void update() override;
 	void setCamera(Camera* camera);
 
-	bool hasVertexUniform(const std::string& name) const;
+	bool hasUniform(const std::string& name) const;
 	//void applyVertexUniform(const std::string& name, const glm::mat4 matrix) const;
 	
 	template<typename T>

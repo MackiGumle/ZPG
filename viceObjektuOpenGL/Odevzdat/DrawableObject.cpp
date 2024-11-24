@@ -5,33 +5,32 @@ DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<Sha
 {
 }
 
+DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram, Material material)
+	: model(model), shaderProgram(shaderProgram), material(material)
+{
+}
+
 DrawableObject::~DrawableObject()
 {
 }
 
+void DrawableObject::addTransformation(std::unique_ptr<Transformation> transformation, bool continuous)
+{
+	transformationComposite.addTransformation(std::move(transformation));
+}
+
 void DrawableObject::render()
 {
-	shaderProgram.lock()->use();
-	shaderProgram.lock()->applyVertexUniform("modelMatrix", transformation.getMatrix());
-	model.lock()->render();
-}
+	auto modelMatrix = transformationComposite.apply();
 
-void DrawableObject::scale(glm::vec3 vector)
-{
-	transformation.scale(vector);
-}
+	shaderProgram->applyUniform("modelMatrix", modelMatrix);
 
-void DrawableObject::scale(float scalar)
-{
-	transformation.scale(scalar);
-}
+	if (shaderProgram->hasUniform("material.color"))
+	{
+		shaderProgram->applyUniform("material", material);
+	}
 
-void DrawableObject::rotate(float angle, glm::vec3 axis)
-{
-	transformation.rotate(angle, axis);
-}
-
-void DrawableObject::translate(glm::vec3 vector)
-{
-	transformation.translate(vector);
+	shaderProgram->use();
+	model->render();
+	glUseProgram(0);
 }

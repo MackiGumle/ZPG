@@ -1,5 +1,6 @@
 #include "ShaderProgram.h"
 #include "Lights.h"
+#include "Material.h"
 
 ShaderProgram::ShaderProgram(std::shared_ptr<Shader> vertexShader, std::shared_ptr<Shader> fragmentShader)
 	: vertexShader(vertexShader), fragmentShader(fragmentShader)
@@ -26,14 +27,18 @@ ShaderProgram::~ShaderProgram()
 
 void ShaderProgram::update() // Observer of Camera
 {
-	//use();
-
 	applyUniform("viewMatrix", camera->getViewMatrix());
 	applyUniform("projectionMatrix", camera->getProjectionMatrix());
 
-	if (hasVertexUniform("viewPos"))
+
+	if (hasUniform("viewPos"))
 	{
 		applyUniform("viewPos", camera->getPosition());
+	}
+
+	if (hasUniform("numLights"))
+	{
+		applyUniform("numLights", camera->getPosition());
 	}
 }
 
@@ -42,26 +47,18 @@ void ShaderProgram::setCamera(Camera* camera)
 	this->camera = camera;
 }
 
-bool ShaderProgram::hasVertexUniform(const std::string& name) const
+bool ShaderProgram::hasUniform(const std::string& name) const
 {
+	use();
 	GLint location = glGetUniformLocation(shaderProgramID, name.c_str());
 	return location != -1;
+	glUseProgram(0);
 }
 
 template<typename T>
 void ShaderProgram::applyUniform(const std::string& name, const T& value) const
 {
 	use();
-	if constexpr (std::is_same_v<T, PointLight>)
-	{
-		applyUniform(name + ".position", value.Position);
-		applyUniform(name + ".color", value.Color);
-		applyUniform(name + ".intensity", value.intensity);
-		applyUniform(name + ".constant", value.constant);
-		applyUniform(name + ".linear", value.linear);
-		applyUniform(name + ".quadratic", value.quadratic);
-		return;
-	}
 
 	GLint location = glGetUniformLocation(shaderProgramID, name.c_str());
 	if (location == -1)
@@ -95,10 +92,13 @@ void ShaderProgram::applyUniform(const std::string& name, const T& value) const
 	{
 		glUniform1i(location, value);
 	}
-	//else
-	//{
-	//	static_assert(always_false<T>::value, "Unsupported uniform type");
-	//}
+	else
+	{
+		static_assert(always_false<T>::value, "Unsupported uniform type");
+	}
+
+
+	glUseProgram(0);
 }
 
 template void ShaderProgram::applyUniform<glm::mat4>(const std::string& name, const glm::mat4& value) const;
@@ -107,7 +107,69 @@ template void ShaderProgram::applyUniform<glm::vec3>(const std::string& name, co
 template void ShaderProgram::applyUniform<glm::vec4>(const std::string& name, const glm::vec4& value) const;
 template void ShaderProgram::applyUniform<int>(const std::string& name, const int& value) const;
 template void ShaderProgram::applyUniform<float>(const std::string& name, const float& value) const;
-template void ShaderProgram::applyUniform<PointLight>(const std::string& name, const PointLight& value) const;
+
+//template<>
+//void ShaderProgram::applyUniform<BaseLight>(const std::string& name, const BaseLight& value) const
+//{
+//	applyUniform(name + ".position", value.position);
+//	applyUniform(name + ".color", value.color);
+//	applyUniform(name + ".intensity", value.intensity);
+//	applyUniform(name + ".constant", value.constant);
+//	applyUniform(name + ".linear", value.linear);
+//	applyUniform(name + ".quadratic", value.quadratic);
+//}
+
+template<>
+void ShaderProgram::applyUniform<SpotLight>(const std::string& name, const SpotLight& value) const
+{
+	applyUniform(name + ".position", value.position);
+	applyUniform(name + ".color", value.color);
+	applyUniform(name + ".intensity", value.intensity);
+	applyUniform(name + ".constant", value.constant);
+	applyUniform(name + ".linear", value.linear);
+	applyUniform(name + ".quadratic", value.quadratic);
+
+	applyUniform(name + ".direction", value.direction);
+	applyUniform(name + ".angle", value.angle);
+	applyUniform(name + ".type", (int)SPOT_LIGHT);
+}
+
+template<>
+void ShaderProgram::applyUniform<DirectionalLight>(const std::string& name, const DirectionalLight& value) const
+{
+	applyUniform(name + ".position", value.position);
+	applyUniform(name + ".color", value.color);
+	applyUniform(name + ".intensity", value.intensity);
+	applyUniform(name + ".constant", value.constant);
+	applyUniform(name + ".linear", value.linear);
+	applyUniform(name + ".quadratic", value.quadratic);
+
+	applyUniform(name + ".direction", value.direction);
+	applyUniform(name + ".type", (int)DIRECTIONAL_LIGHT);
+}
+
+template<>
+void ShaderProgram::applyUniform<PointLight>(const std::string& name, const PointLight& value) const
+{
+	applyUniform(name + ".position", value.position);
+	applyUniform(name + ".color", value.color);
+	applyUniform(name + ".intensity", value.intensity);
+	applyUniform(name + ".constant", value.constant);
+	applyUniform(name + ".linear", value.linear);
+	applyUniform(name + ".quadratic", value.quadratic);
+
+	applyUniform(name + ".type", (int)POINT_LIGHT);
+}
+
+template<>
+void ShaderProgram::applyUniform<Material>(const std::string& name, const Material& value) const
+{
+	applyUniform(name + ".ambient", value.ambient);
+	applyUniform(name + ".diffuse", value.diffuse);
+	applyUniform(name + ".specular", value.specular);
+	applyUniform(name + ".shininess", value.shininess);
+	applyUniform(name + ".color", value.color);
+}
 
 
 

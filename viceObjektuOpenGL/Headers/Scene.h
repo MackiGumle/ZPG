@@ -17,11 +17,7 @@ public:
 
 	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms,
 		std::vector<std::shared_ptr<DrawableObject>> drawableObjects,
-		std::vector<std::shared_ptr<PointLight>> PointLights);
-
-	Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms,
-		std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects);
-
+		std::vector<std::shared_ptr<BaseLight>> PointLights);
 
 	void addDrawableObject(std::shared_ptr<DrawableObject> drawableObject);
 	
@@ -33,7 +29,6 @@ public:
 private:
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
 	std::vector<std::shared_ptr<DrawableObject>> drawableObjects;
-	std::vector<std::shared_ptr<PointLight>> pointLights;
+	std::vector<std::shared_ptr<BaseLight>> lights;
 	Camera camera;
 };
-

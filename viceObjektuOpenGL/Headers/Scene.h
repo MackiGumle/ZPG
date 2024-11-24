@@ -19,10 +19,6 @@ public:
 		std::vector<std::shared_ptr<DrawableObject>> drawableObjects,
 		std::vector<std::shared_ptr<BaseLight>> PointLights);
 
-	Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms,
-		std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects);
-
-
 	void addDrawableObject(std::shared_ptr<DrawableObject> drawableObject);
 	
 	Camera* getCamera();
@@ -36,4 +32,3 @@ private:
 	std::vector<std::shared_ptr<BaseLight>> lights;
 	Camera camera;
 };
-

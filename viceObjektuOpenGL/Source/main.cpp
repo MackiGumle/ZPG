@@ -34,42 +34,42 @@
 //glm::mat4 Model = glm::mat4(1.0f);
 
 
-float points[] = {
-	0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-   -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
-};
-
-float firstTriangle[] = {
-		-0.9f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
-		-0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
-		-0.45f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
-};
-
-float secondTriangle[] = {
-		0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left
-		0.9f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
-		0.45f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
-};
-
-const char* vertex_shader =
-"#version 330\n"
-"layout(location=0) in vec3 vp;"
-"layout(location=1) in vec3 vc;"
-"out vec3 color;"
-"void main () {"
-//"     gl_Position = vec4 (vp, 1.0);"
-"     gl_Position = vec4 (vp.x, vp.y, vp.z, 1.0);"
-"     color = vc;"
-"}";
-
-const char* fragment_shader =
-"#version 330\n"
-"in vec3 color;"
-"out vec4 frag_colour;"
-"void main () {"
-"     frag_colour = vec4 (color.x, color.y, color.z, 1.0);"
-"}";
+//float points[] = {
+//	0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+//	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+//   -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+//};
+//
+//float firstTriangle[] = {
+//		-0.9f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left 
+//		-0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+//		-0.45f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
+//};
+//
+//float secondTriangle[] = {
+//		0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left
+//		0.9f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // right
+//		0.45f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top 
+//};
+//
+//const char* vertex_shader =
+//"#version 330\n"
+//"layout(location=0) in vec3 vp;"
+//"layout(location=1) in vec3 vc;"
+//"out vec3 color;"
+//"void main () {"
+////"     gl_Position = vec4 (vp, 1.0);"
+//"     gl_Position = vec4 (vp.x, vp.y, vp.z, 1.0);"
+//"     color = vc;"
+//"}";
+//
+//const char* fragment_shader =
+//"#version 330\n"
+//"in vec3 color;"
+//"out vec4 frag_colour;"
+//"void main () {"
+//"     frag_colour = vec4 (color.x, color.y, color.z, 1.0);"
+//"}";
 
 
 int main(void)
@@ -85,4 +85,5 @@ int main(void)
 	app.createScenes();
 	app.run();
 
+	return 0;
 }

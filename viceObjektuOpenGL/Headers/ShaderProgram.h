@@ -6,7 +6,9 @@
 #include "Camera.h"
 //#include "Lights.h"
 
+
 class PointLight;
+// Observer of Camera
 class ShaderProgram : public Observer, public ShaderLoader
 {
 public:

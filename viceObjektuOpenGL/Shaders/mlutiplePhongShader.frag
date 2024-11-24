@@ -3,12 +3,14 @@
 // Inputs from vertex shader
 in vec4 worldPos;
 in vec3 worldNor;
+//in vec2 uvc;
 
 // Output color
 out vec4 fragColor;
 
 // Uniforms for lighting and material properties
 uniform vec3 viewPos; // Camera position in world space
+//uniform sampler2D textureUnitID;
 
 struct Material {
     float ambient;
@@ -31,7 +33,7 @@ struct Light {
 };
 
 // Uniform array for lights and number of lights
-uniform Light lights[20]; // Max 20 lights
+uniform Light lights[32]; // Max 20 lights
 uniform Light cameraLight;
 uniform int numLights;    // Actual number of lights in the scene
 uniform Material material;
@@ -55,13 +57,18 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         vec3 toLight = light.position - fragPos;
         float distance = length(toLight);
         lightDir = normalize(toLight);
-        float theta = dot(lightDir, normalize(-light.direction));
+        float dotLF = dot(lightDir, normalize(-light.direction)); // angle from light to fragment
+        float alpha = cos(light.angle); 
 
-        if (theta > cos(light.angle)) {
-            float spotEffect = pow(theta, material.shininess);
-            attenuation = spotEffect / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-        } else {
-            return vec3(0.0); // Outside spotlight cone
+
+        if (dotLF > alpha) {
+            //float spotEffect = pow(theta, material.shininess);
+            //attenuation = spotEffect / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+            float intensity = (dotLF - alpha)/(1-alpha);
+            attenuation = intensity; //spotEffect;
+        } 
+        else {
+            attenuation = 0.0; // Outside spotlight cone
         }
     }
 

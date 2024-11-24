@@ -1,4 +1,5 @@
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Headers\ObserverPattern.h;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\ObserverPattern.h.obj
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Source.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Application.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Camera.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Camera.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\DrawableObject.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\DrawableObject.obj
@@ -8,8 +9,10 @@ D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Model.cpp;D:\Projects\Sko
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\ModelManager.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\ModelManager.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Lights.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Lights.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Scene.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Scene.obj
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\SceneSchema.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\SceneSchema.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Shader.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Shader.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\ShaderLoader.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\ShaderLoader.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\ShaderManager.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\ShaderManager.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\ShaderProgram.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\ShaderProgram.obj
 D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Transformation.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\Transformation.obj
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\TransformFucntions.cpp;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\viceObje.c895c7f2\x64\Debug\TransformFucntions.obj

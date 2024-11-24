@@ -1,12 +1,12 @@
 #include "DrawableObject.h"
 
 DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram)
-	: model(model), shaderProgram(shaderProgram)
+	: model(model), shaderProgram(shaderProgram), position(glm::vec3(0.0f))
 {
 }
 
 DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram, Material material)
-	: model(model), shaderProgram(shaderProgram), material(material)
+	: model(model), shaderProgram(shaderProgram), position(glm::vec3(0.0f)), material(material)
 {
 }
 
@@ -22,6 +22,9 @@ void DrawableObject::addTransformation(std::unique_ptr<Transformation> transform
 void DrawableObject::render()
 {
 	auto modelMatrix = transformationComposite.apply();
+
+	position = glm::vec3(modelMatrix[3]);
+	notifyObservers();
 
 	shaderProgram->applyUniform("modelMatrix", modelMatrix);
 

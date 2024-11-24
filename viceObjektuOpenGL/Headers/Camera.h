@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 #include <list>
-#include <GLFW/glfw3.h>
+#include <unordered_map>
 #include "ObserverPattern.h"
 
 // Subject of ShaderProgram and BaseLight

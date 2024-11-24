@@ -7,20 +7,10 @@
 Camera::Camera(glm::vec3 position, glm::vec3 up)
 	: position(position), front(glm::vec3(0.0f, 0.0f, 0.0f)), fov(60.0f), yaw(-90.0f), pitch(0.0f), movementSpeed(10.0f), mouseSensitivity(0.1f)
 {
-	/*direction = glm::normalize(position - target);
-	right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), direction));
-	up = glm::cross(direction, right);*/
-
-
 	worldUp = up;
 
 	viewMatrix = glm::lookAt(position, position + front, up);
 	projectionMatrix = glm::perspective(glm::radians(fov), Application::getWidth() / (float)Application::getHeight(), 0.01f, 500.0f);
-	
-	//spotLight = SpotLight(12.5f, front, position, glm::vec3(1.0f), 1.0f, 1.0f, 0.09f, 0.032f);
-
-	spotLight.position = position;
-	spotLight.direction = front;
 
 	updateCameraVectors();
 }
@@ -28,7 +18,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up)
 void Camera::move(std::unordered_map<int, bool>& keys)
 {
 	float cameraSpeed = movementSpeed * Application::getDeltaTime();
-
+	auto oldPosition = position;
 
 	if (keys.at(GLFW_KEY_W))
 	{
@@ -55,11 +45,18 @@ void Camera::move(std::unordered_map<int, bool>& keys)
 		position -= up * cameraSpeed;
 	}
 
-	updateCameraVectors();
+	if (oldPosition != position)
+	{
+		//std::cout << "[i] Camera moved: " << position.x << " " << position.y << " " << position.z << "\n";
+		updateCameraVectors();
+	}
 }
 
 void Camera::rotate(float xoffset, float yoffset, bool constrainPitch)
 {
+	if (xoffset == 0 && yoffset == 0)
+		return;
+
 	xoffset *= mouseSensitivity;
 	yoffset *= mouseSensitivity;
 
@@ -73,7 +70,9 @@ void Camera::rotate(float xoffset, float yoffset, bool constrainPitch)
 		if (pitch < -89.0f)
 			pitch = -89.0f;
 	}
+
 	//std::cout << "[i] cursor: " << xoffset << " " << yoffset << std::endl;
+	//std::cout << "[i] Camera rotated " << yaw << " pitch: " << pitch << "\n";
 	updateCameraVectors();
 }
 
@@ -101,6 +100,7 @@ void Camera::setFov(float fov)
 
 	this->fov = fov;
 	setProjectionMatrix(fov, Application::getWidth() / (float)Application::getHeight());
+	updateCameraVectors();
 }
 
 float Camera::getFov() const
@@ -108,9 +108,9 @@ float Camera::getFov() const
 	return fov;
 }
 
-const SpotLight& Camera::getSpotLight() const
+glm::vec3 Camera::getFront() const
 {
-	return spotLight;
+	return front;
 }
 
 void Camera::setProjectionMatrix(float fov, float aspect, float near, float far)
@@ -132,9 +132,6 @@ void Camera::updateCameraVectors()
 
 	//std::cout << "[i] Camera xyz: " << position.x << "\t" << position.y << "\t" << position.z << std::endl;
 	//std::cout << "[i] Camera yaw: " << yaw << "\t" << "pitch: " << pitch << std::endl;
-
-	spotLight.position = position;
-	spotLight.direction = front;
 
 	notifyObservers();
 }

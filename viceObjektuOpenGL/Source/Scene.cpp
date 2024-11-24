@@ -1,4 +1,8 @@
 #include "Scene.h"
+#include "DrawableObject.h"
+#include "ShaderProgram.h"
+#include "Camera.h"
+#include "Lights.h"
 
 
 Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects)

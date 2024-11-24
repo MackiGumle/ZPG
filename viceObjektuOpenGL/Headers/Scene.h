@@ -1,12 +1,17 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
-
+/*
 #include "DrawableObject.h"
-#include "ShaderProgram.h"
-#include "Camera.h"
-#include "ObserverPattern.h"
+#include "ShaderProgram.h"*/
 #include "Lights.h"
+#include "Camera.h"
+
+#include "ObserverPattern.h"
+
+
+class DrawableObject;
+class ShaderProgram;
 
 
 class Scene

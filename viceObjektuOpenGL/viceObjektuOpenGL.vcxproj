@@ -22,6 +22,7 @@
     <ClInclude Include="Headers\Application.h" />
     <ClInclude Include="Headers\Material.h" />
     <ClInclude Include="Headers\SceneCreator.h" />
+    <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\TransformFunctions.h" />
     <ClInclude Include="Headers\Lights.h" />
     <ClInclude Include="Headers\Camera.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Headers\ShaderManager.h" />
     <ClInclude Include="Headers\ShaderProgram.h" />
     <ClInclude Include="Headers\Transformation.h" />
+    <ClInclude Include="Headers\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Headers\ObserverPattern.h" />
@@ -52,6 +54,8 @@
     <ClCompile Include="Source\ShaderLoader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\ShaderProgram.cpp" />
+    <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\Transformation.cpp" />
     <ClCompile Include="Source\TransformFucntions.cpp" />
   </ItemGroup>

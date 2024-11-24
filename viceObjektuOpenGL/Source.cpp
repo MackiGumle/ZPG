@@ -110,11 +110,11 @@ int main2(void)
     glEnableVertexAttribArray(0); 
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
-    
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(sizeof(float) * 3));
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(sizeof(float) * 6));
-    
+
 
     //create and compile shaders
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -138,18 +138,26 @@ int main2(void)
         fprintf(stderr, "Linker failure: %s\n", strInfoLog);
         delete[] strInfoLog;
     }
-    
+
     glActiveTexture(GL_TEXTURE0);
     GLuint image = SOIL_load_OGL_texture("wooden_fence.png", SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
     if (image == NULL) {
-        std::cout << "An error occurred while loading image." << std::endl;
+        std::cout << "An error occurred while loading image1." << std::endl;
         exit(EXIT_FAILURE);
     }
     glBindTexture(GL_TEXTURE_2D, image);
 
     glm::mat4 M = glm::mat4(1.0f);
     float angle = 0;
-    
+
+
+    glActiveTexture(GL_TEXTURE0);
+    GLuint image2 = SOIL_load_OGL_texture("texturepng.png", SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    if (image2 == NULL) {
+        std::cout << "An error occurred while loading image2." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    glBindTexture(GL_TEXTURE_2D, image2);
 
 
     glEnable(GL_DEPTH_TEST);
@@ -161,6 +169,7 @@ int main2(void)
         M = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1.0f, 1.0f, 1.0f));
         GLint idModelTransform = glGetUniformLocation(shaderProgram, "modelMatrix");
         glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, &M[0][0]);
+
 
         // draw triangles
         glDrawArrays(GL_TRIANGLES, 0, 12); //mode,first,count

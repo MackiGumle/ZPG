@@ -4,7 +4,7 @@
 #include "DrawableObject.h"
 #include "TransformFunctions.h"
 #include "Scene.h"
-
+#include "TextureManager.h"
 
 void SceneCreator::createTestTriangle(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager)
 {
@@ -21,7 +21,7 @@ void SceneCreator::createTestTriangle(std::vector<std::shared_ptr<Scene>>& Scene
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects));
 }
 
-void SceneCreator::create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager)
+void SceneCreator::create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager, TextureManager& textureManager)
 {
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms = {
 		shaderManager.getShaderProgram("SC2_Green"),
@@ -38,10 +38,10 @@ void SceneCreator::create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, Sha
 	};
 
 	std::vector<std::shared_ptr<DrawableObject>> objects = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_Green")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple"), Material(), textureManager.getTexture("Default")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_Green"), Material(), textureManager.getTexture("Default")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple"), Material(), textureManager.getTexture("Default")),
+		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple"), Material(), textureManager.getTexture("Default")),
 	};
 
 
@@ -50,7 +50,7 @@ void SceneCreator::create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, Sha
 	objects[1]->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
 	objects[1]->addObserver(lights[0].get());
 	lights[0]->setObject(objects[1].get());
-	
+
 
 	int i = 0;
 	for (auto& object : objects) {

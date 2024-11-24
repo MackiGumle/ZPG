@@ -4,7 +4,7 @@
 #include <memory>
 #include <list>
 #include "ObserverPattern.h"
-#include "Camera.h"
+//#include "Camera.h"
 
 
 
@@ -15,6 +15,8 @@ enum lightType {
 };
 
 class DrawableObject;
+class Camera;
+
 // Observer of Camera
 class BaseLight : public Observer {
 public:

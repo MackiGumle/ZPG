@@ -1,4 +1,5 @@
 #include "ModelManager.h"
+#include "Model.h"
 
 ModelManager::ModelManager() {
 

@@ -1,8 +1,9 @@
 #pragma once
 #include <unordered_map>
 #include <memory>
-#include "Model.h"
+#include <string>
 
+class Model;
 
 class ModelManager {
 public:

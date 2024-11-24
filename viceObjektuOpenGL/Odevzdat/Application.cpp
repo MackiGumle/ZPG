@@ -4,7 +4,14 @@
 #include "sphere.h"
 #include "gift.h"
 #include "suzi_flat.h"
-#include "TransFunctions.h"
+#include "plain.h"
+#include "Scene.h"
+#include "DrawableObject.h"
+#include "SceneCreator.h"
+#include "TextureManager.h"
+#include "Texture.h"
+#include "ObserverPattern.h"
+#include "TransformFunctions.h"
 
 
 float Application::windowWidth = 800;
@@ -240,6 +247,9 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
+	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC00_texture");
+
+
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/ShaderGreen.frag", "SC0_Green");
 
 
@@ -263,12 +273,53 @@ void Application::createModels()
 	 0.5f, -0.5f, 0.0f,
 	-0.5f, -0.5f, 0.0f
 	};
+
+
+	float texturedPyramid[] = {
+		//  X      Y     Z      R     G     B     U     V
+	0.000000f, -0.500000f, 0.500000f,    -0.872900f, 0.218200f, 0.436400f,   0.836598f, 0.477063f,
+	0.000000f, 0.500000f, 0.000000f,     -0.872900f, 0.218200f, 0.436400f,   0.399527f, 0.286309f,
+	-0.500000f, -0.500000f, -0.500000f,  -0.872900f, 0.218200f, 0.436400f,   0.836598f, 0.000179f,
+	-0.500000f, -0.500000f, -0.500000f,  0.000000f, -1.000000f, 0.000000f,   0.381686f, 0.999821f,
+	0.500000f, -0.500000f, -0.500000f,   0.000000f, -1.000000f, 0.000000f,   0.000179f, 0.809067f,
+	0.000000f, -0.500000f, 0.500000f,    0.000000f, -1.000000f, 0.000000f,   0.381686f, 0.522937f,
+	0.500000f, -0.500000f, -0.500000f,   0.872900f, 0.218200f, 0.436400f,    0.399169f, 0.000179f,
+	0.000000f, 0.500000f, 0.000000f,     0.872900f, 0.218200f, 0.436400f,    0.399169f, 0.522579f,
+	0.000000f, -0.500000f, 0.500000f,    0.872900f, 0.218200f, 0.436400f,    0.000179f, 0.261379f,
+	-0.500000f, -0.500000f, -0.500000f,  0.000000f, 0.447200f, -0.894400f,   0.788901f, 0.477421f,
+	0.000000f, 0.500000f, 0.000000f,     0.000000f, 0.447200f, -0.894400f,   0.788901f, 0.999821f,
+	0.500000f, -0.500000f, -0.500000f,   0.000000f, 0.447200f, -0.894400f,   0.399527f, 0.651554f
+	};
+
+	const float texturedPlain[] = {
+		1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+		1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+
+	   -1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f
+	};
+
+
 	modelManager.loadModel(tree, sizeof(tree), 6, "Tree");
 	modelManager.loadModel(bushes, sizeof(bushes), 6, "Bushes");
 	modelManager.loadModel(sphere, sizeof(sphere), 6, "Sphere");
 	modelManager.loadModel(gift, sizeof(gift), 6, "Gift");
 	modelManager.loadModel(suziFlat, sizeof(suziFlat), 6, "SuziFlat");
+	modelManager.loadModel(plain, sizeof(plain), 6, "Plain");
 	modelManager.loadModel(points, sizeof(points), 3, "Triangle");
+	modelManager.loadModel(texturedPyramid, sizeof(texturedPyramid), 8, "TexturedPyramid");
+	modelManager.loadModel(texturedPlain, sizeof(texturedPlain), 8, "TexturedPlain");
+
+}
+
+void Application::createTextures()
+{
+	textureManager.loadTexture("wooden_fence.png", "Wood");
+	textureManager.loadTexture("grass.png", "Grass");
+	textureManager.loadTexture("texture.png", "Texture");
+
 }
 
 void Application::createScenes()
@@ -307,17 +358,43 @@ void Application::createScenes()
 	std::uniform_real_distribution<float> scale(0.7f, 1.7f);
 
 	// Scene 1 Forest
+	std::vector<std::shared_ptr<BaseLight>> lights1 = {
+		//std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 1.0f), 1),
+		//std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
+		//std::make_shared<SpotLight>(15.5f, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0, 10, 10), glm::vec3(1,0,1), 1),
+	};
+
 	std::vector<std::shared_ptr<DrawableObject>> objects1;
-	for (size_t i = 0; i < 50; i++)
+	for (size_t i = 0; i < 80; i++)
 	{
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
 			shaderManager.getShaderProgram("SC1_multiple")));
 
-
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-			shaderManager.getShaderProgram("SC1_multiple")));
+		if (i % 2 == 0)
+			objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
+				shaderManager.getShaderProgram("SC1_multiple")));
 	}
 
+	// Create attached lights
+	for (size_t i = 0; i < 10; i++)
+	{
+		lights1.push_back(
+			std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.50f, 0.80f, 0.10f), 0.50f, 1.0f, 0.8f));
+		objects1.push_back(
+			std::make_shared<DrawableObject>(modelManager.getModel("Sphere"),
+				shaderManager.getShaderProgram("SC1_Green")
+				//Material(0.05f, 0.1f, 0.45f, 25, glm::vec3(0.5f, 0.0f, 1.0f))
+			)
+		);
+
+		objects1.back()->addTransformation(std::make_unique<Scale>(glm::vec3(0.05f)));
+		objects1.back()->addTransformation(std::make_unique<Translation>(glm::vec3(0, scale(gen) + 1, 0)));
+		objects1.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslationRandom));
+		objects1.back()->addObserver(lights1[i].get());
+		lights1.back()->setObject(objects1.back().get());
+	}
+
+	// Displace objects
 	size_t i = 0;
 	for (auto& object : objects1) {
 		object->addTransformation(std::make_unique<Scale>(glm::vec3(scale(gen))));
@@ -337,10 +414,30 @@ void Application::createScenes()
 	objects1.push_back(std::make_shared<DrawableObject>(
 		modelManager.getModel("Sphere"),
 		shaderManager.getShaderProgram("SC1_multiple"),
-		Material(0.05f,0.1f, 0.45f, 25, glm::vec3(0.5f, 0.0f, 1.0f))
+		Material(1.0f, 1.0f, 0.45f, 0.25f, glm::vec3(1.0f, 0.5f, 0.3f))
 	));
 
+	objects1.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
+
+
+	// Forrest floor
+	objects1.push_back(std::make_shared<DrawableObject>(
+		modelManager.getModel("TexturedPlain"),
+		shaderManager.getShaderProgram("SC1_multiple"),
+		//Material(0.5f, 0.1f, 0.45f, 25, glm::vec3(1.0f, 1.0f, 1.0f)),
+		Material(1, 1, 1, 25, glm::vec3(1.0f, 1.0f, 1.0f)),
+		textureManager.getTexture("Texture")
+	));
+
+	objects1.back()->addTransformation(std::make_unique<Scale>(1000));
+
 	///// Scene 2 Spheres 4x
+	std::vector<std::shared_ptr<BaseLight>> lights2 = {
+		std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 1.0f), 1),
+		//std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
+		//std::make_shared<SpotLight>(15.5f, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0, 10, 10), glm::vec3(1,0,1), 1),
+	};
+
 	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
@@ -348,25 +445,41 @@ void Application::createScenes()
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
 	};
 
-	std::vector<std::shared_ptr<BaseLight>> lights = {
-		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 0), 1),
-		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
-		//std::make_shared<PointLight>(glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 4),
-	};
-
-
 	i = 0;
+	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
 	for (auto& object : objects2) {
 		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
 		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
 	}
 
-	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
 	objects2[1]->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
 
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, lights));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, lights));
+
+
+	//Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
+	SceneCreator::createTestTriangle(Scenes, shaderManager, modelManager);
+	SceneCreator::create4Balls(Scenes, shaderManager, modelManager);
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, lights1));
+	//Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, lights2));
+
+	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms00 = {
+	shaderManager.getShaderProgram("SC00_texture"),
+	};
+
+	std::vector<std::shared_ptr<DrawableObject>> objects00 = {
+		std::make_shared<DrawableObject>(
+			modelManager.getModel("TexturedPyramid"),
+			shaderManager.getShaderProgram("SC00_texture"),
+			Material(),
+			textureManager.getTexture("Wood")),
+	};
+
+	std::vector<std::shared_ptr<BaseLight>> lights00 = {
+		std::make_shared<PointLight>(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1),
+	};
+
+	Scenes.push_back(std::make_shared<Scene>(shaderPrograms00, objects00, lights00));
+
 
 	currentCamera = Scenes[currentScene]->getCamera();
 }

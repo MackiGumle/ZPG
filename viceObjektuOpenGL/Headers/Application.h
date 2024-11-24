@@ -1,16 +1,14 @@
 #pragma once
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <random>
+#include <list>
+#include <unordered_map>
 #include "ShaderManager.h"
 #include "ModelManager.h"
-
 #include "Scene.h"
 #include "ObserverPattern.h"
-#include <list>
-#include <random>
-#include <unordered_map>
-
-
+#include "TextureManager.h"
 
 class Application {
 public:
@@ -33,6 +31,7 @@ public:
 	void initialization(int w_width = 800, int w_height = 600, const char* w_name = "Window", GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 	void createShaders();
 	void createModels();
+	void createTextures();
 	void createScenes();
 	void run();
 	
@@ -47,6 +46,7 @@ private:
 
 	ShaderManager shaderManager;
 	ModelManager modelManager;
+	TextureManager textureManager;
 	
 
 	static bool cursorLocked;

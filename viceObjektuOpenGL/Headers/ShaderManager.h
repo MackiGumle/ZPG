@@ -3,8 +3,10 @@
 #include <fstream>
 #include <unordered_map>
 #include <GL/glew.h>
-#include "ShaderProgram.h"
+//#include "ShaderProgram.h"
 
+class ShaderProgram;
+class Shader;
 
 class ShaderManager {
 public:

@@ -12,6 +12,7 @@
 #include "Texture.h"
 #include "ObserverPattern.h"
 #include "TransformFunctions.h"
+#include "SkyBox.h"
 
 
 float Application::windowWidth = 800;
@@ -264,6 +265,7 @@ void Application::createShaders()
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/phongShader.frag", "SC2_PhongLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/blinnShader.frag", "SC2_BlinnLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC2_multiple");
+	shaderManager.loadShaderProgram("Shaders/Skybox.vert", "Shaders/Skybox.frag", "Skybox");
 }
 
 void Application::createModels()
@@ -301,6 +303,45 @@ void Application::createModels()
 	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   100.0f, 100.0f
 	};
 
+	const float skycube[] = {
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f
+	};
+
 
 	modelManager.loadModel(tree, sizeof(tree), 6, "Tree");
 	modelManager.loadModel(bushes, sizeof(bushes), 6, "Bushes");
@@ -311,6 +352,7 @@ void Application::createModels()
 	modelManager.loadModel(points, sizeof(points), 3, "Triangle");
 	modelManager.loadModel(texturedPyramid, sizeof(texturedPyramid), 8, "TexturedPyramid");
 	modelManager.loadModel(texturedPlain, sizeof(texturedPlain), 8, "TexturedPlain");
+	modelManager.loadModel(skycube, sizeof(skycube), 3, "SkyCube");
 
 }
 
@@ -320,15 +362,11 @@ void Application::createTextures()
 	textureManager.loadTexture("wooden_fence.png", "Wood");
 	textureManager.loadTexture("grass.png", "Grass");
 	textureManager.loadTexture("texture32.png", "Texture");
-
+	textureManager.loadTexture("./Textures/Skybox/", "Skybox", true);
 }
 
 void Application::createScenes()
 {
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms0 = {
-		shaderManager.getShaderProgram("SC0_Green"),
-	};
-
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
 		shaderManager.getShaderProgram("SC1_BlinnLight"),
 		shaderManager.getShaderProgram("SC1_PosBarva"),
@@ -336,21 +374,6 @@ void Application::createScenes()
 		shaderManager.getShaderProgram("SC1_multiple"),
 
 	};
-
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms2 = {
-		shaderManager.getShaderProgram("SC2_Green"),
-		/*shaderManager.getShaderProgram("SC2_LambertLight"),
-		shaderManager.getShaderProgram("SC2_PhongLight"),
-		shaderManager.getShaderProgram("SC2_BlinnLight"),*/
-		shaderManager.getShaderProgram("SC2_multiple"),
-	};
-
-	// Scene 0 Triangle
-	std::vector<std::shared_ptr<DrawableObject>> objects0 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderManager.getShaderProgram("SC0_Green")),
-	};
-
-	objects0[0]->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -3)));
 
 	// Random number generator
 	std::random_device rd;
@@ -369,14 +392,17 @@ void Application::createScenes()
 	for (size_t i = 0; i < 80; i++)
 	{
 		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("SC1_multiple")));
+			shaderManager.getShaderProgram("SC1_multiple"),
+			Material(),
+			textureManager.getTexture("Default")
+			));
 
 		if (i % 2 == 0)
 			objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
 				shaderManager.getShaderProgram("SC1_multiple")));
 	}
 
-	// Create attached lights
+	// Create attached lights (fireflies)
 	for (size_t i = 0; i < 10; i++)
 	{
 		lights1.push_back(
@@ -412,6 +438,7 @@ void Application::createScenes()
 		++i;
 	}
 
+	// Weird orange sphere
 	objects1.push_back(std::make_shared<DrawableObject>(
 		modelManager.getModel("Sphere"),
 		shaderManager.getShaderProgram("SC1_multiple"),
@@ -432,39 +459,17 @@ void Application::createScenes()
 
 	objects1.back()->addTransformation(std::make_unique<Scale>(1000));
 
-	///// Scene 2 Spheres 4x
-	std::vector<std::shared_ptr<BaseLight>> lights2 = {
-		std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 1.0f), 1),
-		//std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
-		//std::make_shared<SpotLight>(15.5f, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0, 10, 10), glm::vec3(1,0,1), 1),
-	};
 
-	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-	};
-
-	i = 0;
-	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
-	for (auto& object : objects2) {
-		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
-		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
-	}
-
-	objects2[1]->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
-
-
-
-	//Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
 	SceneCreator::createTestTriangle(Scenes, shaderManager, modelManager);
 	SceneCreator::create4Balls(Scenes, shaderManager, modelManager, textureManager);
+	// Forrest
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, lights1));
-	//Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, lights2));
+
+
 
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms00 = {
-	shaderManager.getShaderProgram("SC00_texture"),
+		shaderManager.getShaderProgram("SC00_texture"),
+		shaderManager.getShaderProgram("Skybox"),
 	};
 
 	std::vector<std::shared_ptr<DrawableObject>> objects00 = {
@@ -479,7 +484,23 @@ void Application::createScenes()
 		std::make_shared<PointLight>(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1),
 	};
 
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms00, objects00, lights00));
+
+	auto scena00 = std::make_shared<Scene>(shaderPrograms00, objects00, lights00);
+
+	scena00->setSkyBox(
+		std::make_unique<SkyBox>(
+			modelManager.getModel("SkyCube"),
+			shaderManager.getShaderProgram("Skybox"),
+			textureManager.getTexture("Skybox"),
+			scena00->getCamera()
+		)
+	);
+
+	//objects00.back()->addTransformation(std::make_unique<DynamicTranslation>(
+	//	[scena00]() {return scena00->getCamera()->getPosition(); }
+	//));
+
+	Scenes.push_back(scena00);
 
 
 	currentCamera = Scenes[currentScene]->getCamera();

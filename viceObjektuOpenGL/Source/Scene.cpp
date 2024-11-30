@@ -3,6 +3,7 @@
 #include "ShaderProgram.h"
 #include "Camera.h"
 #include "Lights.h"
+#include "SkyBox.h"
 
 
 Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects)
@@ -56,9 +57,29 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::ve
 	camera.updateCameraVectors();
 }
 
+
+Scene::~Scene()
+{
+}
+
 void Scene::addDrawableObject(std::shared_ptr<DrawableObject> drawableObject)
 {
 	drawableObjects.push_back(drawableObject);
+}
+
+void Scene::addLight(std::shared_ptr<BaseLight> light)
+{
+	lights.push_back(light);
+}
+
+void Scene::addShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)
+{
+	shaderPrograms.push_back(shaderProgram);
+}
+
+void Scene::setSkyBox(std::unique_ptr<SkyBox> skybox)
+{
+	this->skybox = std::move(skybox);
 }
 
 Camera* Scene::getCamera() {
@@ -106,6 +127,11 @@ void Scene::render()
 
 			//shaderProgram->applyUniform("lights[" + std::to_string(i) + "]", camera.getSpotLight());
 		}
+	}
+
+	if (skybox)
+	{
+		skybox->render();
 	}
 
 	for (auto& drawableObject : drawableObjects)

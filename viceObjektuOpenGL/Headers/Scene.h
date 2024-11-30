@@ -6,13 +6,12 @@
 #include "ShaderProgram.h"*/
 #include "Lights.h"
 #include "Camera.h"
-
 #include "ObserverPattern.h"
 
 
 class DrawableObject;
 class ShaderProgram;
-
+class SkyBox;
 
 class Scene
 {
@@ -22,9 +21,14 @@ public:
 
 	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms,
 		std::vector<std::shared_ptr<DrawableObject>> drawableObjects,
-		std::vector<std::shared_ptr<BaseLight>> PointLights);
+		std::vector<std::shared_ptr<BaseLight>> lights);
+
+	~Scene();
 
 	void addDrawableObject(std::shared_ptr<DrawableObject> drawableObject);
+	void addLight(std::shared_ptr<BaseLight> light);
+	void addShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
+	void setSkyBox(std::unique_ptr<SkyBox> skybox);
 	
 	Camera* getCamera();
 	void rotateCamera(float xoffset, float yoffset);
@@ -36,4 +40,5 @@ private:
 	std::vector<std::shared_ptr<DrawableObject>> drawableObjects;
 	std::vector<std::shared_ptr<BaseLight>> lights;
 	Camera camera;
+	std::unique_ptr<SkyBox> skybox;
 };

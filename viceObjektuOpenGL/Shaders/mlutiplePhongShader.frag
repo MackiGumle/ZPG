@@ -13,6 +13,7 @@ uniform vec3 viewPos; // Camera position in world space
 uniform sampler2D textureUnitID;
 uniform bool hasTexture = false;
 
+
 struct Material {
     float ambient;
     float diffuse;

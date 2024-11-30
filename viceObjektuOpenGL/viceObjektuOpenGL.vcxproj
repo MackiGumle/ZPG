@@ -22,6 +22,7 @@
     <ClInclude Include="Headers\Application.h" />
     <ClInclude Include="Headers\Material.h" />
     <ClInclude Include="Headers\SceneCreator.h" />
+    <ClInclude Include="Headers\SkyBox.h" />
     <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\TransformFunctions.h" />
     <ClInclude Include="Headers\Lights.h" />
@@ -39,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Headers\ObserverPattern.h" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\DrawableObject.cpp" />
@@ -49,17 +49,20 @@
     <ClCompile Include="Source\ModelManager.cpp" />
     <ClCompile Include="Source\Lights.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
-    <ClCompile Include="Source\SceneSchema.cpp" />
+    <ClCompile Include="Source\SceneCreator.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderLoader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\ShaderProgram.cpp" />
+    <ClCompile Include="Source\SkyBox.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\Transformation.cpp" />
     <ClCompile Include="Source\TransformFucntions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\Skybox.frag" />
+    <None Include="Shaders\Skybox.vert" />
     <None Include="Shaders\test.frag" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -148,13 +151,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Models\;$(ProjectDir)\Source\;$(ProjectDir)\Headers\;$(ProjectDir)\Libraries\;$(ProjectDir)\Libraries\glew-2.1.0\include;$(ProjectDir)Libraries\glfw-3.4.bin.WIN64\include;D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Libraries\soil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Models\;$(ProjectDir)\Source\;$(ProjectDir)\Headers\;$(ProjectDir)\Libraries\;$(ProjectDir)\Libraries\glew-2.1.0\include;$(ProjectDir)\Libraries\glfw-3.4.bin.WIN64\include;$(ProjectDir)\Libraries\soil\include;$(ProjectDir)\Libraries\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Libraries\soil\lib-vc2012\Platform_x64;$(ProjectDir)\Libraries\glew-2.1.0\lib\Release\x64;$(ProjectDir)Libraries\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3.lib;glew32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libraries\assimp\lib\x64\v141\Release;$(ProjectDir)\Libraries\soil\lib-vc2012\Platform_x64;$(ProjectDir)\Libraries\glew-2.1.0\lib\Release\x64;$(ProjectDir)Libraries\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3.lib;glew32.lib;SOIL.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

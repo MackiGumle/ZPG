@@ -16,11 +16,11 @@ public:
 	~DrawableObject();
 
 	void addTransformation(std::unique_ptr<Transformation> transformation, bool continuous = false);
-	void render();
+	virtual void render();
 
 	glm::vec3 getPosition() const { return position; }
 
-private:
+protected:
 	bool firstRender = true;
 	std::shared_ptr<Model> model;
 	std::shared_ptr<ShaderProgram> shaderProgram;

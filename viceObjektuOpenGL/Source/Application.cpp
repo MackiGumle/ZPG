@@ -353,6 +353,9 @@ void Application::createModels()
 	modelManager.loadModel(texturedPyramid, sizeof(texturedPyramid), 8, "TexturedPyramid");
 	modelManager.loadModel(texturedPlain, sizeof(texturedPlain), 8, "TexturedPlain");
 	modelManager.loadModel(skycube, sizeof(skycube), 3, "SkyCube");
+	modelManager.loadModel("Models/obj/LOGIN.obj", "Login");
+	modelManager.loadModel("Models/obj/model.obj", "House");
+	modelManager.loadModel("Models/obj/zombie.obj", "Zombie");
 
 }
 
@@ -363,6 +366,8 @@ void Application::createTextures()
 	textureManager.loadTexture("grass.png", "Grass");
 	textureManager.loadTexture("texture32.png", "Texture");
 	textureManager.loadTexture("./Textures/Skybox/", "Skybox", true);
+	textureManager.loadTexture("./Models/obj/test.png", "House");
+	textureManager.loadTexture("./Models/obj/zombie.png", "Zombie");
 }
 
 void Application::createScenes()
@@ -395,7 +400,7 @@ void Application::createScenes()
 			shaderManager.getShaderProgram("SC1_multiple"),
 			Material(),
 			textureManager.getTexture("Default")
-			));
+		));
 
 		if (i % 2 == 0)
 			objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
@@ -478,7 +483,26 @@ void Application::createScenes()
 			shaderManager.getShaderProgram("SC00_texture"),
 			Material(),
 			textureManager.getTexture("Wood")),
+
+		std::make_shared<DrawableObject>(
+			modelManager.getModel("House"),
+			shaderManager.getShaderProgram("SC00_texture"),
+			Material(),
+			textureManager.getTexture("House")),
+
+		std::make_shared<DrawableObject>(
+			modelManager.getModel("Zombie"),
+			shaderManager.getShaderProgram("SC00_texture"),
+			Material(),
+			textureManager.getTexture("Zombie")),
 	};
+
+	objects00.back()->addTransformation(std::make_unique<Translation>(glm::vec3(10, 0, 2)));
+	objects00.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslationRandom));
+	objects00.back()->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation, 
+		[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 1.0f); }
+	));
+
 
 	std::vector<std::shared_ptr<BaseLight>> lights00 = {
 		std::make_shared<PointLight>(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1),

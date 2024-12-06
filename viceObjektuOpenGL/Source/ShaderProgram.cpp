@@ -92,6 +92,10 @@ void ShaderProgram::applyUniform(const std::string& name, const T& value) const
 	{
 		glUniform1i(location, value);
 	}
+	else if constexpr (std::is_same_v<T, bool>)
+	{
+		glUniform1i(location, value);
+	}
 	else
 	{
 		static_assert(always_false<T>::value, "Unsupported uniform type");
@@ -107,6 +111,7 @@ template void ShaderProgram::applyUniform<glm::vec3>(const std::string& name, co
 template void ShaderProgram::applyUniform<glm::vec4>(const std::string& name, const glm::vec4& value) const;
 template void ShaderProgram::applyUniform<int>(const std::string& name, const int& value) const;
 template void ShaderProgram::applyUniform<float>(const std::string& name, const float& value) const;
+template void ShaderProgram::applyUniform<bool>(const std::string& name, const bool& value) const;
 
 //template<>
 //void ShaderProgram::applyUniform<BaseLight>(const std::string& name, const BaseLight& value) const

@@ -1,13 +1,17 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
-
+/*
 #include "DrawableObject.h"
-#include "ShaderProgram.h"
+#include "ShaderProgram.h"*/
+#include "Lights.h"
 #include "Camera.h"
 #include "ObserverPattern.h"
-#include "Lights.h"
 
+
+class DrawableObject;
+class ShaderProgram;
+class SkyBox;
 
 class Scene
 {
@@ -17,16 +21,18 @@ public:
 
 	Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms,
 		std::vector<std::shared_ptr<DrawableObject>> drawableObjects,
-		std::vector<std::shared_ptr<BaseLight>> PointLights);
+		std::vector<std::shared_ptr<BaseLight>> lights);
 
-	Scene(std::vector<std::shared_ptr<ShaderProgram>>&& shaderPrograms,
-		std::vector<std::shared_ptr<DrawableObject>>&& drawableObjects);
-
+	~Scene();
 
 	void addDrawableObject(std::shared_ptr<DrawableObject> drawableObject);
+	void addLight(std::shared_ptr<BaseLight> light);
+	void addShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
+	void setSkyBox(std::unique_ptr<SkyBox> skybox);
 	
 	Camera* getCamera();
 	void rotateCamera(float xoffset, float yoffset);
+	void stopSkyboxMovement();
 
 	void render();
 
@@ -35,5 +41,5 @@ private:
 	std::vector<std::shared_ptr<DrawableObject>> drawableObjects;
 	std::vector<std::shared_ptr<BaseLight>> lights;
 	Camera camera;
+	std::unique_ptr<SkyBox> skybox;
 };
-

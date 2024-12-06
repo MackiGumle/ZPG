@@ -1,5 +1,8 @@
 *.html
+*.zip
 */Debug/*
 Libs&Bins/*
 */.vs/*
 Prezentace/*
+Prednasky/*
+viceObje.c895c7f2/*

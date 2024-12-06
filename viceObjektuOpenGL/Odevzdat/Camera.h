@@ -3,11 +3,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 #include <list>
-#include <GLFW/glfw3.h>
+#include <unordered_map>
 #include "ObserverPattern.h"
-#include "Lights.h"
 
-class Application;
+// Subject of ShaderProgram and BaseLight
 class Camera : public Subject
 {
 public:
@@ -23,18 +22,18 @@ public:
 	glm::vec3 getPosition() const;
 
 	float getFov() const;
-	const SpotLight& getSpotLight() const;
+	glm::vec3 getFront() const;
 
 	void setFov(float fov);
 	void setProjectionMatrix(float fov,	float aspect,
 		float near = 0.01f, float far = 500.0f);
 
-private:
 	void updateCameraVectors();
 
+private:
 	glm::vec3 position;
-	glm::vec3 front;
 	// actually pointing in the reverse direction of target. 
+	glm::vec3 front;
 	glm::vec3 up;
 	glm::vec3 right;
 	glm::vec3 worldUp;
@@ -46,7 +45,5 @@ private:
 	float pitch;
 	float movementSpeed;
 	float mouseSensitivity;
-
-	SpotLight spotLight;
 };
 

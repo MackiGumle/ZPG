@@ -1,8 +1,11 @@
 #pragma once
 #include <unordered_map>
 #include <memory>
-#include "Model.h"
+#include <string>
 
+
+
+class Model;
 
 class ModelManager {
 public:
@@ -10,6 +13,7 @@ public:
     ~ModelManager();
 
     void loadModel(const float points[], size_t numVertices, size_t stride, std::string name);
+	void loadModel(const std::string& fileName, std::string name);
     std::shared_ptr<Model> getModel(const std::string& name) const;
 
 private:

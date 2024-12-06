@@ -1,7 +1,5 @@
 #pragma once
 #include <list>
-#include <glm/glm.hpp>
-#include <unordered_map>
 
 class Observer;
 class Subject;

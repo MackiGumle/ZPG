@@ -1,12 +1,14 @@
 #pragma once
 #include "Shader.h"
-#include <glm/gtc/type_ptr.hpp>
 #include "ObserverPattern.h"
 #include "ShaderLoader.h"
 #include "Camera.h"
 //#include "Lights.h"
+#include <glm/gtc/type_ptr.hpp>
+
 
 class PointLight;
+// Observer of Camera
 class ShaderProgram : public Observer, public ShaderLoader
 {
 public:

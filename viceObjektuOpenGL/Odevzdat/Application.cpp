@@ -4,7 +4,15 @@
 #include "sphere.h"
 #include "gift.h"
 #include "suzi_flat.h"
-#include "TransFunctions.h"
+#include "plain.h"
+#include "Scene.h"
+#include "DrawableObject.h"
+#include "SceneCreator.h"
+#include "TextureManager.h"
+#include "Texture.h"
+#include "ObserverPattern.h"
+#include "TransformFunctions.h"
+#include "SkyBox.h"
 
 
 float Application::windowWidth = 800;
@@ -143,6 +151,10 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 			cursorLocked = !cursorLocked;
 			break;
 
+		case GLFW_KEY_X:
+			Scenes[currentScene]->stopSkyboxMovement();
+			break;
+
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
@@ -240,6 +252,9 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
+	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC00_texture");
+
+
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/ShaderGreen.frag", "SC0_Green");
 
 
@@ -254,6 +269,7 @@ void Application::createShaders()
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/phongShader.frag", "SC2_PhongLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/blinnShader.frag", "SC2_BlinnLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC2_multiple");
+	shaderManager.loadShaderProgram("Shaders/Skybox.vert", "Shaders/Skybox.frag", "Skybox");
 }
 
 void Application::createModels()
@@ -263,110 +279,169 @@ void Application::createModels()
 	 0.5f, -0.5f, 0.0f,
 	-0.5f, -0.5f, 0.0f
 	};
+
+
+	float texturedPyramid[] = {
+		//  X      Y     Z      R     G     B     U     V
+	0.000000f, -0.500000f, 0.500000f,    -0.872900f, 0.218200f, 0.436400f,   0.836598f, 0.477063f,
+	0.000000f, 0.500000f, 0.000000f,     -0.872900f, 0.218200f, 0.436400f,   0.399527f, 0.286309f,
+	-0.500000f, -0.500000f, -0.500000f,  -0.872900f, 0.218200f, 0.436400f,   0.836598f, 0.000179f,
+	-0.500000f, -0.500000f, -0.500000f,  0.000000f, -1.000000f, 0.000000f,   0.381686f, 0.999821f,
+	0.500000f, -0.500000f, -0.500000f,   0.000000f, -1.000000f, 0.000000f,   0.000179f, 0.809067f,
+	0.000000f, -0.500000f, 0.500000f,    0.000000f, -1.000000f, 0.000000f,   0.381686f, 0.522937f,
+	0.500000f, -0.500000f, -0.500000f,   0.872900f, 0.218200f, 0.436400f,    0.399169f, 0.000179f,
+	0.000000f, 0.500000f, 0.000000f,     0.872900f, 0.218200f, 0.436400f,    0.399169f, 0.522579f,
+	0.000000f, -0.500000f, 0.500000f,    0.872900f, 0.218200f, 0.436400f,    0.000179f, 0.261379f,
+	-0.500000f, -0.500000f, -0.500000f,  0.000000f, 0.447200f, -0.894400f,   0.788901f, 0.477421f,
+	0.000000f, 0.500000f, 0.000000f,     0.000000f, 0.447200f, -0.894400f,   0.788901f, 0.999821f,
+	0.500000f, -0.500000f, -0.500000f,   0.000000f, 0.447200f, -0.894400f,   0.399527f, 0.651554f
+	};
+
+	const float texturedPlain[] = {
+		1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+		1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   100.0f, 0.0f,
+	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   100.0f, 100.0f,
+
+	   -1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 100.0f,
+		1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   100.0f, 100.0f
+	};
+
+	const float skycube[] = {
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f
+	};
+
+
 	modelManager.loadModel(tree, sizeof(tree), 6, "Tree");
 	modelManager.loadModel(bushes, sizeof(bushes), 6, "Bushes");
 	modelManager.loadModel(sphere, sizeof(sphere), 6, "Sphere");
 	modelManager.loadModel(gift, sizeof(gift), 6, "Gift");
 	modelManager.loadModel(suziFlat, sizeof(suziFlat), 6, "SuziFlat");
+	modelManager.loadModel(plain, sizeof(plain), 6, "Plain");
 	modelManager.loadModel(points, sizeof(points), 3, "Triangle");
+	modelManager.loadModel(texturedPyramid, sizeof(texturedPyramid), 8, "TexturedPyramid");
+	modelManager.loadModel(texturedPlain, sizeof(texturedPlain), 8, "TexturedPlain");
+	modelManager.loadModel(skycube, sizeof(skycube), 3, "SkyCube");
+	modelManager.loadModel("Models/obj/LOGIN.obj", "Login");
+	modelManager.loadModel("Models/obj/model.obj", "House");
+	modelManager.loadModel("Models/obj/zombie.obj", "Zombie");
+	modelManager.loadModel("Models/obj/angerona.obj", "Angerona");
+
+}
+
+void Application::createTextures()
+{
+	textureManager.loadTexture("./Textures/default.png", "Default");
+	textureManager.loadTexture("wooden_fence.png", "Wood");
+	textureManager.loadTexture("grass.png", "Grass");
+	textureManager.loadTexture("texture32.png", "Texture");
+	textureManager.loadTexture("./Textures/Skybox/Forrest/", "SkyboxForrest", true);
+	textureManager.loadTexture("./Textures/Skybox/Space/", "SkyboxSpace", true);
+	textureManager.loadTexture("./Models/obj/test.png", "House");
+	textureManager.loadTexture("./Models/obj/zombie.png", "Zombie");
+	textureManager.loadTexture("./Models/obj/angerona.png", "Angerona");
 }
 
 void Application::createScenes()
 {
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms0 = {
-		shaderManager.getShaderProgram("SC0_Green"),
-	};
 
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
-		shaderManager.getShaderProgram("SC1_BlinnLight"),
-		shaderManager.getShaderProgram("SC1_PosBarva"),
-		shaderManager.getShaderProgram("SC1_Green"),
-		shaderManager.getShaderProgram("SC1_multiple"),
+	SceneCreator sceneCreator;
 
-	};
-
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms2 = {
-		shaderManager.getShaderProgram("SC2_Green"),
-		/*shaderManager.getShaderProgram("SC2_LambertLight"),
-		shaderManager.getShaderProgram("SC2_PhongLight"),
-		shaderManager.getShaderProgram("SC2_BlinnLight"),*/
-		shaderManager.getShaderProgram("SC2_multiple"),
-	};
-
-	// Scene 0 Triangle
-	std::vector<std::shared_ptr<DrawableObject>> objects0 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Triangle"), shaderManager.getShaderProgram("SC0_Green")),
-	};
-
-	objects0[0]->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -3)));
-
-	// Random number generator
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> pos(-50.0f, 50.0f);
-	std::uniform_real_distribution<float> scale(0.7f, 1.7f);
-
-	// Scene 1 Forest
-	std::vector<std::shared_ptr<DrawableObject>> objects1;
-	for (size_t i = 0; i < 50; i++)
-	{
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("SC1_multiple")));
+	sceneCreator.createTestTriangle(Scenes, shaderManager, modelManager);
+	sceneCreator.create4Balls(Scenes, shaderManager, modelManager, textureManager);
+	sceneCreator.createForrest(Scenes, shaderManager, modelManager, textureManager);
 
 
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-			shaderManager.getShaderProgram("SC1_multiple")));
-	}
 
-	size_t i = 0;
-	for (auto& object : objects1) {
-		object->addTransformation(std::make_unique<Scale>(glm::vec3(scale(gen))));
+	//std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms00 = {
+	//	shaderManager.getShaderProgram("SC00_texture"),
+	//	shaderManager.getShaderProgram("Skybox"),
+	//};
 
-		float x = pos(gen);
-		float z = pos(gen);
-		if (i % 4 == 0)
-			object->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation,
-				[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }
-		));
+	//std::vector<std::shared_ptr<DrawableObject>> objects00 = {
+	//	std::make_shared<DrawableObject>(
+	//		modelManager.getModel("TexturedPyramid"),
+	//		shaderManager.getShaderProgram("SC00_texture"),
+	//		Material(),
+	//		textureManager.getTexture("Wood")),
 
-		object->addTransformation(std::make_unique<Translation>(glm::vec3(x, 0, z)));
+	//	std::make_shared<DrawableObject>(
+	//		modelManager.getModel("House"),
+	//		shaderManager.getShaderProgram("SC00_texture"),
+	//		Material(),
+	//		textureManager.getTexture("House")),
 
-		++i;
-	}
+	//	std::make_shared<DrawableObject>(
+	//		modelManager.getModel("Zombie"),
+	//		shaderManager.getShaderProgram("SC00_texture"),
+	//		Material(),
+	//		textureManager.getTexture("Zombie")),
+	//};
 
-	objects1.push_back(std::make_shared<DrawableObject>(
-		modelManager.getModel("Sphere"),
-		shaderManager.getShaderProgram("SC1_multiple"),
-		Material(0.05f,0.1f, 0.45f, 25, glm::vec3(0.5f, 0.0f, 1.0f))
-	));
-
-	///// Scene 2 Spheres 4x
-	std::vector<std::shared_ptr<DrawableObject>> objects2 = {
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC2_multiple")),
-	};
-
-	std::vector<std::shared_ptr<BaseLight>> lights = {
-		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 0), 1),
-		std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
-		//std::make_shared<PointLight>(glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 4),
-	};
+	//objects00.back()->addTransformation(std::make_unique<Translation>(glm::vec3(10, 0, 2)));
+	//objects00.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslationRandom));
+	//objects00.back()->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation, 
+	//	[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }
+	//));
 
 
-	i = 0;
-	for (auto& object : objects2) {
-		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
-		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
-	}
+	//std::vector<std::shared_ptr<BaseLight>> lights00 = {
+	//	std::make_shared<PointLight>(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1),
+	//};
 
-	objects2[0]->addTransformation(std::make_unique<DynamicScale>(timeBasedScale));
-	objects2[1]->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
 
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms0, objects0));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, lights));
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms2, objects2, lights));
+	//auto scena00 = std::make_shared<Scene>(shaderPrograms00, objects00, lights00);
+
+	//scena00->setSkyBox(
+	//	std::make_unique<SkyBox>(
+	//		modelManager.getModel("SkyCube"),
+	//		shaderManager.getShaderProgram("Skybox"),
+	//		textureManager.getTexture("SkyboxForrest"),
+	//		scena00->getCamera()
+	//	)
+	//);
+
+	////objects00.back()->addTransformation(std::make_unique<DynamicTranslation>(
+	////	[scena00]() {return scena00->getCamera()->getPosition(); }
+	////));
+
+	//Scenes.push_back(scena00);
+
 
 	currentCamera = Scenes[currentScene]->getCamera();
 }

@@ -1,6 +1,9 @@
 #include "DrawableObject.h"
 #include "Lights.h"
+#include "Camera.h"
+
 #include <iostream>
+
 
 BaseLight::BaseLight(glm::vec3 position, glm::vec3 color, float intensity, float constant, float linear, float quadratic)
 	: position(position), color(color), intensity(intensity), constant(constant), linear(linear), quadratic(quadratic)

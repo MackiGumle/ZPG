@@ -29,6 +29,8 @@ void DrawableObject::render()
 	auto modelMatrix = transformationComposite.apply();
 
 	position = glm::vec3(modelMatrix[3]);
+
+	// Notify light
 	notifyObservers();
 
 	shaderProgram->applyUniform("modelMatrix", modelMatrix);
@@ -38,7 +40,8 @@ void DrawableObject::render()
 		shaderProgram->applyUniform("material", material);
 	}
 
-	if (shaderProgram->hasUniform("textureUnitID") && texture)
+	//if (shaderProgram->hasUniform("textureUnitID") && texture)
+	if (shaderProgram->hasUniform("hasTexture") && texture)
 	{
 		shaderProgram->applyUniform("hasTexture", true);
 		shaderProgram->applyUniform("textureUnitID", (int)texture->getTextureUnitIndex());

@@ -3,7 +3,7 @@
 #include <SOIL.h>
 #include "ShaderProgram.h"
 
-Texture::Texture(const char* path, GLuint textureUnitIndex) : path(path), textureUnitIndex(textureUnitIndex)
+Texture::Texture(const char* path, GLuint textureUnitIndex, bool isCubemap) : path(path), textureUnitIndex(textureUnitIndex), isCubemap(isCubemap)
 {
 	
 }

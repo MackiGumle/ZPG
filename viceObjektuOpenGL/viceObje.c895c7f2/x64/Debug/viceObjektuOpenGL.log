@@ -1,87 +1,21 @@
 ﻿  Scanning sources for module dependencies...
   Application.cpp
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(58,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(59,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(87,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(88,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(90,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(91,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(109,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(186,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(187,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(189,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(189,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(211,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(211,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(536,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         ]
-  (compiling source file 'Source/Application.cpp')
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56):
-  the template instantiation context (the oldest one first) is
-  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(465,42):
-  	see reference to function template instantiation 'std::unique_ptr<Scale,std::default_delete<Scale>> std::make_unique<Scale,int,0>(int &&)' being compiled
-  
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76): warning C4244:         ]
-  (compiling source file 'Source/Application.cpp')
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(241,76):
-  the template instantiation context (the oldest one first) is
-  	D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(508,8):
-  	see reference to function template instantiation 'std::shared_ptr<PointLight> std::make_shared<PointLight,glm::vec3,glm::vec3,int>(glm::vec3 &&,glm::vec3 &&,int &&)' being compiled
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2738,46):
-  	see reference to function template instantiation 'std::_Ref_count_obj2<PointLight>::_Ref_count_obj2<_Ty,_Ty,int>(_Ty &&,_Ty &&,int &&)' being compiled
-          with
-          [
-              _Ty=glm::vec3
-          ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2062,18):
-  	see reference to function template instantiation 'void std::_Construct_in_place<_Ty,glm::vec<3,float,glm::packed_highp>,glm::vec<3,float,glm::packed_highp>,int>(_Ty &,glm::vec<3,float,glm::packed_highp> &&,glm::vec<3,float,glm::packed_highp> &&,int &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=PointLight
-          ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(251,14):
-  	see reference to function template instantiation '_Ty *std::construct_at<_Ty,glm::vec<3,float,glm::packed_highp>,glm::vec<3,float,glm::packed_highp>,int,0x0>(_Ty *const ,glm::vec<3,float,glm::packed_highp> &&,glm::vec<3,float,glm::packed_highp> &&,int &&) noexcept(<expr>)' being compiled
-          with
-          [
-              _Ty=PointLight
-          ]
-  
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4244:         ]
-  (compiling source file 'Source/Application.cpp')
-  
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(242,90): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(242,90): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(242,90): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(242,90): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(242,90): warning C4244:         ]
-  (compiling source file 'Source/Application.cpp')
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(242,90):
-  the template instantiation context (the oldest one first) is
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2062,18):
-  	see reference to function template instantiation 'void std::_Construct_in_place<_Ty,glm::vec<3,float,glm::packed_highp>,glm::vec<3,float,glm::packed_highp>,int>(_Ty &,glm::vec<3,float,glm::packed_highp> &&,glm::vec<3,float,glm::packed_highp> &&,int &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=PointLight
-          ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(251,14):
-  	see reference to function template instantiation '_Ty *std::construct_at<_Ty,glm::vec<3,float,glm::packed_highp>,glm::vec<3,float,glm::packed_highp>,int,0x0>(_Ty *const ,glm::vec<3,float,glm::packed_highp> &&,glm::vec<3,float,glm::packed_highp> &&,int &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=PointLight
-          ]
-  
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(57,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(58,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(96,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(97,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(99,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(100,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(118,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(215,17): warning C4244: 'initializing': conversion from 'float' to 'GLsizei', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(216,18): warning C4244: 'initializing': conversion from 'float' to 'GLsizei', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(267,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(268,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(270,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(270,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(292,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(292,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(475,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   SOIL.lib(SOIL.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library

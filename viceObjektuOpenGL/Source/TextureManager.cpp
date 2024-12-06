@@ -31,12 +31,12 @@ void TextureManager::loadTexture(const char* path, std::string name, bool isCube
 	{
 		std::string targetPath(path);
 
-		std::string posxPath = targetPath + "posx.jpg";
-		std::string negxPath = targetPath + "negx.jpg";
-		std::string posyPath = targetPath + "posy.jpg";
-		std::string negyPath = targetPath + "negy.jpg";
-		std::string poszPath = targetPath + "posz.jpg";
-		std::string negzPath = targetPath + "negz.jpg";
+		std::string posxPath = targetPath + "right.jpg";
+		std::string negxPath = targetPath + "left.jpg";
+		std::string posyPath = targetPath + "top.jpg";
+		std::string negyPath = targetPath + "bottom.jpg";
+		std::string poszPath = targetPath + "back.jpg";
+		std::string negzPath = targetPath + "front.jpg";
 
 		GLuint image = SOIL_load_OGL_cubemap(
 			posxPath.c_str(),
@@ -52,7 +52,7 @@ void TextureManager::loadTexture(const char* path, std::string name, bool isCube
 
 		//GLuint image = SOIL_load_OGL_cubemap("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 		if (image == NULL) {
-			std::cout << "An error occurred while loading CubeMap.\t" << path << std::endl;
+			std::cout << "[x] An error occurred while loading CubeMap.\t" << path << std::endl;
 			exit(EXIT_FAILURE);
 		}
 

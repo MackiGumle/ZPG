@@ -45,7 +45,7 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
     vec3 ambient = vec3(0.0);
     vec3 diffuse = vec3(0.0);
     vec3 specular = vec3(0.0);
-    float attenuation = 1.0;
+    float attenuation = 0.0;
 
     vec3 lightDir;
     if (light.type == 0) { // Point light
@@ -62,16 +62,12 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         float dotLF = dot(lightDir, normalize(-light.direction)); // angle from light to fragment
         float alpha = cos(light.angle); 
 
-
         if (dotLF > alpha) {
             //float spotEffect = pow(theta, material.shininess);
             //attenuation = spotEffect / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
             float intensity = (dotLF - alpha)/(1-alpha);
-            attenuation = intensity; //spotEffect;
+            attenuation = intensity;
         } 
-        else {
-            attenuation = 0.0; // Outside spotlight cone
-        }
     }
 
     // Ambient component
@@ -96,20 +92,19 @@ void main(void) {
     // Initialize final color
     vec3 finalColor = vec3(0.0);
 
-    // Loop over all lights and accumulate contributions
+    // Accumulate light contributions
     for (int i = 0; i < numLights; ++i) {
         finalColor += calculateLight(lights[i], norm, viewDir, worldPos.xyz);
     }
 
 //    finalColor += calculateLight(cameraLight, norm, viewDir, worldPos.xyz);
 
-    // Multiply by material color and set output
     finalColor *= material.color;
     
     if (hasTexture) {
         finalColor *= texture(textureUnitID, uvc).rgb;
     }
 
-    fragColor = vec4(finalColor, 1.0); // Set alpha to 1 for full opacity
+    fragColor = vec4(finalColor, 1.0);
 }
 

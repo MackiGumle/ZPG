@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Model.h"
 
+
 // Subject of Light
 class DrawableObject : public Subject
 {
@@ -19,6 +20,8 @@ public:
 	virtual void render();
 
 	glm::vec3 getPosition() const { return position; }
+
+	//size_t id = 0;
 
 protected:
 	bool firstRender = true;

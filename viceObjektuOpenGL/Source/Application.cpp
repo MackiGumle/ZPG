@@ -1,4 +1,4 @@
-#include "Application.h"
+﻿#include "Application.h"
 #include "tree.h"
 #include "bushes.h"
 #include "sphere.h"
@@ -23,8 +23,7 @@ bool Application::firstMouse = true;
 
 
 Application::Application() : window(nullptr), shaderManager(ShaderManager()),
-modelManager(ModelManager()), currentScene(0), currentCamera(nullptr),
-lastX(0), lastY(0)
+modelManager(ModelManager()), currentScene(0), currentCamera(nullptr)//, lastX(0), lastY(0)
 {
 
 }
@@ -74,8 +73,18 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 }
 
 void Application::cursor_callback(GLFWwindow* window, double x, double y) {
-	if (!cursorLocked) return;
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	
+	// if cursor is uncloked update cursor position and dont move cam
+	if (app && !cursorLocked) {
+		app->cursorX = x;
+		app->cursorY = y;
+		return;
+	}
+	//if (!cursorLocked) return;
 
+
+	// if cursor is locked rotate camera and set cursor in the middle of the screen
 	static float lastX = windowWidth / 2, lastY = windowHeight / 2;
 
 	if (firstMouse) {
@@ -92,8 +101,9 @@ void Application::cursor_callback(GLFWwindow* window, double x, double y) {
 
 	//printf("cursor_callback [%f,%f]\n", xoffset, yoffset);
 
-	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	if (app) {
+		app->cursorX = windowWidth / 2;
+		app->cursorY = windowHeight / 2;
 		app->mouse_input(xoffset, yoffset);
 	}
 
@@ -101,7 +111,6 @@ void Application::cursor_callback(GLFWwindow* window, double x, double y) {
 
 void Application::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	if (app) {
 		auto fov = app->currentCamera->getFov();
@@ -111,7 +120,16 @@ void Application::scroll_callback(GLFWwindow* window, double xoffset, double yof
 }
 
 void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
+	if (action == GLFW_PRESS)
+	{
+		printf("button_callback [%d,%d,%d]\n", button, action, mode);
+
+		Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+		if (app) {
+			app->mouseButton_input(button, action);
+		}
+		//Můžeme nastavit vybrané těleso scena->setSelect(index-1);
+	}
 }
 
 void Application::key_input(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -143,12 +161,22 @@ void Application::key_input(GLFWwindow* window, int key, int scancode, int actio
 
 		case GLFW_KEY_C:
 			if (cursorLocked)
+			{
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+				// if cursor is locked set it to the center of the screen
+				cursorX = windowWidth / 2;
+				cursorY = windowHeight / 2;
+			}
 			else
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 			firstMouse = true;
 			cursorLocked = !cursorLocked;
+			break;
+
+		case GLFW_KEY_X:
+			Scenes[currentScene]->stopSkyboxMovement();
 			break;
 
 		case GLFW_KEY_ESCAPE:
@@ -172,6 +200,59 @@ void Application::mouse_input(float xoffset, float yoffset)
 {
 	currentCamera->rotate(xoffset, yoffset);
 	//Scenes[currentScene]->rotateCamera(xoffset, yoffset);
+}
+
+void Application::mouseButton_input(int button, int action)
+{
+	if (action == GLFW_PRESS)
+	{
+		uint8_t color[4];
+		GLfloat depth;
+		GLuint index;
+
+		GLint x = (GLint)cursorX;
+		GLint y = (GLint)cursorY;
+		GLsizei width = Application::getWidth();
+		GLsizei height = Application::getHeight();
+
+		int newy = height - y;
+
+		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+		printf("width: %d\theight: %d\n", width, height);
+		printf(
+			"Clicked on pixel %d, %d, color r:%u g:%u b:%u a:%u, depth %f, stencil index %u\n",
+			x, newy, (unsigned int)color[0], (unsigned int)color[1],
+			(unsigned int)color[2], (unsigned int)color[3], depth, index
+		);
+
+		//Můžeme nastavit vybrané těleso scena->setSelect(index-1);
+		glm::vec3 screenX = glm::vec3(x, newy, depth);
+		
+		auto camera = Scenes[currentScene]->getCamera();
+		glm::mat4 view = camera->getViewMatrix();
+		glm::mat4 projection = camera->getProjectionMatrix();
+
+		glm::vec4 viewPort = glm::vec4(0, 0, width, height);
+		glm::vec3 pos = glm::unProject(screenX, view, projection, viewPort);
+
+		printf("unProject [%f,%f,%f]\n", pos.x, pos.y, pos.z);
+
+		if (index)
+		{
+			auto obj = std::make_shared<DrawableObject>(
+				modelManager.getModel("Sphere"),
+				shaderManager.getShaderProgram("SC0_Green"),
+				Material());
+
+		
+			obj->addTransformation(std::make_unique<Translation>(pos));
+
+			Scenes[currentScene]->addDrawableObject(obj);
+		}
+	}
 }
 
 void Application::initialization(int w_width, int w_height, const char* w_name, GLFWmonitor* monitor, GLFWwindow* share)
@@ -223,10 +304,10 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	glfwSetWindowUserPointer(window, this);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, cursor_callback);
-	/*glfwsetmousebuttoncallback(m_window, button_callback);
-	glfwsetwindowfocuscallback(m_window, window_focus_callback);
-	glfwsetwindowiconifycallback(m_window, window_iconify_callback);
-	glfwSetWindowSizeCallback(m_window, window_size_callback);*/
+	glfwSetMouseButtonCallback(window, button_callback);
+	//glfwsetwindowfocuscallback(m_window, window_focus_callback);
+	//glfwsetwindowiconifycallback(m_window, window_iconify_callback);
+	//glfwSetWindowSizeCallback(m_window, window_size_callback);
 	glfwSetWindowSizeCallback(window, window_size_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 	glEnable(GL_DEPTH_TEST);
@@ -242,6 +323,10 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 	keys[GLFW_KEY_DOWN] = false;
 	keys[GLFW_KEY_LEFT] = false;
 	keys[GLFW_KEY_RIGHT] = false;
+
+	// Stencil Buffer
+	// glfwWindowHint(GLFW_STENCIL_BITS, 8);
+	glEnable(GL_STENCIL_TEST);
 
 	std::cout << "\n\n";
 }
@@ -356,7 +441,7 @@ void Application::createModels()
 	modelManager.loadModel("Models/obj/LOGIN.obj", "Login");
 	modelManager.loadModel("Models/obj/model.obj", "House");
 	modelManager.loadModel("Models/obj/zombie.obj", "Zombie");
-
+	//modelManager.loadModel("Models/obj/angerona.obj", "Angerona");
 }
 
 void Application::createTextures()
@@ -365,166 +450,20 @@ void Application::createTextures()
 	textureManager.loadTexture("wooden_fence.png", "Wood");
 	textureManager.loadTexture("grass.png", "Grass");
 	textureManager.loadTexture("texture32.png", "Texture");
-	textureManager.loadTexture("./Textures/Skybox/", "Skybox", true);
+	textureManager.loadTexture("./Textures/Skybox/Forrest/", "SkyboxForrest", true);
+	textureManager.loadTexture("./Textures/Skybox/Space/", "SkyboxSpace", true);
 	textureManager.loadTexture("./Models/obj/test.png", "House");
 	textureManager.loadTexture("./Models/obj/zombie.png", "Zombie");
+	//textureManager.loadTexture("./Models/obj/angerona.png", "Angerona");
 }
 
 void Application::createScenes()
 {
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms1 = {
-		shaderManager.getShaderProgram("SC1_BlinnLight"),
-		shaderManager.getShaderProgram("SC1_PosBarva"),
-		shaderManager.getShaderProgram("SC1_Green"),
-		shaderManager.getShaderProgram("SC1_multiple"),
+	SceneCreator sceneCreator;
 
-	};
-
-	// Random number generator
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> pos(-50.0f, 50.0f);
-	std::uniform_real_distribution<float> scale(0.7f, 1.7f);
-
-	// Scene 1 Forest
-	std::vector<std::shared_ptr<BaseLight>> lights1 = {
-		//std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0, 1.0f), 1),
-		//std::make_shared<PointLight>(glm::vec3(2.0f, 0.0f, -2.0f), glm::vec3(0, 1.0f, 0), 1),
-		//std::make_shared<SpotLight>(15.5f, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0, 10, 10), glm::vec3(1,0,1), 1),
-	};
-
-	std::vector<std::shared_ptr<DrawableObject>> objects1;
-	for (size_t i = 0; i < 80; i++)
-	{
-		objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Tree"),
-			shaderManager.getShaderProgram("SC1_multiple"),
-			Material(),
-			textureManager.getTexture("Default")
-		));
-
-		if (i % 2 == 0)
-			objects1.push_back(std::make_shared<DrawableObject>(modelManager.getModel("Bushes"),
-				shaderManager.getShaderProgram("SC1_multiple")));
-	}
-
-	// Create attached lights (fireflies)
-	for (size_t i = 0; i < 10; i++)
-	{
-		lights1.push_back(
-			std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.50f, 0.80f, 0.10f), 0.50f, 1.0f, 0.8f));
-		objects1.push_back(
-			std::make_shared<DrawableObject>(modelManager.getModel("Sphere"),
-				shaderManager.getShaderProgram("SC1_Green")
-				//Material(0.05f, 0.1f, 0.45f, 25, glm::vec3(0.5f, 0.0f, 1.0f))
-			)
-		);
-
-		objects1.back()->addTransformation(std::make_unique<Scale>(glm::vec3(0.05f)));
-		objects1.back()->addTransformation(std::make_unique<Translation>(glm::vec3(0, scale(gen) + 1, 0)));
-		objects1.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslationRandom));
-		objects1.back()->addObserver(lights1[i].get());
-		lights1.back()->setObject(objects1.back().get());
-	}
-
-	// Displace objects
-	size_t i = 0;
-	for (auto& object : objects1) {
-		object->addTransformation(std::make_unique<Scale>(glm::vec3(scale(gen))));
-
-		float x = pos(gen);
-		float z = pos(gen);
-		if (i % 4 == 0)
-			object->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation,
-				[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }
-		));
-
-		object->addTransformation(std::make_unique<Translation>(glm::vec3(x, 0, z)));
-
-		++i;
-	}
-
-	// Weird orange sphere
-	objects1.push_back(std::make_shared<DrawableObject>(
-		modelManager.getModel("Sphere"),
-		shaderManager.getShaderProgram("SC1_multiple"),
-		Material(1.0f, 1.0f, 0.45f, 0.25f, glm::vec3(1.0f, 0.5f, 0.3f))
-	));
-
-	objects1.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslation));
-
-
-	// Forrest floor
-	objects1.push_back(std::make_shared<DrawableObject>(
-		modelManager.getModel("TexturedPlain"),
-		shaderManager.getShaderProgram("SC1_multiple"),
-		//Material(0.5f, 0.1f, 0.45f, 25, glm::vec3(1.0f, 1.0f, 1.0f)),
-		Material(1, 1, 1, 25, glm::vec3(1.0f, 1.0f, 1.0f)),
-		textureManager.getTexture("Texture")
-	));
-
-	objects1.back()->addTransformation(std::make_unique<Scale>(1000));
-
-
-	SceneCreator::createTestTriangle(Scenes, shaderManager, modelManager);
-	SceneCreator::create4Balls(Scenes, shaderManager, modelManager, textureManager);
-	// Forrest
-	Scenes.push_back(std::make_shared<Scene>(shaderPrograms1, objects1, lights1));
-
-
-
-	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms00 = {
-		shaderManager.getShaderProgram("SC00_texture"),
-		shaderManager.getShaderProgram("Skybox"),
-	};
-
-	std::vector<std::shared_ptr<DrawableObject>> objects00 = {
-		std::make_shared<DrawableObject>(
-			modelManager.getModel("TexturedPyramid"),
-			shaderManager.getShaderProgram("SC00_texture"),
-			Material(),
-			textureManager.getTexture("Wood")),
-
-		std::make_shared<DrawableObject>(
-			modelManager.getModel("House"),
-			shaderManager.getShaderProgram("SC00_texture"),
-			Material(),
-			textureManager.getTexture("House")),
-
-		std::make_shared<DrawableObject>(
-			modelManager.getModel("Zombie"),
-			shaderManager.getShaderProgram("SC00_texture"),
-			Material(),
-			textureManager.getTexture("Zombie")),
-	};
-
-	objects00.back()->addTransformation(std::make_unique<Translation>(glm::vec3(10, 0, 2)));
-	objects00.back()->addTransformation(std::make_unique<DynamicTranslation>(sineWaveTranslationRandom));
-	objects00.back()->addTransformation(std::make_unique<DynamicRotation>(backAndForthRotation, 
-		[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 1.0f); }
-	));
-
-
-	std::vector<std::shared_ptr<BaseLight>> lights00 = {
-		std::make_shared<PointLight>(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1),
-	};
-
-
-	auto scena00 = std::make_shared<Scene>(shaderPrograms00, objects00, lights00);
-
-	scena00->setSkyBox(
-		std::make_unique<SkyBox>(
-			modelManager.getModel("SkyCube"),
-			shaderManager.getShaderProgram("Skybox"),
-			textureManager.getTexture("Skybox"),
-			scena00->getCamera()
-		)
-	);
-
-	//objects00.back()->addTransformation(std::make_unique<DynamicTranslation>(
-	//	[scena00]() {return scena00->getCamera()->getPosition(); }
-	//));
-
-	Scenes.push_back(scena00);
+	sceneCreator.createTestTriangle(Scenes, shaderManager, modelManager);
+	sceneCreator.create4Balls(Scenes, shaderManager, modelManager, textureManager);
+	sceneCreator.createForrest(Scenes, shaderManager, modelManager, textureManager);
 
 
 	currentCamera = Scenes[currentScene]->getCamera();
@@ -538,20 +477,21 @@ void Application::run()
 		lastFrame = currentFrame;
 
 		// clear color and depth buffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glfwPollEvents();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		// update camera movement
 		currentCamera->move(keys);
-
+		
 		// render scene
 		Scenes[currentScene]->render();
+		
+		glfwPollEvents();
 
-		// put the stuff we�ve been drawing onto the display
+		// put the stuff we’ve been drawing onto the display
 		glfwSwapBuffers(window);
+		
 
-		//std::cout << "FPS: " << 1 / deltaTime << std::endl;
+		//std::cout << "FPS: " << 1 / deltaTime << "\n";
 	}
 }
 

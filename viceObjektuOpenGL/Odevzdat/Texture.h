@@ -5,7 +5,7 @@
 class Texture
 {
 public:
-	Texture(const char* path = nullptr, GLuint textureUnitIndex = -1);
+	Texture(const char* path = nullptr, GLuint textureUnitIndex = -1, bool isCubemap = false);
 	virtual ~Texture() = default;
 
 	std::string getPath() const;
@@ -17,5 +17,6 @@ public:
 protected:
 	GLuint textureUnitIndex;
 	std::string path;
+	bool isCubemap = false;
 };
 

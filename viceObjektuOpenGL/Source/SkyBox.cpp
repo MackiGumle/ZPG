@@ -18,10 +18,10 @@ SkyBox::~SkyBox()
 
 void SkyBox::render()
 {
-	//glClear(GL_DEPTH_BUFFER_BIT);
 
-	glDepthMask(GL_FALSE);
+	//glDepthMask(GL_FALSE);
 	DrawableObject::render();
-	glDepthMask(GL_TRUE);
+	//glDepthMask(GL_TRUE);
 
+	glClear(GL_DEPTH_BUFFER_BIT);
 }

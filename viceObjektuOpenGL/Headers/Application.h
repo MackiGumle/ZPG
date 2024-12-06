@@ -26,7 +26,7 @@ public:
 	static void button_callback(GLFWwindow* window, int button, int action, int mode);
 	void key_input(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void mouse_input(float xoffset, float yoffset);
-
+	void mouseButton_input(int button, int action);
 
 	void initialization(int w_width = 800, int w_height = 600, const char* w_name = "Window", GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 	void createShaders();
@@ -34,6 +34,7 @@ public:
 	void createTextures();
 	void createScenes();
 	void run();
+
 	
 	static float getWidth();
 	static float getHeight();
@@ -61,8 +62,8 @@ private:
 	std::unordered_map<int, bool> keys;
 
 	// mouse movement
-	float lastX;
-	float lastY;
+	double cursorX;
+	double cursorY;
 
 	// delta time
 	static float deltaTime;

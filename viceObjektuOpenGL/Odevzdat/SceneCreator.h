@@ -4,12 +4,16 @@
 
 class ShaderManager;
 class ModelManager;
+class TextureManager;
 class Scene;
+
+
 class SceneCreator
 {
 public:
-	static void createTestTriangle(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager);
-	static void create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager);
+	void createTestTriangle(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager);
+	void create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager, TextureManager& textureManager);
+	void createForrest(std::vector<std::shared_ptr<Scene>>& Scenes, ShaderManager& shaderManager, ModelManager& modelManager, TextureManager& textureManager);
 
 };
 

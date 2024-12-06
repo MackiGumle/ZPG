@@ -16,7 +16,7 @@ public:
 	TextureManager() = default;
 	virtual ~TextureManager() = default;
 
-	void loadTexture(const char* path, std::string name);
+	void loadTexture(const char* path, std::string name, bool isCubemap = false);
 	std::shared_ptr<Texture> getTexture(const std::string& name) const;
 
 private:

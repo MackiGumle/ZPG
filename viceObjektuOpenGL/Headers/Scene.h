@@ -32,6 +32,7 @@ public:
 	
 	Camera* getCamera();
 	void rotateCamera(float xoffset, float yoffset);
+	void stopSkyboxMovement();
 
 	void render();
 

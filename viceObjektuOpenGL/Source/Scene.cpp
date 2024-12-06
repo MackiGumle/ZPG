@@ -26,6 +26,8 @@ Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::ve
 	}
 
 	camera.updateCameraVectors();
+
+
 }
 
 Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects, std::vector<std::shared_ptr<BaseLight>> lights)
@@ -90,6 +92,11 @@ void Scene::rotateCamera(float xoffset, float yoffset) {
 	camera.rotate(xoffset, yoffset, true);
 }
 
+void Scene::stopSkyboxMovement() {
+	if (skybox)
+		skybox->moveWithCamera = !skybox->moveWithCamera;
+}
+
 void Scene::render()
 {
 	// Apply lights
@@ -98,10 +105,10 @@ void Scene::render()
 		shaderProgram->use();
 		if (shaderProgram->hasUniform("numLights"))
 		{
-			auto i = 0;
+			auto lightIndex = 0;
 			for (auto& light : lights)
 			{
-				auto name = "lights[" + std::to_string(i) + "]";
+				auto name = "lights[" + std::to_string(lightIndex) + "]";
 				
 				auto type = light->getType();
 				switch (type)
@@ -122,7 +129,7 @@ void Scene::render()
 				}
 
 				//shaderProgram->applyUniform(name, *light.get());
-				++i;
+				++lightIndex;
 			}
 
 			//shaderProgram->applyUniform("lights[" + std::to_string(i) + "]", camera.getSpotLight());
@@ -134,11 +141,14 @@ void Scene::render()
 		skybox->render();
 	}
 
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	
+	auto objectID = 1;
 	for (auto& drawableObject : drawableObjects)
 	{
-
 		//camera.notifyObservers();
-
+		glStencilFunc(GL_ALWAYS, objectID, 0xFF);
 		drawableObject->render();
+		objectID++;
 	}
 }

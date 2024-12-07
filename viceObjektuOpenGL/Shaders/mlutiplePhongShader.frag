@@ -8,7 +8,6 @@ in vec2 uvc;
 // Output color
 out vec4 fragColor;
 
-// Uniforms for lighting and material properties
 uniform vec3 viewPos; // Camera position in world space
 uniform sampler2D textureUnitID;
 uniform bool hasTexture = false;
@@ -29,15 +28,15 @@ struct Light {
     vec3 position;     // For point lights and spotlights: light position
     vec3 color;        // Light color
     float intensity;   // Light intensity
-    float constant;    // Constant attenuation factor
-    float linear;      // Linear attenuation factor
-    float quadratic;   // Quadratic attenuation factor
+    float constant;    // Constant attenuation
+    float linear;      // Linear attenuation
+    float quadratic;   // Quadratic attenuation
 };
 
-// Uniform array for lights and number of lights
-uniform Light lights[32]; // Max 20 lights
-uniform Light cameraLight;
-uniform int numLights;    // Actual number of lights in the scene
+
+uniform Light lights[32];
+uniform Light cameraLight; // Flashlight
+uniform int numLights;    // number of lights in the scene
 uniform Material material;
 
 // Function to calculate light contribution
@@ -55,6 +54,7 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     } else if (light.type == 1) { // Directional light
         lightDir = normalize(-light.direction);
+        attenuation = 1.0;
     } else if (light.type == 2) { // Spotlight
         vec3 toLight = light.position - fragPos;
         float distance = length(toLight);
@@ -63,8 +63,6 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         float alpha = cos(light.angle); 
 
         if (dotLF > alpha) {
-            //float spotEffect = pow(theta, material.shininess);
-            //attenuation = spotEffect / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
             float intensity = (dotLF - alpha)/(1-alpha);
             attenuation = intensity;
         } 
@@ -89,15 +87,12 @@ void main(void) {
     vec3 norm = normalize(worldNor);
     vec3 viewDir = normalize(viewPos - worldPos.xyz);
 
-    // Initialize final color
     vec3 finalColor = vec3(0.0);
 
     // Accumulate light contributions
     for (int i = 0; i < numLights; ++i) {
         finalColor += calculateLight(lights[i], norm, viewDir, worldPos.xyz);
     }
-
-//    finalColor += calculateLight(cameraLight, norm, viewDir, worldPos.xyz);
 
     finalColor *= material.color;
     

@@ -4,7 +4,9 @@
 #include "Camera.h"
 #include "Lights.h"
 #include "SkyBox.h"
-
+#include "TransformFunctions.h"
+#include "Application.h"
+#include <glm/gtx/string_cast.hpp>
 
 Scene::Scene(std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms, std::vector<std::shared_ptr<DrawableObject>> drawableObjects)
 	: shaderPrograms(shaderPrograms), drawableObjects(drawableObjects)
@@ -97,12 +99,88 @@ void Scene::stopSkyboxMovement() {
 		skybox->moveWithCamera = !skybox->moveWithCamera;
 }
 
+void Scene::selectObject(int index)
+{
+	if (index <= 0 || index >= drawableObjects.size() || !drawableObjects[index]->selectable)
+	{
+		std::cout << "[!] Invalid object index" << std::endl;
+		return;
+	}
+
+	selectedObject = index;
+	std::cout << "[i] Selected object: " << selectedObject << std::endl;
+}
+
+void Scene::setControlPoint(glm::vec3 controlPoint)
+{
+	static int count = 0; // count of control points
+
+	if (!selectedObject)
+	{
+		std::cout << "[!] No object selected" << std::endl;
+		return;
+	}
+
+	if (count < 3)
+	{
+		controlPoints[count] = controlPoint;
+		++count;
+		std::cout << "[i] Control point " << count << " set to " << controlPoint.x << ", " << controlPoint.y << ", " << controlPoint.z << std::endl;
+	}
+	else
+	{
+		controlPoints[3] = controlPoint;
+
+		//drawableObjects[selectedObject]->clearTransformations();
+		drawableObjects[selectedObject]->clearTranslation();
+
+
+		controlPointsMap[selectedObject] = { 0.5f, 0.01f, controlPoints };
+
+		drawableObjects[selectedObject]->addTransformation(std::make_unique<DynamicTranslation>(
+			[cpm = this->controlPointsMap, so = selectedObject]() mutable -> glm::vec3 {
+				if (cpm.find(so) == cpm.end())
+				{
+					std::cout << "[!] No control points set for object: " << so << std::endl;
+					return glm::vec3(0.0f);
+				}
+
+				glm::mat4 A = glm::mat4(
+					glm::vec4(-1.0, 3.0, -3.0, 1.0),
+					glm::vec4(3.0, -6.0, 3.0, 0),
+					glm::vec4(-3.0, 3.0, 0, 0),
+					glm::vec4(1, 0, 0, 0)
+				);
+				glm::mat4x3& B = cpm[so].controlPoints;
+
+				float& t = cpm[so].t;
+				float& delta = cpm[so].delta;
+				
+				glm::vec4 parameters = glm::vec4(t * t * t, t * t, t, 1.0f);
+				glm::vec3 p = parameters * A * glm::transpose(B);
+
+				//printf("t: %f\tdelta: %f\n", t, delta);
+
+				if (t >= 1.0f || t <= 0.0f) delta *= -1;
+				t += delta;
+
+				return p;
+			}
+		));
+
+		std::cout << "[i] All control points set for object: " << selectedObject << std::endl;
+		selectedObject = 0;
+		count = 0;
+	}
+	
+}
+
 void Scene::render()
 {
 	// Apply lights
 	for (auto& shaderProgram : shaderPrograms)
 	{
-		shaderProgram->use();
+	//	shaderProgram->use();
 		if (shaderProgram->hasUniform("numLights"))
 		{
 			auto lightIndex = 0;
@@ -138,6 +216,7 @@ void Scene::render()
 
 	if (skybox)
 	{
+		glStencilFunc(GL_ALWAYS, 0, 0xFF);
 		skybox->render();
 	}
 

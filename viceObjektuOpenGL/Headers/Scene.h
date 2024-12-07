@@ -34,12 +34,24 @@ public:
 	void rotateCamera(float xoffset, float yoffset);
 	void stopSkyboxMovement();
 
+	void selectObject(int index);
+	void setControlPoint(glm::vec3 controlPoint);
+
 	void render();
 
 private:
+	struct ControlPoint {
+		float t;
+		float delta;
+		glm::mat4x3 controlPoints;
+	};
+
 	std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
 	std::vector<std::shared_ptr<DrawableObject>> drawableObjects;
 	std::vector<std::shared_ptr<BaseLight>> lights;
 	Camera camera;
 	std::unique_ptr<SkyBox> skybox;
+	int selectedObject = 0;
+	glm::mat4x3 controlPoints;
+	std::unordered_map<int, ControlPoint> controlPointsMap;
 };

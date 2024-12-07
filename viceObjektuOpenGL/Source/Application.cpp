@@ -68,7 +68,7 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 		for (auto& scene : app->Scenes)
 			scene->getCamera()->setProjectionMatrix(
 				scene->getCamera()->getFov()
-				, ratio, 0.01f, 200.0f);
+				, ratio, 0.01f, 500.0f);
 	}
 }
 

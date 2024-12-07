@@ -116,6 +116,7 @@ glm::vec3 Camera::getFront() const
 void Camera::setProjectionMatrix(float fov, float aspect, float near, float far)
 {
 	projectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
+	updateCameraVectors();
 }
 
 void Camera::updateCameraVectors()

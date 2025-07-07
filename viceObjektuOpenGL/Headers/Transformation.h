@@ -81,6 +81,8 @@ class TransformationComposite : public Transformation
 public:
 	TransformationComposite();
 	void addTransformation(std::unique_ptr<Transformation> transformation);
+	void clear();
+	void clearTranslation();
 	glm::mat4 apply() override;
 
 protected:

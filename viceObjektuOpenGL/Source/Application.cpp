@@ -68,7 +68,7 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 		for (auto& scene : app->Scenes)
 			scene->getCamera()->setProjectionMatrix(
 				scene->getCamera()->getFov()
-				, ratio, 0.01f, 200.0f);
+				, ratio, 0.01f, 500.0f);
 	}
 }
 
@@ -221,14 +221,13 @@ void Application::mouseButton_input(int button, int action)
 		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 
-		printf("width: %d\theight: %d\n", width, height);
-		printf(
-			"Clicked on pixel %d, %d, color r:%u g:%u b:%u a:%u, depth %f, stencil index %u\n",
-			x, newy, (unsigned int)color[0], (unsigned int)color[1],
-			(unsigned int)color[2], (unsigned int)color[3], depth, index
-		);
+		//printf("width: %d\theight: %d\n", width, height);
+		//printf(
+		//	"[i] pixel %d, %d, color r:%u g:%u b:%u a:%u, depth %f, stencil index %u\n",
+		//	x, newy, (unsigned int)color[0], (unsigned int)color[1],
+		//	(unsigned int)color[2], (unsigned int)color[3], depth, index
+		//);
 
-		//Můžeme nastavit vybrané těleso scena->setSelect(index-1);
 		glm::vec3 screenX = glm::vec3(x, newy, depth);
 		
 		auto camera = Scenes[currentScene]->getCamera();
@@ -238,19 +237,35 @@ void Application::mouseButton_input(int button, int action)
 		glm::vec4 viewPort = glm::vec4(0, 0, width, height);
 		glm::vec3 pos = glm::unProject(screenX, view, projection, viewPort);
 
-		printf("unProject [%f,%f,%f]\n", pos.x, pos.y, pos.z);
+		//printf("unProject [%f,%f,%f]\n", pos.x, pos.y, pos.z);
 
-		if (index)
+		if (index && currentScene == 2 && !cursorLocked)
 		{
-			auto obj = std::make_shared<DrawableObject>(
-				modelManager.getModel("Sphere"),
-				shaderManager.getShaderProgram("SC0_Green"),
-				Material());
+			switch (button)
+			{
+				case GLFW_MOUSE_BUTTON_LEFT:
+				{
+					auto obj = std::make_shared<DrawableObject>(
+						modelManager.getModel("Tree"),
+						shaderManager.getShaderProgram("SC2_multiple"),
+						Material(1, 1, 1, 1, glm::vec3(0, 1, 0.5)));
 
-		
-			obj->addTransformation(std::make_unique<Translation>(pos));
+					obj->addTransformation(std::make_unique<Translation>(pos));
 
-			Scenes[currentScene]->addDrawableObject(obj);
+					Scenes[currentScene]->addDrawableObject(obj);
+					break;
+				}
+				case GLFW_MOUSE_BUTTON_RIGHT:
+				{
+					Scenes[currentScene]->setControlPoint(pos);
+					break;
+				}
+				case GLFW_MOUSE_BUTTON_MIDDLE:
+				{
+					Scenes[currentScene]->selectObject(index - 1);
+					break;
+				}
+			}
 		}
 	}
 }
@@ -333,22 +348,19 @@ void Application::initialization(int w_width, int w_height, const char* w_name, 
 
 void Application::createShaders()
 {
-	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC00_texture");
-
+	//shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC00_texture");
 
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/ShaderGreen.frag", "SC0_Green");
 
 
+	// SC1 4 balls Ligh examples
+	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/lambertShader.frag", "SC1_LambertLight");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/phongShader.frag", "SC1_PhongLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/blinnShader.frag", "SC1_BlinnLight");
-	shaderManager.loadShaderProgram("Shaders/vertexShader.vert", "Shaders/fragmentShader.frag", "SC1_PosBarva");
-	shaderManager.loadShaderProgram("Shaders/vertexShader.vert", "Shaders/ShaderGreen.frag", "SC1_Green");
-	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC1_multiple");
+	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/ShaderGreen.frag", "SC1_Green");
 
-
+	// SC2 Forrest
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/ShaderGreen.frag", "SC2_Green");
-	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/lambertShader.frag", "SC2_LambertLight");
-	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/phongShader.frag", "SC2_PhongLight");
-	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/blinnShader.frag", "SC2_BlinnLight");
 	shaderManager.loadShaderProgram("Shaders/lightShader.vert", "Shaders/mlutiplePhongShader.frag", "SC2_multiple");
 	shaderManager.loadShaderProgram("Shaders/Skybox.vert", "Shaders/Skybox.frag", "Skybox");
 }
@@ -491,7 +503,7 @@ void Application::run()
 		glfwSwapBuffers(window);
 		
 
-		//std::cout << "FPS: " << 1 / deltaTime << "\n";
+		std::cout << "FPS: " << 1 / deltaTime << "\n";
 	}
 }
 

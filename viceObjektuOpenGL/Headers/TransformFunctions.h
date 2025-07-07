@@ -12,6 +12,6 @@ glm::vec3 timeBasedScale();
 
 glm::vec3 sineWaveTranslation();
 
-glm::vec3 sineWaveTranslationRandom();
+glm::vec3 sineWaveTranslationRandom(float offset);
 
 float backAndForthRotation();

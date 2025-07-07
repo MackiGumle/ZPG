@@ -69,6 +69,25 @@ void TransformationComposite::addTransformation(std::unique_ptr<Transformation> 
 	transformations.push_back(std::move(transformation));
 }
 
+void TransformationComposite::clear()
+{
+	transformations.clear();
+}
+
+void TransformationComposite::clearTranslation()
+{
+	transformations.erase(
+		std::remove_if(
+			transformations.begin(),
+			transformations.end(),
+			[](const std::unique_ptr<Transformation>& transformation) {
+				return dynamic_cast<Translation*>(transformation.get()) != nullptr;
+			}
+		),
+		transformations.end()
+	);
+}
+
 glm::mat4 TransformationComposite::apply()
 {
 	glm::mat4 result = glm::mat4(1.0f);

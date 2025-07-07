@@ -157,13 +157,13 @@ int main(void)
     }
     glBindTexture(GL_TEXTURE_2D, image);
 
-    glm::mat4 M = glm::mat4(1.0f);
-    glm::mat4 A = glm::mat4(glm::vec4(-1.0, 3.0, -3.0, 1.0),
+    glm::mat4 JednotkovaMatice = glm::mat4(1.0f);
+    glm::mat4 KonstantniMatice = glm::mat4(glm::vec4(-1.0, 3.0, -3.0, 1.0),
         glm::vec4(3.0, -6.0, 3.0, 0),
         glm::vec4(-3.0, 3.0, 0, 0),
         glm::vec4(1, 0, 0, 0));
-    std::cout << glm::to_string(A) << std::endl;
-    glm::mat4x3 B = glm::mat4x3(glm::vec3(-1, 0, 0),
+    std::cout << glm::to_string(KonstantniMatice) << std::endl;
+    glm::mat4x3 MaticeBody = glm::mat4x3(glm::vec3(-1, 0, 0),
         glm::vec3(0, 1, 0),
         glm::vec3(0, -1, 0),
         glm::vec3(1, 0, 0));
@@ -175,17 +175,17 @@ int main(void)
     glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
         glm::vec4 parameters = glm::vec4(t * t * t, t * t, t, 1.0f);
-        glm::vec3 p = parameters * A * glm::transpose(B);
+        glm::vec3 p = parameters * KonstantniMatice * glm::transpose(MaticeBody);
         // clear color and depth buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
 
-        M = glm::translate(glm::mat4(1.0f), p);
-        M = glm::scale(M, glm::vec3(0.015));
+        JednotkovaMatice = glm::translate(glm::mat4(1.0f), p);
+        JednotkovaMatice = glm::scale(JednotkovaMatice, glm::vec3(0.015));
 
         GLint idModelTransform = glGetUniformLocation(shaderProgram, "modelMatrix");
-        glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, &M[0][0]);
+        glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, &JednotkovaMatice[0][0]);
 
         // draw triangles
         glDrawArrays(GL_TRIANGLES, 0, count); //mode,first,count

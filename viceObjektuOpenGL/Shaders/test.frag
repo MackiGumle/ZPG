@@ -66,5 +66,5 @@ void main(void)
 
     // Combine all light contributions
     vec3 result = (ambient + diffuse + specular) * objectColor;
-    fragColor = vec4(result, 1.0); // Set alpha to 1 for full opacity
+    fragColor = vec4(result, 1.0);
 }

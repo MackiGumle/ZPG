@@ -17,11 +17,13 @@ public:
 	~DrawableObject();
 
 	void addTransformation(std::unique_ptr<Transformation> transformation, bool continuous = false);
+	void clearTransformations() { transformationComposite.clear(); }
+	void clearTranslation() { transformationComposite.clearTranslation(); }
 	virtual void render();
 
 	glm::vec3 getPosition() const { return position; }
 
-	//size_t id = 0;
+	bool selectable = true;
 
 protected:
 	bool firstRender = true;

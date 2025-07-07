@@ -4,7 +4,7 @@
 SkyBox::SkyBox(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram, std::shared_ptr<Texture> texture, Camera* camera) 
 	: DrawableObject(model, shaderProgram, Material(), texture), camera(camera)
 {
-
+	selectable = false;
 	addTransformation(std::make_unique<DynamicTranslation>(
 		[this]() { 
 			return this->moveWithCamera ? this->camera->getPosition() : this->getPosition();

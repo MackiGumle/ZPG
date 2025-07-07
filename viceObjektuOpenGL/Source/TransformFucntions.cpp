@@ -53,13 +53,32 @@ glm::vec3 sineWaveTranslationRandom(float offset) {
 
 
 float backAndForthRotation() {
+	//auto now = std::chrono::steady_clock::now();
+	//auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+	//float timeInSeconds = time * 0.001f;
+
+	//float maxAngle = 45.0f;
+	//float frequency = 1.0f;
+
+	//return maxAngle * std::sin(frequency * timeInSeconds);
+
 	auto now = std::chrono::steady_clock::now();
 	auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
 	float timeInSeconds = time * 0.001f;
 
-	float maxAngle = 45.0f;
-	float frequency = 1.0f;
+	float speed = 70.0f; // degrees per second
+	return fmod(speed * timeInSeconds, 360.0f);
+};
 
-	return maxAngle * std::sin(frequency * timeInSeconds);
+
+float continuousRotation() {
+	auto now = std::chrono::steady_clock::now();
+	auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+	float timeInSeconds = time * 0.001f;
+
+	float speed = 90.0f; // degrees per second
+	return fmod(speed * timeInSeconds, 360.0f);
 };

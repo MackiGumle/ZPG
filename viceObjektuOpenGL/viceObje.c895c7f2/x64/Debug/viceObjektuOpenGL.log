@@ -1,23 +1,20 @@
-﻿  Scanning sources for module dependencies...
-  Application.cpp
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(57,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(58,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(96,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(97,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(99,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(100,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(118,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(215,17): warning C4244: 'initializing': conversion from 'float' to 'GLsizei', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(216,18): warning C4244: 'initializing': conversion from 'float' to 'GLsizei', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(282,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(283,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(285,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(285,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(307,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(307,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\Source\Application.cpp(487,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Camera.cpp
-  Generating Code...
+﻿  SceneCreator.cpp
+D:\Skola\3ThirdYear\winter\ZPG\viceObjektuOpenGL\Source\SceneCreator.cpp(122,45): warning C4244: 'argument': conversion from 'const size_t' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:             _Ty=double
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\memory(3595,56): warning C4244:         ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(388,82): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(388,82): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(388,82): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(388,82): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(388,82): warning C4244:         ]
   SOIL.lib(SOIL.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
@@ -27,4 +24,4 @@ SOIL.lib(SOIL.obj) : warning LNK4099: PDB '' was not found with 'SOIL.lib(SOIL.o
 SOIL.lib(stb_image_aug.obj) : warning LNK4099: PDB '' was not found with 'SOIL.lib(stb_image_aug.obj)' or at ''; linking object as if no debug info
 SOIL.lib(image_helper.obj) : warning LNK4099: PDB '' was not found with 'SOIL.lib(image_helper.obj)' or at ''; linking object as if no debug info
 SOIL.lib(image_DXT.obj) : warning LNK4099: PDB '' was not found with 'SOIL.lib(image_DXT.obj)' or at ''; linking object as if no debug info
-  viceObjektuOpenGL.vcxproj -> D:\Projects\Skola\3rdYear\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe
+  viceObjektuOpenGL.vcxproj -> D:\Skola\3ThirdYear\winter\ZPG\viceObjektuOpenGL\x64\Debug\viceObjektuOpenGL.exe

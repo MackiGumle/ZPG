@@ -38,12 +38,33 @@ void SceneCreator::create4Balls(std::vector<std::shared_ptr<Scene>>& Scenes, Sha
 		std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC1_Green"), Material(), textureManager.getTexture("Default")),
 	};
 
-
 	int i = 0;
 	for (auto& object : objects) {
-		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, -2.5f)));
+		object->addTransformation(std::make_unique<Translation>(glm::vec3(0, 2, 0)));
 		object->addTransformation(std::make_unique<Rotation>(90 * i++, glm::vec3(0, 0, 1)));
 	}
+
+	auto b1 = std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC1_PhongLight"), Material(), textureManager.getTexture("Default"));
+	auto b2 = std::make_shared<DrawableObject>(modelManager.getModel("Sphere"), shaderManager.getShaderProgram("SC1_PhongLight"), Material(), textureManager.getTexture("Default"));
+
+	objects.push_back(b1);
+	objects.push_back(b2);
+		
+	b1->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -6)));
+	b1->addTransformation(std::make_unique<DynamicRotation>(
+		backAndForthRotation,
+		[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f);}));
+				 
+	b2->addTransformation(std::make_unique<Scale>(0.5));
+	b2->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -3)));
+	b2->addTransformation(std::make_unique<DynamicRotation>(
+		backAndForthRotation,
+		[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }));
+	b2->addTransformation(std::make_unique<Translation>(glm::vec3(0, 0, -6)));
+	b2->addTransformation(std::make_unique<DynamicRotation>(
+		backAndForthRotation,
+		[]() -> glm::vec3 {return glm::vec3(0.0f, 1.0f, 0.0f); }));
+
 
 	Scenes.push_back(std::make_shared<Scene>(shaderPrograms, objects));
 }
@@ -149,7 +170,7 @@ void SceneCreator::createForrest(std::vector<std::shared_ptr<Scene>>& Scenes, Sh
 		modelManager.getModel("Login"),
 		shaderManager.getShaderProgram("SC2_multiple"),
 		Material(1, 1, 2, 25, glm::vec3(1.0f, 1.0f, 1.0f)),
-		textureManager.getTexture("Texture")
+		textureManager.getTexture("Grass")
 	));
 
 	auto scene = std::make_shared<Scene>(shaderPrograms1, objects1, lights1);

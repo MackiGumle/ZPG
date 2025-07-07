@@ -503,7 +503,7 @@ void Application::run()
 		glfwSwapBuffers(window);
 		
 
-		//std::cout << "FPS: " << 1 / deltaTime << "\n";
+		std::cout << "FPS: " << 1 / deltaTime << "\n";
 	}
 }
 
